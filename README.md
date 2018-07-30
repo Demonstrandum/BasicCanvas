@@ -34,7 +34,7 @@ sketch.loop(() => {
 
   sketch.shape('sine', (shape) => {
     for (let x = 0; x < 3*Math.PI; x += 0.1)
-      shape.vertex(BC.Point(32*x + 50, 32*Math.sin(i)*Math.sin(x+j+i) + 100 + 30*j));
+      shape.vertex(BC.Point(32*x + 50, 32*Math.sin(x+i) + 175));
   });
 
   i += 0.1;
