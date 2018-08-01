@@ -1,10 +1,6 @@
 import * as BC from '../lib/BasicCanvas.js';
 
-// Checker pattern
-import {rectangle} from '../lib/BasicShapes.js';
-
 // Awkwardly patch console.log(...)
-
 const console_clone = BC.clone(console);
 
 console.log = (...args) => {
@@ -50,7 +46,10 @@ sketch.shape('sine', shape => {
 const c = sketch.color(BC.Point(90, 110));
 console.log(c);
 
-sketch.fill = BC.Color(0, 10);
+// Checker pattern
+import {rectangle} from '../lib/BasicShapes.js';
+
+sketch.fill = BC.Color(0, 100);
 sketch.stroke = BC.Color(0, 0);
 
 const d = 50;
