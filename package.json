@@ -6,6 +6,7 @@
     "xo": "^0.21.1"
   },
   "xo": {
+    "space": true,
     "rules": {
       "camelcase": "off",
       "unicorn/filename-case": "off",
@@ -14,7 +15,8 @@
       "no-undef": "off",
       "import/extensions": "off",
       "max-params": "off",
-      "no-warning-comments": "off"
+      "no-warning-comments": "off",
+      "no-multi-spaces": "off"
     }
   }
 }
