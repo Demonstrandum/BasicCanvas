@@ -1,3 +1,7 @@
+# js
+*lock.json
+node_modules/
+
 # Logs
 *.log
 
