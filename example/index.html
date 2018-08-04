@@ -3,9 +3,95 @@
   <head>
     <meta charset="utf-8">
     <title>BasicCanvas</title>
+
+    <style media="screen">
+      body {
+        margin: 0;
+        padding: 0;
+      }
+
+      #picks {
+        outline: none;
+        padding: 3px;
+        border-radius: 3px;
+        background: rgba(255, 255, 255, 0.7);
+        position: absolute;
+        left: 10px;
+        top: 15px;
+        border: 1px solid rgba(0,0,0,0.4);
+      }
+    </style>
   </head>
   <body>
     <canvas id="sketch"></canvas>
-    <script src="sinusoidal.js" type="module" charset="utf-8"></script>
+
+    <!-- No proper server side programming available for us,
+    we'll have to manually add our files. -->
+    <select id="picks" onchange="load()">
+      <option value="chords.js">chords.js</option>
+      <option value="coin.js">coin.js</option>
+      <option value="sinusoidal.js">sinusoidal.js</option>
+      <option value="still_shapes.js">still_shapes.js</option>
+      <option value="tree.js">tree.js</option>
+    </select>
+
+
+    <div id="load">
+      <script id="include" type="module" charset="utf-8"></script>
+    </div>
+    <script type="text/javascript">
+      let load_number = 1;
+
+      const replace_script = (elem, location) => {
+        let load_frame = document.getElementById('load');
+        load_frame.removeChild(elem);
+
+        let tag = document.createElement('script');
+        tag.src = `${location}?${load_number}`;
+        tag.id = 'include';
+        tag.type = 'module';
+        load_frame.appendChild(tag);
+
+        let container = document.getElementsByTagName("body")[0];
+        let content = container.innerHTML;
+        container.innerHTML = content;
+      }
+
+      let last_script = localStorage.getItem('last_script');
+      if (last_script !== null) {
+        replace_script(
+          document.getElementById('include'),
+          localStorage.getItem('last_script')
+        );
+      } else {
+        replace_script(
+          document.getElementById('include'),
+          'sinusoidal.js?0'
+        );
+      }
+
+      let file;
+      let picks = document.getElementById('picks');
+      let include = document.getElementById('include');
+      picks.value = include.getAttribute('src').split('?')[0];
+
+      const load = () => {
+        file = document.getElementById('picks').value;
+        include = document.getElementById('include');
+
+        replace_script(include, file.split('?')[0]);
+
+        include = document.getElementById('include');
+        picks = document.getElementById('picks');
+        picks.value = include.getAttribute('src').split('?')[0];
+
+        load_number++;
+      }
+
+      window.addEventListener('unload', (e) => {
+        file = document.getElementById('picks').value;
+        localStorage.setItem('last_script', `${file}`);
+      });
+    </script>
   </body>
 </html>
