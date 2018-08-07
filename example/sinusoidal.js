@@ -7,8 +7,8 @@ sketch.stroke = BC.Color(0, 0, 0, 100);
 sketch.stroke_weight = 8;
 sketch.stroke_cap = 'round';
 
-let i = 0;
-sketch.loop(() => {
+sketch.loop(frame => {
+  const i = frame / 10;
   sketch.background(BC.Color(255, 150, 90));
   for (let j = 0; j < 8; j++) {
     sketch.shape('sine', shape => {
@@ -20,5 +20,4 @@ sketch.loop(() => {
       }
     });
   }
-  i += 0.1;
 });
