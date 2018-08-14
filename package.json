@@ -16,7 +16,11 @@
       "import/extensions": "off",
       "max-params": "off",
       "no-warning-comments": "off",
-      "no-multi-spaces": "off"
+      "no-multi-spaces": "off",
+      "func-name-matching": "off",
+      "func-names": "off",
+      "no-use-extend-native/no-use-extend-native": "off",
+      "no-extend-native": "off"
     }
   }
 }
