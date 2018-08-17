@@ -63,6 +63,10 @@
       <script id="include" type="module" charset="utf-8"></script>
     </div>
     <script type="text/javascript">
+      let file_option;
+      if (window.location.href.split('?').length > 1) {
+        file_option = window.location.href.split('?')[1];
+      }
       let load_number = 1;
 
       const replace_script = (elem, location) => {
@@ -74,6 +78,10 @@
         tag.id = 'include';
         tag.type = 'module';
         load_frame.appendChild(tag);
+      }
+
+      if (file_option) {
+        localStorage.setItem('last_script', file_option);
       }
 
       let last_script = localStorage.getItem('last_script');
@@ -102,7 +110,7 @@
         include = document.getElementById('include');
 
         replace_script(include, file.split('?')[0]);
-        location.reload();
+        window.location = window.location.href.split('?')[0];
         include = document.getElementById('include');
         picks = document.getElementById('picks');
         picks.value = include.getAttribute('src').split('?')[0];
@@ -112,7 +120,7 @@
 
       window.addEventListener('unload', (e) => {
         file = document.getElementById('picks').value;
-        localStorage.setItem('last_script', `${file}`);
+        localStorage.setItem('last_script', file);
       });
     </script>
   </body>

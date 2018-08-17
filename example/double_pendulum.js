@@ -25,6 +25,27 @@ const [L_1, L_2] = [100, 80];
   angles, masses, distances from the origin, etc.
 */
 
+let [ϑ_1, ϑ_2] = [-Math.PI, Math.PI + 0.2];
+let [ω_1, ω_2] = [0, 0];
+
+const α_1 = () => (
+  -G * (2 * m_1 + m_2) *
+  sin(ϑ_1) - m_2 * G *
+  sin(ϑ_1 - 2 * ϑ_2) - 2 * sin(ϑ_1 - ϑ_2) * m_2 *
+  (ω_2 * ω_2 * L_2 + ω_1 * ω_1 * L_1 * cos(ϑ_1 - ϑ_2))
+) / (L_1 * (2 * m_1 + m_2 - m_2 * cos(2 * ϑ_1 - 2 * ϑ_2)));
+
+const α_2 = () => (
+  2 * sin(ϑ_1 - ϑ_2) *
+  (ω_1 * ω_1 * L_1 * (m_1 + m_2) +
+  G * (m_1 + m_2) * cos(ϑ_1) +
+  ω_2 * ω_2 * L_2 * m_2 * cos(ϑ_1 - ϑ_2))
+) / (L_2 * (2 * m_1 + m_2 - m_2 * cos(2 * ϑ_1 - 2 * ϑ_2)));
+
+const sketch = canvas(document.getElementById('sketch'));
+[sketch.width, sketch.height] = [400, 400];
+sketch.translate(sketch.width / 2, sketch.height / 3);
+
 // Add some equations to the page:
 document.body.html`
   <p id="equ">
@@ -48,30 +69,9 @@ css`
     left: 50%;
     transform: translate(-50%, -50%);
     padding-bottom: 40px;
-    margin-top: 30%;
+    margin-top: ${sketch.height}px;
   }
 `;
-
-let [ϑ_1, ϑ_2] = [-Math.PI, Math.PI + 0.2];
-let [ω_1, ω_2] = [0, 0];
-
-const α_1 = () => (
-  -G * (2 * m_1 + m_2) *
-  sin(ϑ_1) - m_2 * G *
-  sin(ϑ_1 - 2 * ϑ_2) - 2 * sin(ϑ_1 - ϑ_2) * m_2 *
-  (ω_2 * ω_2 * L_2 + ω_1 * ω_1 * L_1 * cos(ϑ_1 - ϑ_2))
-) / (L_1 * (2 * m_1 + m_2 - m_2 * cos(2 * ϑ_1 - 2 * ϑ_2)));
-
-const α_2 = () => (
-  2 * sin(ϑ_1 - ϑ_2) *
-  (ω_1 * ω_1 * L_1 * (m_1 + m_2) +
-  G * (m_1 + m_2) * cos(ϑ_1) +
-  ω_2 * ω_2 * L_2 * m_2 * cos(ϑ_1 - ϑ_2))
-) / (L_2 * (2 * m_1 + m_2 - m_2 * cos(2 * ϑ_1 - 2 * ϑ_2)));
-
-const sketch = canvas(document.getElementById('sketch'));
-[sketch.width, sketch.height] = [400, 400];
-sketch.translate(sketch.width / 2, sketch.height / 3);
 
 const BG = HEX('#dfcbeb');
 sketch.fill = HEX('#000000aa');
