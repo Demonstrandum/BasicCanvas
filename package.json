@@ -25,7 +25,8 @@
     "url": "https://github.com/Demonstrandum/BasicCanvas/issues"
   },
   "license": "GPL-2.0",
-  "dependencies": {},
+  "dependencies": {
+  },
   "scripts": {
     "test": "xo"
   },
@@ -47,7 +48,9 @@
       "func-name-matching": "off",
       "func-names": "off",
       "no-use-extend-native/no-use-extend-native": "off",
-      "no-extend-native": "off"
+      "no-extend-native": "off",
+      "no-unused-expressions": "off",
+      "unicorn/escape-case": "off"
     }
   }
 }

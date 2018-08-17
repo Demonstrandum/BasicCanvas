@@ -1,4 +1,4 @@
-import {canvas, Point, HEX, HSLA} from '../lib/BasicCanvas.js';
+import {canvas, css, Point, HEX, HSLA} from '../lib/BasicCanvas.js';
 import {ellipse, line} from '../lib/BasicShapes.js';
 
 const [sin, cos] = [Math.sin, Math.cos];  // Since we're using them so often.
@@ -24,6 +24,34 @@ const [L_1, L_2] = [100, 80];
   where α(t) actually, in this simulation, relies on the current:
   angles, masses, distances from the origin, etc.
 */
+
+// Add some equations to the page:
+document.body.html`
+  <p id="equ">
+    \begin{align}
+      \alpha &= \frac{d^2\theta}{dt^2}\textrm{ / rad s$^{-2}$} \\
+      \omega &= \frac{d\theta}{dt}\textrm{ / rad s$^{-1}$ } \\
+      \theta &= \textrm{angular displacement}\textrm{ / rad} \\
+    \end{align}
+    <br/>
+    \begin{align}
+      \alpha_1 &= \frac{-g(2m_1 + m_2)\sin \theta_1 - m_2 g \sin(\theta_1 - 2\theta_2) - 2\sin(\theta_1 - \theta_2)m_2({\omega_2}^2L_2+{\omega_1}^2L_1\cos(\theta_1 - \theta_2))}{L_1(2m_1 + m_2 - m_2 \cos(2\theta_1 - 2\theta_2))}
+      \\\\
+      \alpha_2 &= \frac{2\sin(\theta_1 - \theta_2)({\omega_1}^2L_1(m_1+m_2)+g(m_1+m_2)\cos\theta_1 + {\omega_2}^2L_2m_2\cos(\theta_1 - \theta_2))}{L_1(2m_1 + m_2 - m_2 \cos(2\theta_1 - 2\theta_2))}
+    \end{align}
+  </p>
+`;
+css`
+  #equ {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding-bottom: 40px;
+    margin-top: 30%;
+  }
+`;
+
 let [ϑ_1, ϑ_2] = [-Math.PI, Math.PI + 0.2];
 let [ω_1, ω_2] = [0, 0];
 
