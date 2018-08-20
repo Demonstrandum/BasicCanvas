@@ -25,8 +25,8 @@ const [L_1, L_2] = [100, 80];
   angles, masses, distances from the origin, etc.
 */
 
-let [ϑ_1, ϑ_2] = [-Math.PI, Math.PI + 0.2];
-let [ω_1, ω_2] = [0, 0];
+let [ϑ_1, ϑ_2] = [Math.PI, Math.PI + 0.2].map(e => e + Math.random() - 0.5);
+let [ω_1, ω_2] = [0.04, 0];
 
 const α_1 = () => (
   -G * (2 * m_1 + m_2) *

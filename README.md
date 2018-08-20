@@ -1,5 +1,21 @@
 # BasicCanvas
-## Run
+
+## Usage
+jsdelivr CDN:
+- Canvas
+- ```
+https://cdn.jsdelivr.net/gh/Demonstrandum/BasicCanvas/lib/BasicCanvas.js
+```
+- Shapes
+- ```
+https://cdn.jsdelivr.net/gh/Demonstrandum/BasicCanvas/lib/BasicShapes.js
+```
+
+TODO: Instructions on usage, for now look at the example files (and/or source files), still a small project.
+
+## Run Examples
+Example hosted with ▲now: [basic-canvas.now.sh](https://basic-canvas.now.sh/)
+
 First clone:
 ```sh
 git clone https://github.com/Demonstrandum/BasicCanvas.git
@@ -10,9 +26,6 @@ then run with:
 ./server.sh
 ```
 And go to http://localhost:8000/example/ (for an example file, see the index.html code to switch example).
-
-## Usage
-TODO: Instructions on usage, for now look at the example files (and/or source files), still a small project.
 
 ## Example
 Drawing a simple sinusoidal progressive wave:
