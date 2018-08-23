@@ -1,4 +1,5 @@
 {
   "name": "BasicCanvas",
-  "alias" : "basic-canvas"
+  "alias" : "basic-canvas",
+  "type": "docker"
 }
