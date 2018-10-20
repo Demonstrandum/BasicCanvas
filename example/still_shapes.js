@@ -56,7 +56,7 @@ const d = 50;
 for (let r = 0; r < sketch.width / d; r++) {
   for (let c = 0; c < sketch.height / d; c++) {
     if ((r + c) % 2 === 0) {
-      sketch.shape(null, rectangle(BC.Point(r * d, c * d), d, d));
+      sketch.shape(rectangle(BC.Point(r * d, c * d), d, d));
     }
   }
 }
