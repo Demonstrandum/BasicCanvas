@@ -5,7 +5,7 @@ canvas.dimensions(400, 400);
 canvas.translate(canvas.width / 2, canvas.height / 2);
 canvas.scale(10, 10);
 
-canvas.stroke = BC.HEX('#a9f');
+canvas.stroke = BC.HEX`#a9f`;
 canvas.stroke_weight = 20;
 canvas.stroke_cap = 'round';
 canvas.fill = BC.HEX('#fafafa');

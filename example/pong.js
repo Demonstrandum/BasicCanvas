@@ -6,8 +6,8 @@ let rainbow = false;
 
 const sketch = BC.canvas_id('sketch');
 sketch.dimensions(800, 500);
-sketch.fill = BC.Color('white');
-sketch.stroke = BC.Color('transparent');
+sketch.fill = BC.Color`white`;
+sketch.stroke = BC.Color`transparent`;
 
 BC.style(BC.css`
   @font-face {
@@ -143,7 +143,7 @@ setInterval(() => {
 }, 800 / DIFFICULTY);
 
 sketch.loop(frame => {
-  sketch.fill = rainbow ? BC.HSL(frame * 12) : BC.Color('white');
+  sketch.fill = rainbow ? BC.HSL(frame * 12) : BC.Color`white`;
   sketch.background(rainbow ? BC.RGB(0, 30) : BACKGROUND);
 
   poodle.move(follow_ball, bounds);
