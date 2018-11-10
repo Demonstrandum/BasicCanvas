@@ -1,5 +1,5 @@
 # BasicCanvas
-A friendlier to make 2D sketches on the canvas.
+A friendlier way interact with the canvas.
 
 ## Usage
 jsdelivr CDN (use this to import):
