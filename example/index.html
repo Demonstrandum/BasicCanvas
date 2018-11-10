@@ -20,8 +20,17 @@
         left: 50%;
         transform: translate(-50%, -50%);
         border-radius: 5px;
-        border: 1px solid rgba(0, 0, 0, 0.2);
-        filter: drop-shadow(0 5px 10px rgba(0, 0, 0, 0.2));
+        border: 1px solid rgba(0, 0, 0, 0.6);
+        box-shadow: 0 5px 15px rgba(0,0,0, 0.4);
+
+        /* Don't use drop shadow. Every frame redraw
+         * the shadow, 60 times a second, if you use
+         * `drop-shadow`, causing like 23ms of time to be
+         * wasted on what the dev-tool call 'composite layers'.
+         * `box-shadow` above works without re-drawing itself,
+         * use that instead.
+         */
+        /*filter: drop-shadow(0 5px 10px rgba(0, 0, 0, 0.2));*/
       }
 
       #picks {
