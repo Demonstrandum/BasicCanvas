@@ -4,11 +4,11 @@
 jsdelivr CDN (use this to import):
 - Canvas
   ```
-  https://cdn.jsdelivr.net/gh/Demonstrandum/BasicCanvas@v1.0.1/lib/BasicCanvas.js
+  https://cdn.jsdelivr.net/gh/Demonstrandum/BasicCanvas@v1.0.2/lib/BasicCanvas.js
   ```
 - Shapes
   ```
-  https://cdn.jsdelivr.net/gh/Demonstrandum/BasicCanvas@v1.0.1/lib/BasicShapes.js
+  https://cdn.jsdelivr.net/gh/Demonstrandum/BasicCanvas@v1.0.2/lib/BasicShapes.js
   ```
 
 TODO: Instructions on usage, for now look at the example files (and/or source files), still a small project.
