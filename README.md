@@ -28,7 +28,11 @@ then run with:
 ```
 And go to http://localhost:8000/example/ (for an example file, see the index.html code to switch example).
 
-## Example
+## Try Yourself
+Check out the CodePen: https://codepen.io/wernstrom/project/editor/DKzVaY
+Explore the library by making small modifications to the CodePen and/or rewriting it to do something new.
+
+### Quick Example
 Drawing a simple sinusoidal progressive wave:
 ```js
 import * as BC from 'https://cdn.jsdelivr.net/gh/Demonstrandum/BasicCanvas@v1.0.3/lib/BasicCanvas.js';
