@@ -9,7 +9,7 @@ sketch.dimensions(400, 400);
 sketch.translate(200, 200);
 sketch.scale(30, -30);
 
-sketch.fill = RGBA(0, 20);
+sketch.fill = Color`transparent`;
 sketch.stroke = Color`black`;
 
 const gaussian = (mean = 0, σ = 1) => {
@@ -29,7 +29,8 @@ sketch.loop(() => {
   sketch.temp(() => {
     for (const x of points) {
       sketch.stroke_weight = 0;
-      sketch.shape(ellipse(P(x, 0), 0.15, r));
+      const dot = sketch.shape(ellipse(P(x, 0), 0.15, r));
+      dot.fill(RGBA(0, 20));
     }
   });
 

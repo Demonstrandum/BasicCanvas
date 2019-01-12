@@ -16,9 +16,9 @@ sketch.fill = 'transparent';
 sketch.stroke = HEX`#fff`;
 sketch.stroke_weight = 2;
 
-const SPEED = 0.7;
+const SPEED = 0.3;
 const STEP = 2;    // 1:SAWTOOTH; 2:SQUARE, 3+:FUNKY
-const DEPTH = STEP * 7;
+const DEPTH = STEP * 10;
 const radius = 120;
 const bar = radius * (
   [...new Array(DEPTH).keys()]
@@ -56,7 +56,7 @@ sketch.loop(frame => {
   sketch.render(line(outer, end));
   sketch.render(ellipse(end, 2, 2, '#fff'));
 
-  if (trail.length > 400) {
+  if (trail.length > 120 * SPEED * DEPTH) {
     trail.pop();
   }
   trail.unshift(outer.y);
@@ -70,14 +70,14 @@ sketch.loop(frame => {
   });
 
   sketch.stroke_cap = 'butt';
-  if (outline.length > 255) {
+  if (outline.length > 80 * SPEED * DEPTH) {
     outline.shift();
   }
   outline.push(outer);
   sketch.render(shape => {
     let i = 0;
     for (const p of outline) {
-      sketch.stroke = RGBA(255, i);
+      sketch.stroke = RGBA(255, i * 255 / outline.length);
       shape.vertex(p);
       i += 1;
     }
