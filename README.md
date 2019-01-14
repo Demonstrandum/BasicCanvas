@@ -32,24 +32,32 @@ then run with:
 ```
 And go to http://localhost:8000/example/ (for an example file, see the index.html code to switch example).
 
-## Example
+## Try Yourself
+Check out the CodePen: https://codepen.io/wernstrom/project/editor/DKzVaY
+Explore the library by making small modifications to the CodePen and/or rewriting it to do something new.
+
+### Quick Example
 Drawing a simple sinusoidal progressive wave:
 ```js
-import * as BC from '../lib/BasicCanvas.js';
-// Make sure you get the path correct. (You need a web server running for imports to work...)
+import * as BC from 'https://cdn.jsdelivr.net/gh/Demonstrandum/BasicCanvas@v1.0.3/lib/BasicCanvas.js';
+// If running this locally, you need a server running for `import`s to work, (for now).
 
-const sketch = BC.canvas_id('sketch'); // Gets canvas with id="sketch".
-sketch.dimensions(400, 400); // Width x Height, canvas size.
+use(BC)  // To avoid having to write `BC.` all the time.
+         // (Be ware of collisions)
 
-sketch.stroke = BC.RGB(0); // Same as BC.RGB(0, 0, 0).
+const sketch = canvas_id('sketch'); // Gets canvas with id="sketch".
+sketch.dimensions(400, 400); // width x height, size of the canvas.
+
+sketch.stroke = RGB(0); // Same as BC.RGBA(0, 0, 0, 255).
 sketch.stroke_weight = 8; // 8px wide.
 sketch.stroke_cap = 'round';
 
-sketch.loop(frame => {
-  sketch.background(BC.RGB(255, 255, 110)); // Redraw background each frame.
+const BG = RGB(255, 255, 110);
+sketch.loop(frame => {  // `frame` is an integer, starts at 0 and increments for every frame drawn.
+  sketch.background(BG); // Redraw background each frame.
 
-  sketch.shape('sine', shape => { // Create new shape: name, construction of shape callback
-    for (let x = 0; x < 3 * Math.PI; x += 0.2) { // Sine curve at this frame
+  sketch.shape('sine', shape => { // Create new shape, `shape(name, construction of shape callback)`
+    for (let x = 0; x < 3 * Math.PI; x += 0.2) { // Draw sine curve for this frame, next frame will be different
       shape.vertex(BC.Point(32 * x + 50, 32 * Math.sin(x + frame / 10) + 200));
     }
   });
