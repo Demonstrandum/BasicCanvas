@@ -39,18 +39,18 @@ const generate = () => {
   offset += buffer.length;
 };
 
-generate();
-// setInterval(generate, sample_duration * 1000);
-
 setInterval(() => {
   s.background('#000');
   s.render(grid(20, 'night'));
 
-  const freq = new Uint8Array(analyser.fttSize);
+  const freq = new Uint8Array(1000);
   analyser.getByteFrequencyData(freq);
 
   const amp = freq[0];
   console.log(freq);
 
   s.render(line(P(0, amp), P(6, amp)));
-}, 1000);
+}, 600);
+
+generate();
+setInterval(generate, sample_duration * 1000);

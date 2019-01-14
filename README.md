@@ -5,17 +5,21 @@ A friendlier way interact with the canvas.
 jsdelivr CDN (use this to import):
 - Canvas
   ```
-  https://cdn.jsdelivr.net/gh/Demonstrandum/BasicCanvas@v1.0.3/lib/BasicCanvas.js
+  https://cdn.jsdelivr.net/gh/Demonstrandum/BasicCanvas@v1.0.5/lib/BasicCanvas.js
   ```
 - Shapes
   ```
-  https://cdn.jsdelivr.net/gh/Demonstrandum/BasicCanvas@v1.0.3/lib/BasicShapes.js
+  https://cdn.jsdelivr.net/gh/Demonstrandum/BasicCanvas@v1.0.5/lib/BasicShapes.js
   ```
 
 TODO: Instructions on usage, for now look at the example files (and/or source files), still a small project.
 
 ## Run Examples
 Example hosted with ▲now: [canvas.knutsen.co](https://canvas.knutsen.co/example/)
+
+To run unlisted examples, or run specific examples by a specifc URL, simply go to:
+- [canvas.knutsen.co/example/?](https://canvas.knutsen.co/example/?) + _name of the js file_
+- e.g. [canvas.knutsen.co/example/?music.js](https://canvas.knutsen.co/example/?music.js)
 
 First clone:
 ```sh
