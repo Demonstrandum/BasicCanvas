@@ -34,7 +34,7 @@ const draw = () => {
   sketch.background(HEX`#000`, true);
   sketch.shape(grid(10, 'night'));
 
-  let [min, max] = [Infinity, -Infinity];
+  let [min, max] = [0, 0];
   for (let {y} = CORNER; y >= -CORNER.y; y--) {
     for (let {x} = CORNER; x <= -CORNER.x; x++) {
       const size = v(x, y).size();
@@ -46,8 +46,6 @@ const draw = () => {
       }
     }
   }
-
-  console.log(`max: ${max}, min ${min}`);
 
   for (let {y} = CORNER; y >= -CORNER.y; y--) {
     for (let {x} = CORNER; x <= -CORNER.x; x++) {
