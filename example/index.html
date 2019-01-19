@@ -4,7 +4,9 @@
     <meta charset="utf-8">
     <title>BasicCanvas</title>
 
-    <style media="screen">
+    <style>
+      @import url("https://fontlibrary.org/face/cmu-serif");
+
       body {
         margin: 0;
         padding: 0;
@@ -50,6 +52,7 @@
         ["Typeset", MathJax.Hub]
       );
     </script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/2.4.0/math.js" charset="utf-8"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML" async></script>
   </head>
   <body>
@@ -60,7 +63,7 @@
     <select id="picks" onchange="load()">
       <option value="chords.js">chords.js</option>
       <option value="orthographic.js">orthographic.js</option>
-      <option value="coin.js">coin.js</option>
+      <option value="vector_plot.js">vector_plot.js</option>
       <option value="sinusoidal.js">sinusoidal.js</option>
       <option value="still_shapes.js">still_shapes.js</option>
       <option value="night_sky.js">night_sky.js</option>

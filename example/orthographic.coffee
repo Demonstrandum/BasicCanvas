@@ -1,11 +1,10 @@
 import {canvas_id, P, Polar, HEX} from '../lib/BasicCanvas.js'
 
-SIZE = 15
-SIDES = 16
-HEIGHT = 70
-SPEED = 1
+SIZE   = 15  # n×n grid.
+SIDES  = 16  # Pixel length of sides  of each column.
+HEIGHT = 70  # Pixel length of height of each column.
+SPEED  =  1  # Relative speed of oscilations in heigt of a column.
 
-SQRT_2 = Math.sqrt 2
 SQRT_3 = Math.sqrt 3
 
 sketch = canvas_id 'sketch'
@@ -14,7 +13,7 @@ sketch.dimensions 500, 500
 sketch.translate sketch.width/2, sketch.height/2 + 10
 sketch.fill = sketch.stroke = 'transparent'
 
-PALLET = {
+PALLETE = {
   left:  HEX 0x415484
   right: HEX 0xe6e2b1
   top:   HEX 0x87b9b4
@@ -25,13 +24,13 @@ Point.go = Point.add
 
 NORTH_EAST = Polar SIDES, -1*Math.PI/6
 NORTH_WEST = Polar SIDES, -5*Math.PI/6
-SOUTH_EAST = Polar SIDES,  5*Math.PI/6
+SOUTH_WEST = Polar SIDES,  5*Math.PI/6
 
 column = (point, height) ->
-  p0 = point.add(P 0, -height/2)
+  p0 = point.add P 0, -height/2
   p1 = p0.go NORTH_EAST
   p2 = p1.go NORTH_WEST
-  p3 = p2.go SOUTH_EAST
+  p3 = p2.go SOUTH_WEST
   # Top face
   top = sketch.render (sub) ->
     sub.vertex p0
@@ -39,9 +38,9 @@ column = (point, height) ->
     sub.vertex p2
     sub.vertex p3
     sub.vertex p0
-  top.fill PALLET.top
+  top.fill PALLETE.top
 
-  q0 = p0.add(P 0, height)
+  q0 = p0.add P 0, height
   q1 = q0.go NORTH_EAST
   # Right face
   right = sketch.render (sub) ->
@@ -50,7 +49,7 @@ column = (point, height) ->
     sub.vertex q1
     sub.vertex p1
     sub.vertex p0
-  right.fill PALLET.right
+  right.fill PALLETE.right
 
   q2 = q0.go NORTH_WEST
   # Left face
@@ -60,7 +59,7 @@ column = (point, height) ->
     sub.vertex q2
     sub.vertex p3
     sub.vertex p0
-  left.fill PALLET.left
+  left.fill PALLETE.left
 
 
 isometric = (x, y) ->
