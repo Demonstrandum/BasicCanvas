@@ -20,13 +20,15 @@ const time_from = offset => {
   const utc   = date.getTime() + (date.getTimezoneOffset() * 60000);
   const other = new Date(utc + (3600000 * offset));
 
-  return other.toTimeString().split(':').slice(0, 3).map(parseFloat);
+  const times = other.toTimeString().split(':').slice(0, 3).map(parseFloat);
+  times.push(other.getTime());
+  return times;
 };
 const SEC_OFF = time_from(0)[2] * Math.TAU / 60 - Math.PI / 2;
 
 // Make second canvas with some standard JS:
 const lonDOM = document.getElementById('sketch');
-const newDOM   = lonDOM.cloneNode(true);
+const newDOM = lonDOM.cloneNode(true);
 document.body.appendChild(newDOM);
 
 [lonDOM.id, newDOM.id] = ['london', 'ny'];
@@ -68,12 +70,12 @@ for (const clock of [london, ny]) {
       }
     }
 
-    const [hour, min, sec] = time_from(TIME_ZONES[clock.zone]);
+    const [hour, min, sec, milli] = time_from(TIME_ZONES[clock.zone]);
 
     const HOUR_OFF = SIXTH_PI     * min / 60 - Math.PI / 2;
     const MIN_OFF  = THIRTIETH_PI * sec / 60 - Math.PI / 2;
 
-    const sec_hand  = Polar(r -  0, (Math.TAU / 3600) * (frame % 3600) + SEC_OFF);
+    const sec_hand  = Polar(r -  0, (THIRTIETH_PI / 1000) * (milli % 60000) + SEC_OFF);
     const hour_hand = Polar(r - 60, SIXTH_PI     * (hour % 12) + HOUR_OFF);
     const min_hand  = Polar(r - 20, THIRTIETH_PI * (min  % 60) + MIN_OFF);
 

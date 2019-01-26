@@ -4,8 +4,6 @@ const sketch = BC.canvas_id('sketch');
 sketch.FPS = 60;
 sketch.dimensions(400, 400);
 
-console.log(sketch._interval);
-
 sketch.stroke = BC.RGBA(0, 20);
 sketch.stroke_weight = 1;
 sketch.stroke_cap = 'butt';
