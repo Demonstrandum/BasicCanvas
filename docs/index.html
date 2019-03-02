@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <base data-ice="baseUrl">
+  <title data-ice="title">Home | basiccanvas</title>
+  <link type="text/css" rel="stylesheet" href="css/style.css">
+  <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
+  <script src="script/prettify/prettify.js"></script>
+  <script src="script/manual.js"></script>
+<meta name="description" content="Simple JavaScript canvas abstractions."><meta property="twitter:card" content="summary"><meta property="twitter:title" content="basiccanvas"><meta property="twitter:description" content="Simple JavaScript canvas abstractions."></head>
+<body class="layout-container" data-ice="rootContainer">
+
+<header>
+  <a href="./">Home</a>
+  
+  <a href="identifiers.html">Reference</a>
+  <a href="source.html">Source</a>
+  
+  <div class="search-box">
+  <span>
+    <img src="./image/search.png">
+    <span class="search-input-edge"></span><input class="search-input"><span class="search-input-edge"></span>
+  </span>
+    <ul class="search-result"></ul>
+  </div>
+<a style="position:relative; top:3px;" href="https://github.com/Demonstrandum/BasicCanvas.git"><img width="20px" src="./image/github.png"></a></header>
+
+<nav class="navigation" data-ice="nav"><div>
+  <ul>
+    
+  <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Color">Color</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-HEX">HEX</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-HSL">HSL</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-HSV">HSV</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Point">Point</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Polar">Polar</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-canvas">canvas</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-canvas_id">canvas_id</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-canvas_new">canvas_new</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-click">click</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-clone">clone</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-css">css</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-key_down">key_down</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-key_press">key_press</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-key_up">key_up</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-load_font">load_font</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-mouse_down">mouse_down</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-mouse_up">mouse_up</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-plain">plain</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-style">style</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-type">type</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-id">id</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-input">input</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-text">text</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-arrow">arrow</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-ellipse">ellipse</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-grid">grid</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-line">line</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-polar_line">polar_line</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-polygon">polygon</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-rectangle">rectangle</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-star">star</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-vector">vector</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-Colour">Colour</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-HSLA">HSLA</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-HSVA">HSVA</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-P">P</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-RGB">RGB</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-RGBA">RGBA</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-use">use</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-id_map">id_map</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-object_count">object_count</a></span></span></li>
+</ul>
+</div>
+</nav>
+
+<div class="content" data-ice="content"><div data-ice="index" class="github-markdown"><h1 id="basiccanvas">BasicCanvas</h1><p>A friendlier way interact with the canvas.</p>
+<h2 id="usage">Usage</h2><p>jsdelivr CDN (use this to import):</p>
+<ul>
+<li>Canvas<pre><code><code class="source-code prettyprint">https://cdn.jsdelivr.net/gh/Demonstrandum/BasicCanvas@v1.0.6/lib/BasicCanvas.js</code>
+</code></pre></li>
+<li>Shapes<pre><code><code class="source-code prettyprint">https://cdn.jsdelivr.net/gh/Demonstrandum/BasicCanvas@v1.0.6/lib/BasicShapes.js</code>
+</code></pre></li>
+<li>DOM<pre><code><code class="source-code prettyprint">https://cdn.jsdelivr.net/gh/Demonstrandum/BasicCanvas@v1.0.6/lib/BasicDOM.js</code>
+</code></pre></li>
+</ul>
+<p>TODO: Instructions on usage, for now look at the example files (and/or source files), still a small project.</p>
+<h2 id="run-examples">Run Examples</h2><p>Example hosted with &#x25B2;now: <a href="https://canvas.knutsen.co/example/">canvas.knutsen.co</a></p>
+<p>To run unlisted examples, or run specific examples by a specifc URL, simply go to:</p>
+<ul>
+<li><a href="https://canvas.knutsen.co/example/?">canvas.knutsen.co/example/?</a> + <em>name of the js file</em></li>
+<li>e.g. <a href="https://canvas.knutsen.co/example/?music.js">canvas.knutsen.co/example/?music.js</a></li>
+</ul>
+<p>First clone:</p>
+<pre><code class="lang-sh"><code class="source-code prettyprint">git clone https://github.com/Demonstrandum/BasicCanvas.git
+cd BasicCanvas</code>
+</code></pre>
+<p>then run with:</p>
+<pre><code class="lang-sh"><code class="source-code prettyprint">./server.sh</code>
+</code></pre>
+<p>And go to <a href="http://localhost:8000/example/">http://localhost:8000/example/</a> (for an example file, see the index.html code to switch example).</p>
+<h2 id="try-yourself">Try Yourself</h2><p>Check out the CodePen: <a href="https://codepen.io/wernstrom/project/editor/DKzVaY">https://codepen.io/wernstrom/project/editor/DKzVaY</a>
+Explore the library by making small modifications to the CodePen and/or rewriting it to do something new.</p>
+<h3 id="quick-example">Quick Example</h3><p>Drawing a simple sinusoidal progressive wave:</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">import * as BC from &apos;https://cdn.jsdelivr.net/gh/Demonstrandum/BasicCanvas@v1.0.3/lib/BasicCanvas.js&apos;;
+// If running this locally, you need a server running for `import`s to work, (for now).
+
+use(BC)  // To avoid having to write `BC.` all the time.
+         // (Be ware of collisions)
+
+const sketch = canvas_id(&apos;sketch&apos;); // Gets canvas with id=&quot;sketch&quot;.
+sketch.dimensions(400, 400); // width x height, size of the canvas.
+
+sketch.stroke = RGB(0); // Same as BC.RGBA(0, 0, 0, 255).
+sketch.stroke_weight = 8; // 8px wide.
+sketch.stroke_cap = &apos;round&apos;;
+
+const BG = RGB(255, 255, 110);
+sketch.loop(frame =&gt; {  // `frame` is an integer, starts at 0 and increments for every frame drawn.
+  sketch.background(BG); // Redraw background each frame.
+
+  sketch.shape(&apos;sine&apos;, shape =&gt; { // Create new shape, `shape(name, construction of shape callback)`
+    for (let x = 0; x &lt; 3 * Math.PI; x += 0.2) { // Draw sine curve for this frame, next frame will be different
+      shape.vertex(BC.Point(32 * x + 50, 32 * Math.sin(x + frame / 10) + 200));
+    }
+  });
+});</code>
+</code></pre>
+<p>Make sure the relative path to the BasicCanvas.js file is correct.</p>
+<p>If the above file is called something like <code>sine_wave.js</code> then the <code>index.html</code> file (in the same folder) should look something like:</p>
+<pre><code class="lang-html"><code class="source-code prettyprint">&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot; dir=&quot;ltr&quot;&gt;
+  &lt;head&gt;
+    &lt;meta charset=&quot;utf-8&quot;&gt;
+    &lt;title&gt;Simple Sinusoidal Wave&lt;/title&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;canvas id=&quot;sketch&quot;&gt;&lt;/canvas&gt;
+    &lt;script src=&quot;sine_wave.js&quot; type=&quot;module&quot; charset=&quot;utf-8&quot;&gt;&lt;/script&gt;
+  &lt;/body&gt;
+&lt;/html&gt;</code>
+</code></pre>
+<p>Or, you could use the <code>your_example.js</code> file found in the example/ folder of the repo.</p>
+</div>
+</div>
+
+<footer class="footer">
+  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(1.1.0)</span><img src="./image/esdoc-logo-mini-black.png"></a>
+</footer>
+
+<script src="script/search_index.js"></script>
+<script src="script/search.js"></script>
+<script src="script/pretty-print.js"></script>
+<script src="script/inherited-summary.js"></script>
+<script src="script/test-summary.js"></script>
+<script src="script/inner-link.js"></script>
+<script src="script/patch-for-local.js"></script>
+</body>
+</html>
