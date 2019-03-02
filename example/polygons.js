@@ -8,7 +8,6 @@ canvas.dimensions(400, 400);
 canvas.translate(canvas.width / 2, canvas.height / 2);
 canvas.scale(40, 40);
 
-canvas.fill = BC.HEX('#ccc');
 canvas.stroke = BC.HEX('#111');
 canvas.font = '12px monospace';
 

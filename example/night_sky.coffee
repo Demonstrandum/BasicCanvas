@@ -18,14 +18,15 @@ sketch.loop (frame) ->
   alpha = 0
   for location in stars
     size = alpha / 40
-    shape = sketch.render star location, 4, 5 + size, 5
-    shape.fill RGBA 255, 255, 130, alpha
+    sketch.fill = RGBA 255, 255, 130, alpha
+    sketch.render star location, 4, 5 + size, 5
 
     alpha += 255 / stars.length
 
   if stars.length > 100
     stars.shift()
 
+  sketch.fill = '#fff'
   sketch.font = 'bold 100px Georgia'
   sketch.text 'Heilige', P 71, 148
   sketch.text 'Nacht', P 60, 230
