@@ -3,6 +3,8 @@
   "alias" : "canvas.knutsen.co",
   "version": 2,
   "builds": [
+    { "src": "*", "use": "@now/static" },
+    { "src": "lib/*", "use": "@now/static"},
     { "src": "example/*", "use": "@now/static" }
   ]
 }
