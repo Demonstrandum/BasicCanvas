@@ -5,15 +5,15 @@ A friendlier way interact with the canvas.
 jsdelivr CDN (use this to import):
 - Canvas
   ```
-  https://cdn.jsdelivr.net/gh/Demonstrandum/BasicCanvas@v1.0.6/lib/BasicCanvas.js
+  https://cdn.jsdelivr.net/gh/Demonstrandum/BasicCanvas@v1.0.8/lib/BasicCanvas.js
   ```
 - Shapes
   ```
-  https://cdn.jsdelivr.net/gh/Demonstrandum/BasicCanvas@v1.0.6/lib/BasicShapes.js
+  https://cdn.jsdelivr.net/gh/Demonstrandum/BasicCanvas@v1.0.8/lib/BasicShapes.js
   ```
 - DOM
   ```
-  https://cdn.jsdelivr.net/gh/Demonstrandum/BasicCanvas@v1.0.6/lib/BasicDOM.js
+  https://cdn.jsdelivr.net/gh/Demonstrandum/BasicCanvas@v1.0.8/lib/BasicDOM.js
   ```
 
 TODO: Instructions on usage, for now look at the example files (and/or source files), still a small project.
