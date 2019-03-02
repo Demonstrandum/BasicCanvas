@@ -1,6 +1,8 @@
 {
   "name": "BasicCanvas",
   "alias" : "canvas.knutsen.co",
-  "version": 2,
-  "builds": [{ "src": "*.py", "use": "@now/python"}]
+  "type": "docker",
+  "features": {
+    "cloud": "v2"
+  }
 }
