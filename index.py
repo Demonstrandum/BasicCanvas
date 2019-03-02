@@ -7,5 +7,5 @@ Handler = http.server.SimpleHTTPRequestHandler
 
 class handler(Handler):
     def do_GET(self):
-        httpd = socketserver.TCPServer(("", 8000), Handler)
-        httpd.server_forever()
+        httpd = socketserver.TCPServer(("", 46500), Handler)
+        httpd.serve_forever()
