@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <base data-ice="baseUrl" href="../../">
+  <title data-ice="title">lib/BasicCanvas.js | basiccanvas</title>
+  <link type="text/css" rel="stylesheet" href="css/style.css">
+  <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
+  <script src="script/prettify/prettify.js"></script>
+  <script src="script/manual.js"></script>
+<meta name="description" content="Simple JavaScript canvas abstractions."><meta property="twitter:card" content="summary"><meta property="twitter:title" content="basiccanvas"><meta property="twitter:description" content="Simple JavaScript canvas abstractions."></head>
+<body class="layout-container" data-ice="rootContainer">
+
+<header>
+  <a href="./">Home</a>
+  
+  <a href="identifiers.html">Reference</a>
+  <a href="source.html">Source</a>
+  
+  <div class="search-box">
+  <span>
+    <img src="./image/search.png">
+    <span class="search-input-edge"></span><input class="search-input"><span class="search-input-edge"></span>
+  </span>
+    <ul class="search-result"></ul>
+  </div>
+<a style="position:relative; top:3px;" href="https://github.com/Demonstrandum/BasicCanvas.git"><img width="20px" src="./image/github.png"></a></header>
+
+<nav class="navigation" data-ice="nav"><div>
+  <ul>
+    
+  <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Color">Color</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-HEX">HEX</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-HSL">HSL</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-HSV">HSV</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Point">Point</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Polar">Polar</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-canvas">canvas</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-canvas_id">canvas_id</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-canvas_new">canvas_new</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-click">click</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-clone">clone</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-css">css</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-key_down">key_down</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-key_press">key_press</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-key_up">key_up</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-load_font">load_font</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-mouse_down">mouse_down</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-mouse_up">mouse_up</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-plain">plain</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-style">style</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-type">type</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-id">id</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-input">input</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-text">text</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-arrow">arrow</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-ellipse">ellipse</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-grid">grid</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-line">line</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-polar_line">polar_line</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-polygon">polygon</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-rectangle">rectangle</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-star">star</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-vector">vector</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-Colour">Colour</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-HSLA">HSLA</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-HSVA">HSVA</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-P">P</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-RGB">RGB</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-RGBA">RGBA</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-use">use</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-id_map">id_map</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-object_count">object_count</a></span></span></li>
+</ul>
+</div>
+</nav>
+
+<div class="content" data-ice="content"><h1 data-ice="title">lib/BasicCanvas.js</h1>
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">// Basic semi-related tools.
+export const clone = obj =&gt; Object.assign(Object.create(Object.getPrototypeOf(obj)), obj);
+Object.prototype.clone = function () {
+  return clone(this);
+};
+
+export const type = element =&gt; (
+  ({}).toString.call(element).match(/\s([a-zA-Z]+)/)[1].toLowerCase()
+);
+
+// --&gt; Try to make `use()`, `type()` and `clone()` functions global.
+let _use;
+if (typeof window === &apos;undefined&apos;) {
+  _use = (namespace, global) =&gt; Object.assign(global, namespace);
+} else {
+  _use = (namespace, global = window) =&gt; Object.assign(global, namespace);
+
+  window.use = _use;
+  window.type = type;
+  window.clone = clone;
+}
+
+export const use = _use;
+
+export const load_font = (name, path, description) =&gt; {
+  const font = new FontFace(name, path, description);
+  font.load().then(loaded =&gt; document.fonts.add(loaded));
+  return font;
+};
+
+export const plain = (...args) =&gt; String.raw({raw: args[0]}, ...args.slice(1));
+
+export const style = string =&gt; {
+  const node = document.createElement(&apos;style&apos;);
+  node.innerHTML = string;
+  document.body.appendChild(node);
+};
+
+export const css = (s, ...exps) =&gt; style(plain(s, ...exps));
+
+// Patching and Monkey Patching prototypes.
+Math.TAU = 2 * Math.PI;
+Math.HALF_PI = Math.PI * 0.5;
+Number.prototype.roundTo = function (dp) {
+  return parseFloat((this).toFixed(dp));
+};
+
+Array.prototype.mag = function () {
+  return Math.sqrt(this.reduce((i, j) =&gt; i + j ** 2, 0));
+};
+Array.prototype.norm = function () {
+  if (this.every(e =&gt; e === 0)) {
+    return this;
+  }
+  return this.map(e =&gt; e / this.mag());
+};
+Array.prototype.rotate = function (theta) {
+  return [
+    this[0] * Math.cos(theta) - this[1] * Math.sin(theta),
+    this[0] * Math.sin(theta) + this[1] * Math.cos(theta)
+  ];  // 2D roataion only.
+};
+
+String.prototype.replaceAll = function (search, replacement) {
+  return this.replace(new RegExp(search, &apos;g&apos;), replacement);
+};
+
+HTMLElement.prototype.html = function (s, ...exps) {
+  const contain = document.createElement(&apos;del&apos;);
+  contain.style.textDecoration = &apos;none&apos;;
+  contain.innerHTML = String.raw(s, ...exps);
+  this.appendChild(contain);
+};
+
+HTMLElement.prototype.css = function (properties) {
+  for (const property in properties) {
+    if (Object.prototype.hasOwnProperty.call(properties, property)) {
+      this.style[property] = properties[property];
+    }
+  }
+};
+
+Object.prototype.omap = function (lambda) {
+  return Object.assign({}, ...Object.keys(this).map(k =&gt; ({[k]: lambda(this[k])})));
+};
+
+Object.defineProperty(HTMLElement.prototype, &apos;elem&apos;, {
+  get: function elem() {
+    return this;
+  }
+});
+
+// More interaction-specific tools
+export const click = (handler, canvas = null) =&gt; {
+  if (canvas) {
+    canvas.elem.addEventListener(&apos;click&apos;, handler, false);
+  } else {
+    window.addEventListener(&apos;click&apos;, handler, false);
+  }
+};
+
+export const mouse_down = (handler, canvas = null) =&gt; {
+  if (canvas) {
+    canvas.elem.addEventListener(&apos;mousedown&apos;, handler, false);
+  } else {
+    window.addEventListener(&apos;mousedown&apos;, handler, false);
+  }
+};
+
+export const mouse_up = (handler, canvas = null) =&gt; {
+  if (canvas) {
+    canvas.elem.addEventListener(&apos;mouseup&apos;, handler, false);
+  } else {
+    window.addEventListener(&apos;mouseup&apos;, handler, false);
+  }
+};
+
+export const key_press = handler =&gt; {
+  window.addEventListener(&apos;keypress&apos;, handler, false);
+};
+
+export const key_down = handler =&gt; {
+  window.addEventListener(&apos;keydown&apos;, handler, false);
+};
+
+export const key_up = handler =&gt; {
+  window.addEventListener(&apos;keyup&apos;, handler, false);
+};
+
+// Classes for specific data-types
+class PointObj {
+  constructor(x, y) {
+    this.x = x;
+    this.y = y;
+  }
+
+  get array() {
+    return [this.x, this.y];
+  }
+
+  set array(a) {
+    [this.x, this.y] = a;
+  }
+
+  floor() {
+    return new PointObj(Math.floor(this.x), Math.floor(this.y));
+  }
+
+  norm(other = new PointObj(0, 0)) {
+    return new PointObj(...this.sub(other).array.norm());
+  }
+
+  unit(...args) {
+    return this.norm(...args);
+  }
+
+  sum() {
+    return this.x + this.y;
+  }
+
+  add(other) {
+    return new PointObj(this.x + other.x, this.y + other.y);
+  }
+
+  offset(x, y) {
+    return new PointObj(this.x + x, this.y + y);
+  }
+
+  sub(other) {
+    return new PointObj(this.x - other.x, this.y - other.y);
+  }
+
+  scale(scalar) {
+    return new PointObj(this.x * scalar, this.y * scalar);
+  }
+
+  mul(other) {
+    if (typeof (other) === &apos;number&apos;) {
+      return this.scale(other);
+    }
+    return new PointObj(this.x * other.x, this.y * other.y);
+  }
+
+  dot(other) {
+    const standard = this.mul(other);
+    return standard.sum();
+  }
+
+  div(other) {
+    if (typeof (other) !== &apos;number&apos;) {
+      throw new TypeError(&apos;Can only divide vectors by numerics.&apos;);
+    }
+    return new PointObj(this.x / other, this.y / other);
+  }
+
+  mag(other = new PointObj(0, 0)) {
+    return this.sub(other).array.mag();
+  }
+
+  size(...xs) {
+    return this.mag(...xs);
+  }
+
+  length(...xs) {
+    return this.mag(...xs);
+  }
+
+  modulus(...xs) {
+    return this.mag(...xs);
+  }
+
+  angle(other = new PointObj(0, 0)) {
+    const v = this.sub(other);
+    return Math.atan2(v.y, v.x);
+  }
+
+  phase(...xs) {
+    return this.angle(...xs);
+  }
+
+  toString() {
+    return `(${this.x}, ${this.y})`;
+  }
+
+  valueOf() {
+    return this.toString();
+  }
+}
+class NamedColorObj {
+  constructor(color) {
+    this.color = color;
+  }
+
+  toString() {
+    return this.color;
+  }
+
+  valueOf() {
+    return this.toString();
+  }
+}
+class RGBAObj {
+  constructor(r, g, b, a) {
+    [this.r, this.g, this.b, this.a] = [r, g, b, a].map(Math.round);
+    this.rgba = [this.r, this.g, this.b, this.a];
+    this.rgb = this.rgba.slice(0, -1);
+  }
+
+  toString() {
+    return `rgba(${this.rgb.join(&apos;, &apos;)}, ${this.a / 255})`;
+  }
+
+  valueOf() {
+    return this.toString();
+  }
+}
+
+class HSLObj {
+  constructor(h, s, l, a) {
+    [this.h, this.s, this.l, this.a] = [h, s, l, a].map(Math.round);
+  }
+
+  toString() {
+    return `hsla(${this.h}, ${this.s}%, ${this.l}%, ${this.a / 255})`;
+  }
+
+  valueOf() {
+    return this.toString();
+  }
+}
+
+class HSVObj extends HSLObj {
+  toString() {
+    return `hsva(${this.h}, ${this.s}%, ${this.l}%, ${this.a / 255})`;
+  }
+}
+class HEXobj {
+  constructor(hex) {
+    if (type(hex) === &apos;array&apos;) {
+      this.hex = `#${hex[0].split(&apos;#&apos;).slice(-1)[0]}`;
+      return;
+    }
+    this.hex = (type(hex) === &apos;string&apos;) ?
+      `#${hex.split(&apos;#&apos;).slice(-1)[0]}` :
+      `#${(&apos;000000&apos; + hex.toString(16)).slice(-6)}`;
+  }
+
+  toString() {
+    return this.hex;
+  }
+
+  valueOf() {
+    return this.toString();
+  }
+}
+
+// Construction functions for data-types
+export const Point = (x, y) =&gt; new PointObj(x, y);
+export const Polar = (r, theta, origin = Point(0, 0)) =&gt; Point(
+  r * Math.cos(theta) + origin.x,
+  r * Math.sin(theta) + origin.y
+);
+
+export const [P, point, polar] = [Point, Point, Polar];
+
+export const Color = (r, g = -1, b = -1, a = 255) =&gt; {
+  if (type(r) === &apos;string&apos;) {
+    return new NamedColorObj(r);
+  }
+  if (type(r) === &apos;array&apos;) {
+    return new NamedColorObj(r[0]);
+  }
+  if (b &lt; 0 &amp;&amp; g &gt;= 0) {
+    a = g;
+  }
+  if (b &lt; 0) {
+    [g, b] = [r, r];
+  }
+
+  return new RGBAObj(r, g, b, a);
+};
+export const Colour = Color;
+export const RGBA = Color;
+export const RGB = Color;
+export const HEX = hex =&gt; new HEXobj(hex);
+export const HSL = (h, s = 100, l = 50, a = 255) =&gt; new HSLObj(h, s, l, a);
+export const HSLA = HSL;
+export const HSV = (h, s = 100, v = 100, a = 255) =&gt; new HSVObj(h, s, v, a);
+export const HSVA = HSV;
+
+// Implements and manages every rendered shape seen.
+class Shape {
+  constructor(name, canvas) {
+    this.name = name;
+    this.canvas = canvas;
+    this.primitive = null;
+
+    this.vertices = [];
+    this.center = Point(0, 0);
+  }
+
+  flesh() {
+    this.canvas.context.fill();
+    this.canvas.context.stroke();
+  }
+
+  style(
+    fill = this.canvas.fill,
+    stroke = this.canvas.stroke,
+    stroke_weight = this.canvas.stroke_weight,
+    stroke_cap = this.canvas.stroke_cap
+  ) {
+    if (stroke_weight === 0) {
+      stroke = &apos;transparent&apos;;
+    }
+    const c = this.canvas.context;
+    c.fillStyle = fill.toString();
+    c.strokeStyle = stroke.toString();
+    c.lineWidth = stroke_weight;
+    c.lineCap = stroke_cap;
+    return this;
+  }
+
+  point(point, color = this.canvas.stroke) {
+    return this.canvas.color(point, color);
+  }
+
+  vertex(point, y = null) {
+    if (y !== null) {
+      point = Point(point, y);
+    }
+    if (this.vertices.length === 0) {
+      this.vertices.push([point.x, point.y]);
+      this.center = point;
+      return point;
+    }
+
+    const c = this.canvas.context;
+    c.beginPath();
+    c.moveTo(...this.vertices[this.vertices.length - 1]);
+    const next = [point.x, point.y];
+    c.lineTo(...next);
+    this.style();
+    this.flesh();
+
+    this.vertices.push(next);
+    return point;
+  }
+
+  rect(point, w, h, fill = this.canvas.fill, stroke = this.canvas.stroke) {
+    this.style(fill, stroke);
+    const c = this.canvas.context;
+
+    this.primitive = () =&gt; c.rect(point.x, point.y, w, h);
+    this.primitive();
+    this.flesh();
+  }
+
+  ellipse(point, w, h, fill = this.canvas.fill, stroke = this.canvas.stroke) {
+    this.style(fill, stroke);
+    const c = this.canvas.context;
+
+    this.primitive = () =&gt; c.ellipse(point.x, point.y, w, h, 0, 0, Math.TAU);
+    this.primitive();
+    this.flesh();
+  }
+
+  close() {
+    this.vertex(Point(...this.vertices[0]));
+    return this;
+  }
+
+  fill(color = null) {
+    // TODO: Either redraw all vertices and use built-in fill function,
+    //       or, implement own fill function (see: https://stackoverflow.com/questions/31799038/filling-a-polygon)
+
+    // Secretly redraws all vertices,
+    //   SLOW and BAD, SAD! (tbh, prolly faster than whatever I&apos;d write)
+    let temp_color = color;
+    if (temp_color === null) {
+      temp_color = this.canvas.fill;
+    }
+
+    if (this.primitive === null) {
+      const c = this.canvas.context;
+      c.moveTo(...this.vertices[0]);
+      for (const vertex of this.vertices.slice(1)) {
+        c.lineTo(...vertex);
+      }
+    } else {
+      this.primitive();
+    }
+
+    this.style(temp_color);
+    this.flesh();
+  }
+}
+
+// Main Canvas class:
+// --&gt; First point of abstraction away from the standard canvas.
+class Canvas {
+  constructor(elem) {
+    this.elem = elem;
+    this._width = this.elem.width;
+    this._height = this.elem.height;
+
+    // FPS variables.
+    this._now = null;
+    this._&#x394; = null;
+    this._then = Date.now();
+    this._interval = 1000 / 60;
+
+    // Canvas Context.
+    this.context = elem.getContext(&apos;2d&apos;);
+    this.image_data = this.context.getImageData(0, 0, this.width, this.height);
+    this.data = this.image_data.data;
+
+    // Main API properties.
+    this.fill = RGB(255, 255, 255);
+    this.stroke = RGB(0, 0, 0);
+    this._stroke_weight = 1;
+    this.stroke_cap = &apos;butt&apos;;
+    this.font = &apos;16px sans-serif&apos;;
+    this.text_align = &apos;left&apos;;
+    this._mouse_position = Point(NaN, NaN);
+    this._mouse_listen = undefined;
+
+    // Used for co&#xF6;rdinate calculations.
+    this.corner = {x: 0, y: 0};
+    this.stretch = [1, 1];
+
+    // Saved properties of the objects state at a certain time.
+    this.state_stack = [];
+
+    this.shapes = {};  // All shapes displayed on the canvas.
+    this.update = () =&gt; { };  // Lambda for when drawing a frame.
+  }
+
+  get FPS() {
+    return 1000 / this._&#x394;;
+  }
+
+  set FPS(frame_rate) {
+    this._interval = 1000 / frame_rate;
+  }
+
+  get width() {
+    return this._width;
+  }
+
+  get height() {
+    return this._height;
+  }
+
+  set width(w) {
+    this.elem.width = w;
+    this._width = w;
+    this.update_context();
+  }
+
+  set height(h) {
+    this.elem.height = h;
+    this._height = h;
+    this.update_context();
+  }
+
+  get stroke_weight() {
+    return this._stroke_weight / Math.max(...(this.stretch).map(e =&gt; Math.abs(e)));
+  }
+
+  set stroke_weight(w) {
+    if (w === 0) {
+      this.stroke = &apos;transparent&apos;;
+    }
+    this._stroke_weight = w;
+  }
+
+  get mouse() {
+    if (this._mouse_listen === undefined) {
+      this._mouse_listen = this.elem.addEventListener(&apos;mousemove&apos;, evt =&gt; {
+        const rect = this.elem.getBoundingClientRect();
+        this._mouse_position = Point(
+          (evt.clientX - rect.left) / this.stretch[0] + this.corner.x,
+          (evt.clientY - rect.top) / this.stretch[1] + this.corner.y
+        );
+      });
+    }
+    return this._mouse_position;
+  }
+
+  update_context() {
+    this.context = this.elem.getContext(&apos;2d&apos;);
+    this.image_data = this.context.getImageData(0, 0, this.width, this.height);
+    this.data = this.image_data.data;
+  }
+
+  dimensions(w, h) {
+    this.width = w;
+    this.height = h;
+    this.update_context();
+  }
+
+  translate(x, y) {
+    [this.corner.x, this.corner.y] = [-x, -y];
+    this.context.translate(x, y);
+  }
+
+  rotate(theta) {
+    this.context.rotate(theta);
+  }
+
+  scale(x, y = x) {
+    [this.corner.x, this.corner.y] = [this.corner.x / x, this.corner.y / y];
+    this.stretch = [x, y];
+    this.context.scale(x, y);
+  }
+
+  unscale() {
+    this.scale(1 / this.stretch[0], 1 / this.stretch[1]);
+  }
+
+  save() {
+    const keys = Object.keys(this);
+    const saved = {};
+    for (const key of keys) {
+      if (this[key] !== null &amp;&amp; typeof this[key] === &apos;object&apos; &amp;&amp; this[key].constructor === Object) {
+        saved[key] = Object.assign({}, this[key]);
+      } else if (key === &apos;state_stack&apos;) {
+        continue;
+      } else {
+        saved[key] = this[key];
+      }
+    }
+    this.state_stack.push(saved);
+    return this.context.save();
+  }
+
+  restore() {
+    const saved = this.state_stack.pop();
+    for (const key in saved) {
+      if (Object.prototype.hasOwnProperty.call(saved, key)) {
+        this[key] = saved[key];
+      }
+    }
+    return this.context.restore();
+  }
+
+  temp(&#x3BB;) {
+    this.save();
+    &#x3BB;();
+    return this.restore();
+  }
+
+  color(point, other = null) {
+    if (!other) {
+      return Color(...this.context.getImageData(point.x, point.y, 1, 1).data);
+    }
+    this.context.fillStyle = other.toString();
+    this.context.fillRect(
+      point.x, point.y,
+      1 / this.stretch[0], 1 / this.stretch[1]
+    );
+    return other;
+  }
+
+  point(point, color = this.stroke) {
+    return this.color(point, color);
+  }
+
+  shape(name, construction = null) {
+    let [_name, _construction] = [null, null];
+    if (construction === null &amp;&amp; typeof name === &apos;function&apos;) {
+      _construction = name;
+    } else {
+      _construction = construction;
+    }
+    if (name === null || name === undefined || construction === null) {
+      _name = `ImplicitName${Object.keys(this.shapes).length}`;
+    } else {
+      _name = name;
+    }
+
+    this.shapes[_name] = {
+      draw: _construction,
+      shape: new Shape(_name, this)
+    };
+    this.context.beginPath();
+    _construction(this.shapes[_name].shape);
+    this.context.closePath();
+    return this.shapes[_name].shape;
+  }
+
+  render(...args) {
+    return this.shape(...args);
+  }
+
+  text(string, point, font = this.font, fill = this.fill, storke = this.stroke) {
+    const c = this.context;
+
+    c.font = font;
+    c.textAlign = this.text_align;
+    c.fillStyle = fill;
+    c.strokeStyle = storke;
+    c.fillText(string, point.x, point.y);
+    c.strokeText(string, point.x, point.y);
+  }
+
+  background(c = this.fill, clear = false) {
+    if (clear) {
+      this.context.clearRect(
+        this.corner.x,
+        this.corner.y,
+        -this.corner.x + Math.sign(this.stretch[0]) * this.width,
+        -this.corner.y + Math.sign(this.stretch[1]) * this.height
+      );
+    }
+    this.context.fillStyle = c.toString();
+    this.context.fillRect(
+      this.corner.x,
+      this.corner.y,
+      -this.corner.x + Math.sign(this.stretch[0]) * this.width,
+      -this.corner.y + Math.sign(this.stretch[1]) * this.height
+    );
+  }
+
+  update_frame(canvas) {
+    canvas.shapes = {};
+
+    window.requestAnimationFrame(() =&gt; {
+      canvas.update_frame(canvas);
+    });
+
+    canvas._now = Date.now();
+    canvas._&#x394; = canvas._now - canvas._then;
+
+    if (canvas._&#x394; &gt; canvas._interval) {
+      canvas._then = canvas._now - (canvas._&#x394; % canvas._interval);
+      canvas.update(canvas.frame++);
+    }
+  }
+
+  loop(update) {
+    this.shapes = {};
+    this.update = update;
+    this.frame = 1;
+    window.requestAnimationFrame(() =&gt; {
+      this.update_frame(this);
+    });
+  }
+}
+
+// Create new `Canvas` instance in various ways.
+export const canvas = elem =&gt; (
+  new Canvas(elem)
+);
+
+export const canvas_id = id =&gt; (
+  canvas(document.getElementById(id))
+);
+
+export const canvas_new = (id, parent_selector = &apos;body&apos;) =&gt; {
+  created = document.createElement(&apos;canvas&apos;);
+  created.id = id;
+
+  document.querySelector(parent_selector).appendChild(created);
+  return canvas_id(id);
+};
+</code></pre>
+
+</div>
+
+<footer class="footer">
+  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(1.1.0)</span><img src="./image/esdoc-logo-mini-black.png"></a>
+</footer>
+
+<script src="script/search_index.js"></script>
+<script src="script/search.js"></script>
+<script src="script/pretty-print.js"></script>
+<script src="script/inherited-summary.js"></script>
+<script src="script/test-summary.js"></script>
+<script src="script/inner-link.js"></script>
+<script src="script/patch-for-local.js"></script>
+</body>
+</html>

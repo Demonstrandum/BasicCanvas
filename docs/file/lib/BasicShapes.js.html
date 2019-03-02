@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <base data-ice="baseUrl" href="../../">
+  <title data-ice="title">lib/BasicShapes.js | basiccanvas</title>
+  <link type="text/css" rel="stylesheet" href="css/style.css">
+  <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
+  <script src="script/prettify/prettify.js"></script>
+  <script src="script/manual.js"></script>
+<meta name="description" content="Simple JavaScript canvas abstractions."><meta property="twitter:card" content="summary"><meta property="twitter:title" content="basiccanvas"><meta property="twitter:description" content="Simple JavaScript canvas abstractions."></head>
+<body class="layout-container" data-ice="rootContainer">
+
+<header>
+  <a href="./">Home</a>
+  
+  <a href="identifiers.html">Reference</a>
+  <a href="source.html">Source</a>
+  
+  <div class="search-box">
+  <span>
+    <img src="./image/search.png">
+    <span class="search-input-edge"></span><input class="search-input"><span class="search-input-edge"></span>
+  </span>
+    <ul class="search-result"></ul>
+  </div>
+<a style="position:relative; top:3px;" href="https://github.com/Demonstrandum/BasicCanvas.git"><img width="20px" src="./image/github.png"></a></header>
+
+<nav class="navigation" data-ice="nav"><div>
+  <ul>
+    
+  <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Color">Color</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-HEX">HEX</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-HSL">HSL</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-HSV">HSV</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Point">Point</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Polar">Polar</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-canvas">canvas</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-canvas_id">canvas_id</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-canvas_new">canvas_new</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-click">click</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-clone">clone</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-css">css</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-key_down">key_down</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-key_press">key_press</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-key_up">key_up</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-load_font">load_font</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-mouse_down">mouse_down</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-mouse_up">mouse_up</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-plain">plain</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-style">style</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-type">type</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-id">id</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-input">input</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-text">text</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-arrow">arrow</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-ellipse">ellipse</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-grid">grid</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-line">line</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-polar_line">polar_line</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-polygon">polygon</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-rectangle">rectangle</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-star">star</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-vector">vector</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-Colour">Colour</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-HSLA">HSLA</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-HSVA">HSVA</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-P">P</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-RGB">RGB</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-RGBA">RGBA</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-use">use</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-id_map">id_map</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-object_count">object_count</a></span></span></li>
+</ul>
+</div>
+</nav>
+
+<div class="content" data-ice="content"><h1 data-ice="title">lib/BasicShapes.js</h1>
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import * as BC from &apos;./BasicCanvas.js&apos;;
+
+export const rectangle = (point, w, h = null, fill = null, stroke = null) =&gt; shape =&gt; {
+  const f = fill || shape.canvas.fill;
+  const s = stroke || shape.canvas.stroke;
+  shape.rect(point, w, h ? h : w, f, s);
+  shape.center = point;
+};
+
+export const ellipse = (point, w, h = null, fill = null, stroke = null) =&gt; shape =&gt; {
+  const f = fill || shape.canvas.fill;
+  const s = stroke || shape.canvas.stroke;
+
+  shape.ellipse(point, w, h ? h : w, f, s);
+  shape.center = point;
+};
+
+export const line = (origin, position) =&gt; shape =&gt; {
+  shape.vertex(origin);
+  shape.vertex(position);
+};
+
+export const polygon = (centre, sides, radius) =&gt; shape =&gt; {
+  sides = Math.abs(sides);
+  const exterior = 2 * Math.PI / sides;
+  for (let partial = -Math.HALF_PI; partial &lt;= Math.TAU - Math.HALF_PI; partial += exterior) {
+    shape.vertex(
+      centre.x + radius * Math.cos(partial),
+      centre.y + radius * Math.sin(partial)
+    );
+  }
+  shape.center = centre;
+};
+
+export const star = (point, inner, outer, points) =&gt; shape =&gt; {
+  const angle_frac = Math.TAU / points;
+  const half_angle = angle_frac / 2;
+
+  for (let theta = 0; theta &lt; Math.TAU; theta += angle_frac) {
+    shape.vertex(BC.Polar(outer, theta, point));
+    shape.vertex(BC.Polar(inner, theta + half_angle, point));
+  }
+  shape.close();
+  shape.center = point;
+};
+
+export const polar_line = (mag, angle, origin = BC.Point(0, 0)) =&gt; shape =&gt; {
+  shape.vertex(origin);
+  shape.vertex(BC.Polar(mag, angle, origin));
+};
+
+export const arrow = (mag, angle, origin = BC.Point(0, 0), headsize = 1 / 5) =&gt; shape =&gt; {
+  polar_line(mag, angle, origin)(shape);
+  const arrow_angle = 2.4;
+  const point = BC.Polar(mag, angle, origin);
+  shape.vertex(point);
+  shape.vertex(BC.Polar(mag * headsize, angle - arrow_angle, point));
+  shape.vertex(point);
+  shape.vertex(BC.Polar(mag * headsize, angle + arrow_angle, point));
+};
+
+export const vector = (point, origin = BC.Point(0, 0), headsize = 1 / 5) =&gt; shape =&gt; {
+  line(origin, point)(shape);
+  const arrow_angle = 2.4;
+  const length = point.length(origin);
+  const angle = point.angle(origin);
+  shape.vertex(point);
+  shape.vertex(BC.Polar(length * headsize, angle - arrow_angle, point));
+  shape.vertex(point);
+  shape.vertex(BC.Polar(length * headsize, angle + arrow_angle, point));
+};
+
+export const grid = (opaque = 40, night = false) =&gt; shape =&gt; {  // Maybe allow arguments to modify how the grid works.
+  const {canvas} = shape;
+  const {stretch} = canvas;
+  canvas.temp(() =&gt; {
+    canvas.stroke_weight = 2;
+    const base = night ? 255 : 0;
+    const [light, dark] = [BC.RGBA(base, opaque), BC.RGBA(base, opaque + 40)];
+
+    const x_range = [canvas.corner.x, canvas.corner.x + canvas.width / stretch[0]];
+    for (let x = Math.floor(Math.min(...x_range));
+      x &lt;= Math.max(...x_range);
+      x++) {
+      canvas.stroke = light;
+      canvas.shape(`x${x}_gridline`, shape =&gt; {
+        shape.vertex(x, canvas.corner.y);
+        shape.vertex(x, canvas.corner.y + canvas.height / stretch[1]);
+      });
+      canvas.stroke = dark;
+      canvas.shape(`x${x}_tick`, shape =&gt; {
+        shape.vertex(x, -3 / stretch[1]);
+        shape.vertex(x, 3 / stretch[1]);
+      });
+
+      canvas.temp(() =&gt; {
+        canvas.unscale();
+        canvas.stroke = BC.Color(&apos;transparent&apos;);
+        canvas.fill = dark;
+        canvas.text_align = &apos;right&apos;;
+        if (x !== 0) {
+          canvas.text(x, BC.Point(x * stretch[0] + 4, 14));
+        }
+      });
+    }
+
+    const y_range = [canvas.corner.y, canvas.corner.y + canvas.height / stretch[1]];
+    for (let y = Math.floor(Math.min(...y_range));
+      y &lt;= Math.max(...y_range);
+      y++) {
+      canvas.stroke = light;
+      canvas.shape(`y${y}_gridline`, shape =&gt; {
+        shape.vertex(canvas.corner.x, y);
+        shape.vertex(canvas.corner.x + canvas.width / stretch[0], y);
+      });
+      canvas.stroke = dark;
+      canvas.shape(`y${y}_tickline`, shape =&gt; {
+        shape.vertex(-3 / stretch[0], y);
+        shape.vertex(3 / stretch[0], y);
+      });
+
+      canvas.temp(() =&gt; {
+        canvas.unscale();
+        canvas.stroke = BC.Color(&apos;transparent&apos;);
+        canvas.fill = dark;
+        canvas.text_align = &apos;right&apos;;
+        if (y !== 0) {
+          canvas.text(y, BC.Point(-4, y * stretch[1] + 4));
+        }
+      });
+    }
+
+    // Origin
+    canvas.temp(() =&gt; {
+      canvas.unscale();
+      canvas.stroke = BC.Color(&apos;transparent&apos;);
+      canvas.fill = dark;
+      canvas.text_align = &apos;right&apos;;
+      canvas.text(&apos;0&apos;, BC.Point(-4, 4));
+    });
+
+    canvas.stroke = dark;
+    canvas.shape(&apos;x_axis&apos;, shape =&gt; {
+      shape.vertex(canvas.corner.x, 0);
+      shape.vertex(canvas.corner.x + canvas.width / stretch[0], 0);
+    });
+    canvas.shape(&apos;y_axis&apos;, shape =&gt; {
+      shape.vertex(0, canvas.corner.y);
+      shape.vertex(0, canvas.corner.y + canvas.height / stretch[1]);
+    });
+  });
+};
+</code></pre>
+
+</div>
+
+<footer class="footer">
+  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(1.1.0)</span><img src="./image/esdoc-logo-mini-black.png"></a>
+</footer>
+
+<script src="script/search_index.js"></script>
+<script src="script/search.js"></script>
+<script src="script/pretty-print.js"></script>
+<script src="script/inherited-summary.js"></script>
+<script src="script/test-summary.js"></script>
+<script src="script/inner-link.js"></script>
+<script src="script/patch-for-local.js"></script>
+</body>
+</html>

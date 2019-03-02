@@ -2,7 +2,7 @@
   "name": "basiccanvas",
   "title": "BasicCanvas",
   "description": "Simple JavaScript canvas abstractions.",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "main": "lib/BasicCanvas.js",
   "homepage": "https://github.com/Demonstrandum/BasicCanvas/",
   "author": {
@@ -25,7 +25,10 @@
     "url": "https://github.com/Demonstrandum/BasicCanvas/issues"
   },
   "license": "GPL-2.0",
-  "dependencies": {},
+  "dependencies": {
+    "esdoc": "^1.1.0",
+    "esdoc-standard-plugin": "^1.0.0"
+  },
   "scripts": {
     "test": "xo"
   },
