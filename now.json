@@ -3,8 +3,7 @@
   "alias" : "canvas.knutsen.co",
   "version": 2,
   "builds": [
-    { "src": "example/*", "use": "@now/static" },
-    { "src": "index.py",  "use": "@now/python" }
+    { "src": "example/*", "use": "@now/static" }
   ]
 }
 
