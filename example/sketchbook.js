@@ -8,7 +8,6 @@ canvas.scale(10, 10);
 canvas.stroke = BC.HEX`#a9f`;
 canvas.stroke_weight = 20;
 canvas.stroke_cap = 'round';
-canvas.fill = BC.HEX('#fafafa');
 canvas.font = '12px monospace';
 
 let vertices = [];
@@ -23,12 +22,14 @@ BC.mouse_up(() => {
   vertices = [];
 }, canvas);
 
+canvas.fill = BC.HEX('#fafafa');
 canvas.background();
 canvas.loop(() => {
   if (drawing) {
     vertices.push(canvas.mouse);
   }
 
+  canvas.fill = 'transparent';
   canvas.shape('path', shape => {
     for (const vertex of vertices) {
       shape.vertex(vertex);

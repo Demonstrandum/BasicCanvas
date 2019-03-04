@@ -2,5 +2,10 @@
   "name": "BasicCanvas",
   "alias" : "canvas.knutsen.co",
   "version": 2,
-  "builds": [{ "src": "*.py", "use": "@now/python"}]
+  "builds": [
+    { "src": "*", "use": "@now/static" },
+    { "src": "lib/*", "use": "@now/static"},
+    { "src": "example/*", "use": "@now/static" }
+  ]
 }
+

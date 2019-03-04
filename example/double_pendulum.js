@@ -74,7 +74,6 @@ css`
 `;
 
 const BG = HEX('#dfcbeb');
-sketch.fill = HEX('#000000aa');
 sketch.stroke_cap = 'round';
 
 let coord_1 = Point(0, L_1);
@@ -83,6 +82,7 @@ const trail = [];
 
 sketch.loop(() => {
   sketch.background(BG);
+  sketch.fill = 'transparent';
   sketch.shape('trail', shape => {
     sketch.stroke_weight = 1;
     let alpha = 1;
@@ -97,6 +97,7 @@ sketch.loop(() => {
   }
 
   sketch.stroke_weight = 2.5;
+  sketch.fill = HEX('#000000aa');
   sketch.stroke = HEX('#000');
   sketch.shape('origin', ellipse(Point(0, 0), 3));
   sketch.shape('harnes', line(Point(0, 0), coord_1));

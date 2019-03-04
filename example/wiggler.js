@@ -9,6 +9,7 @@ const death   = new Audio('https://freesound.org/data/previews/190/190843_329661
 
 BC.css`body, html { overflow: hidden; }`;
 canvas.dimensions(window.innerWidth, window.innerHeight);
+canvas.stroke_cap = 'round';
 
 class Snake {
   constructor(name) {
