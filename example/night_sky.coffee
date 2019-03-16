@@ -6,7 +6,7 @@ use BasicCanvas
 sketch = canvas_id 'sketch'
 
 sketch.dimensions 500, 300
-sketch.stroke_weight = 0
+sketch.stroke = TRANSPARENT
 
 stars = []
 sketch.loop (frame) ->
