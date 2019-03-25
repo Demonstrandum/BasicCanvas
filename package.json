@@ -2,7 +2,7 @@
   "name": "basiccanvas",
   "title": "BasicCanvas",
   "description": "Simple JavaScript canvas abstractions.",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "main": "lib/BasicCanvas.js",
   "homepage": "https://github.com/Demonstrandum/BasicCanvas/",
   "author": {
@@ -38,6 +38,7 @@
   "xo": {
     "space": true,
     "rules": {
+      "curly": "off",
       "camelcase": "off",
       "unicorn/filename-case": "off",
       "new-cap": "off",
