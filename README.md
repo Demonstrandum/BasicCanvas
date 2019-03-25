@@ -5,15 +5,15 @@ A friendlier way interact with the canvas.
 jsdelivr CDN (use this to import):
 - Canvas
   ```
-  https://cdn.jsdelivr.net/gh/Demonstrandum/BasicCanvas@v1.0.8/lib/BasicCanvas.js
+  https://cdn.jsdelivr.net/gh/Demonstrandum/BasicCanvas@v1.0.9/lib/BasicCanvas.js
   ```
 - Shapes
   ```
-  https://cdn.jsdelivr.net/gh/Demonstrandum/BasicCanvas@v1.0.8/lib/BasicShapes.js
+  https://cdn.jsdelivr.net/gh/Demonstrandum/BasicCanvas@v1.0.9/lib/BasicShapes.js
   ```
 - DOM
   ```
-  https://cdn.jsdelivr.net/gh/Demonstrandum/BasicCanvas@v1.0.8/lib/BasicDOM.js
+  https://cdn.jsdelivr.net/gh/Demonstrandum/BasicCanvas@v1.0.9/lib/BasicDOM.js
   ```
 
 TODO: Instructions on usage, for now look at the example files (and/or source files), still a small project.
@@ -36,14 +36,50 @@ then run with:
 ```
 And go to http://localhost:8000/example/ (for an example file, see the index.html code to switch example).
 
-## Try Yourself
-Check out the CodePen: https://codepen.io/wernstrom/project/editor/DKzVaY
-Explore the library by making small modifications to the CodePen and/or rewriting it to do something new.
+## Quick Examples
+![tree.js](https://user-images.githubusercontent.com/26842759/54957430-a7a08580-4f4a-11e9-8928-7477b41ca01e.png)
 
-### Quick Example
+[See Animation.](https://canvas.knutsen.co/example/?tree.js)
+
+```js
+import * as BC from '../lib/BasicCanvas.js';
+import {line} from '../lib/BasicShapes.js';
+
+use(BC);
+
+const sketch = canvas_id('sketch');
+sketch.dimensions(400, 400);
+sketch.translate(sketch.width / 2, sketch.height / 2);
+
+sketch.fill = RGB(50, 30, 80);
+sketch.stroke = HSL(340, 100, 45, 170);
+sketch.stroke_weight = 4;
+sketch.stroke_cap = 'round';
+
+const branch = (previous, angle, depth, inc, first = true) => {
+  if (depth < 0) return;
+
+  let next = previous;
+  if (!first) {
+    next = Polar(Math.sqrt(depth) * 16, -angle, previous);
+    sketch.render(line(next, previous));
+  }
+
+  branch(next, angle + inc, depth - 1, inc, false);
+  branch(next, angle - inc, depth - 1, inc, false);
+};
+
+const tree = P(0, 10);
+sketch.loop(frame => {
+  sketch.background();
+  sketch.render(line(P(0, 200), tree));
+  branch(tree, Math.PI / 2, 7, 0.6 + Math.sin(frame / 20) / 3);
+});
+```
+
 Drawing a simple sinusoidal progressive wave:
 ```js
-import * as BC from 'https://cdn.jsdelivr.net/gh/Demonstrandum/BasicCanvas@v1.0.3/lib/BasicCanvas.js';
+import * as BC from 'https://cdn.jsdelivr.net/gh/Demonstrandum/BasicCanvas@v1.0.9/lib/BasicCanvas.js';
 // If running this locally, you need a server running for `import`s to work, (for now).
 
 use(BC)  // To avoid having to write `BC.` all the time.
@@ -84,3 +120,8 @@ If the above file is called something like `sine_wave.js` then the `index.html` 
 </html>
 ```
 Or, you could use the `your_example.js` file found in the example/ folder of the repo.
+
+
+## Try Yourself
+Check out the CodePen: https://codepen.io/wernstrom/project/editor/DKzVaY
+Explore the library by making small modifications to the CodePen and/or rewriting it to do something new.

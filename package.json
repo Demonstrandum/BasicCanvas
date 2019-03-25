@@ -38,6 +38,7 @@
   "xo": {
     "space": true,
     "rules": {
+      "curly": "off",
       "camelcase": "off",
       "unicorn/filename-case": "off",
       "new-cap": "off",
