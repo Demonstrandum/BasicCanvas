@@ -5,15 +5,15 @@ A friendlier way interact with the canvas.
 jsdelivr CDN (use this to import):
 - Canvas
   ```
-  https://cdn.jsdelivr.net/gh/Demonstrandum/BasicCanvas@v1.0.9/lib/BasicCanvas.js
+  https://cdn.jsdelivr.net/gh/Demonstrandum/BasicCanvas@v1.0.11/lib/BasicCanvas.js
   ```
 - Shapes
   ```
-  https://cdn.jsdelivr.net/gh/Demonstrandum/BasicCanvas@v1.0.9/lib/BasicShapes.js
+  https://cdn.jsdelivr.net/gh/Demonstrandum/BasicCanvas@v1.0.11/lib/BasicShapes.js
   ```
 - DOM
   ```
-  https://cdn.jsdelivr.net/gh/Demonstrandum/BasicCanvas@v1.0.9/lib/BasicDOM.js
+  https://cdn.jsdelivr.net/gh/Demonstrandum/BasicCanvas@v1.0.11/lib/BasicDOM.js
   ```
 
 TODO: Instructions on usage, for now look at the example files (and/or source files), still a small project.
@@ -79,7 +79,7 @@ sketch.loop(frame => {
 
 Drawing a simple sinusoidal progressive wave:
 ```js
-import * as BC from 'https://cdn.jsdelivr.net/gh/Demonstrandum/BasicCanvas@v1.0.9/lib/BasicCanvas.js';
+import * as BC from 'https://cdn.jsdelivr.net/gh/Demonstrandum/BasicCanvas@v1.0.11/lib/BasicCanvas.js';
 // If running this locally, you need a server running for `import`s to work, (for now).
 
 use(BC)  // To avoid having to write `BC.` all the time.
