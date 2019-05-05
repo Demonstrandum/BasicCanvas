@@ -39,7 +39,7 @@ class Paddle {
   }
 
   render(canvas) {
-    canvas.shape(null, rectangle(this.position, this.width, this.height));
+    canvas.render(null, rectangle(this.position, this.width, this.height));
   }
 }
 
@@ -99,7 +99,7 @@ class Ball {
   }
 
   render(canvas) {
-    canvas.shape(null, rectangle(this.position, this.radius, this.radius));
+    canvas.render(null, rectangle(this.position, this.radius, this.radius));
   }
 }
 
@@ -154,7 +154,7 @@ sketch.loop(frame => {
   sketch.text(poodle.score, BC.Point(3 * sketch.width / 4 - 50, 100));
 
   for (let stripe = 0; stripe < sketch.width / 30; stripe++) {
-    sketch.shape(null,
+    sketch.render(null,
       rectangle(BC.Point(sketch.width / 2 - 5, 30 * stripe), 10, 20));
   }
 

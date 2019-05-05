@@ -10,7 +10,7 @@ canvas.stroke = BC.HEX('#111');
 canvas.loop(frame => {
   canvas.background();
 
-  const wave = canvas.shape('wave', shape => {
+  const wave = canvas.render('wave', shape => {
     let perlin_x = 0;
     for (let x = 0; x < canvas.width; x++) {
       const y = 100 * noise.perlin2(perlin_x, frame / 60);

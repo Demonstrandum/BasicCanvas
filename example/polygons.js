@@ -11,10 +11,10 @@ canvas.scale(40, 40);
 canvas.stroke = BC.HEX('#111');
 canvas.font = '12px monospace';
 
-canvas.shape(null, grid(10));
+canvas.render(null, grid(10));
 
 canvas.stroke_weight = 1.5;
 for (let gon = 3; gon <= 8; gon++) {
   canvas.stroke = BC.RGBA(0, (gon - 3) * 180 / 5 + 75);
-  canvas.shape('regular', polygon(P(0, 0), gon, 3));
+  canvas.render('regular', polygon(P(0, 0), gon, 3));
 }

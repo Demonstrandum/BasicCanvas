@@ -39,7 +39,7 @@ sketch.stroke_weight = 3;
 sketch.fill = BC.Color(150, 255, 190, 100);
 
 const PI = 3.14159265;
-sketch.shape('sine', shape => {
+sketch.render('sine', shape => {
   for (let x = 0; x < 3 * PI; x += 0.2) {
     shape.vertex(BC.Point(32 * x + 50, 32 * Math.sin(x) + 100));
   }
@@ -56,7 +56,7 @@ const d = 50;
 for (let r = 0; r < sketch.width / d; r++) {
   for (let c = 0; c < sketch.height / d; c++) {
     if ((r + c) % 2 === 0) {
-      sketch.shape(rectangle(BC.Point(r * d, c * d), d, d));
+      sketch.render(rectangle(BC.Point(r * d, c * d), d, d));
     }
   }
 }

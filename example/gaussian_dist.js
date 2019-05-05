@@ -25,6 +25,7 @@ const r = 0.4;
 
 sketch.loop(() => {
   sketch.background('#fff');
+  sketch.render(grid(6));
 
   sketch.temp(() => {
     for (const x of points) {
@@ -34,7 +35,7 @@ sketch.loop(() => {
     }
   });
 
-  sketch.shape(shape => {
+  sketch.render(shape => {
     let prev = -6;
     let freq = 0;
 
@@ -55,6 +56,4 @@ sketch.loop(() => {
 
   const position = gaussian(0, 1.4);
   points.push(position.x.roundTo(1));
-
-  sketch.shape(grid(6));
 });

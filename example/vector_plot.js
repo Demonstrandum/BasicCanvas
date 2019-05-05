@@ -32,7 +32,7 @@ const CORNER = sketch.corner.omap(Math.floor);
 
 const draw = () => {
   sketch.background(HEX`#000`, true);
-  sketch.shape(grid(10, 'night'));
+  sketch.render(grid(10, 'night'));
 
   let [min, max] = [0, 0];
   for (let {y} = CORNER; y >= -CORNER.y; y--) {

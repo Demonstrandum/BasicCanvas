@@ -30,7 +30,7 @@ canvas.loop(frame => {
       ) * Math.TAU;
 
       canvas.stroke = BC.HSL(phase * 100 / Math.TAU + 300);
-      canvas.shape(null, arrow(width / size - 3, phase, origin));
+      canvas.render(null, arrow(width / size - 3, phase, origin));
     }
   }
 });

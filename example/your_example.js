@@ -15,7 +15,7 @@ sketch.stroke_cap = 'round';
 sketch.loop(frame => {
   sketch.background(BC.RGB(255, 255, 110)); // Redraw background each frame.
 
-  sketch.shape('sine', shape => { // Create new shape: name, construction of shape callback
+  sketch.render('sine', shape => { // Create new shape: name, construction of shape callback
     for (let x = 0; x < 3 * Math.PI; x += 0.2) { // Sine curve at this frame
       shape.vertex(BC.Point(32 * x + 50, 32 * Math.sin(x + frame / 10) + 200));
     }

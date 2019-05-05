@@ -30,7 +30,7 @@ canvas.loop(() => {
   }
 
   canvas.fill = 'transparent';
-  canvas.shape('path', shape => {
+  canvas.render('path', shape => {
     for (const vertex of vertices) {
       shape.vertex(vertex);
     }

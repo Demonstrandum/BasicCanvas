@@ -36,7 +36,7 @@ s.stroke = BC.HEX('#000');
 s.fill = s.stroke;
 
 s.font = '9px serif';
-s.shape(null, grid());
+s.render(null, grid());
 
 for (let x = 0; x <= 105; x++) {
   for (let y = 0; y < 17; y++) {
@@ -44,7 +44,7 @@ for (let x = 0; x <= 105; x++) {
     const tupper_value = tupper(new BigNumber(x), k.plus(y));
     // console.log(tupper_value.toNumber());
     if (tupper_value.toNumber() > 0.5) {
-      s.shape(null, rectangle(point, 1));
+      s.render(null, rectangle(point, 1));
     }
   }
 }

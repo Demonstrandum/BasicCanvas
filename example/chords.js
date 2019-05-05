@@ -17,7 +17,7 @@ sketch.translate(sketch.width / 2, sketch.height / 2);
 sketch.background(BC.RGB(255));
 sketch.loop(() => {
   const next = polar(radius, Math.random() * Math.TAU);
-  sketch.shape('chord', shape => {
+  sketch.render('chord', shape => {
     shape.vertex(last);
     shape.vertex(next);
   });
