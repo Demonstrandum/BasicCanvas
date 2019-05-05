@@ -567,7 +567,7 @@
     "__docId__": 48,
     "kind": "file",
     "name": "lib/BasicCanvas.js",
-    "content": "// Basic semi-related tools.\nexport const clone = obj => Object.assign(Object.create(Object.getPrototypeOf(obj)), obj);\nObject.prototype.clone = function () {\n  return clone(this);\n};\n\nexport const type = element => (\n  ({}).toString.call(element).match(/\\s([a-zA-Z]+)/)[1].toLowerCase()\n);\n\n// --> Try to make `use()`, `type()` and `clone()` functions global.\nlet _use;\nif (typeof window === 'undefined') {\n  _use = (namespace, global) => Object.assign(global, namespace);\n} else {\n  _use = (namespace, global = window) => Object.assign(global, namespace);\n\n  window.use = _use;\n  window.type = type;\n  window.clone = clone;\n}\n\nexport const use = _use;\n\nexport const load_font = (name, path, description) => {\n  const font = new FontFace(name, path, description);\n  font.load().then(loaded => document.fonts.add(loaded));\n  return font;\n};\n\nexport const plain = (...args) => String.raw({raw: args[0]}, ...args.slice(1));\n\nexport const style = string => {\n  const node = document.createElement('style');\n  node.innerHTML = string;\n  document.body.appendChild(node);\n};\n\nexport const css = (s, ...exps) => style(plain(s, ...exps));\n\n// Patching and Monkey Patching prototypes.\nMath.TAU = 2 * Math.PI;\nMath.HALF_PI = Math.PI * 0.5;\nNumber.prototype.roundTo = function (dp) {\n  return parseFloat((this).toFixed(dp));\n};\n\nArray.prototype.mag = function () {\n  return Math.sqrt(this.reduce((i, j) => i + j ** 2, 0));\n};\nArray.prototype.norm = function () {\n  if (this.every(e => e === 0)) {\n    return this;\n  }\n  return this.map(e => e / this.mag());\n};\nArray.prototype.rotate = function (theta) {\n  return [\n    this[0] * Math.cos(theta) - this[1] * Math.sin(theta),\n    this[0] * Math.sin(theta) + this[1] * Math.cos(theta)\n  ];  // 2D roataion only.\n};\n\nString.prototype.replaceAll = function (search, replacement) {\n  return this.replace(new RegExp(search, 'g'), replacement);\n};\n\nHTMLElement.prototype.html = function (s, ...exps) {\n  const contain = document.createElement('del');\n  contain.style.textDecoration = 'none';\n  contain.innerHTML = String.raw(s, ...exps);\n  this.appendChild(contain);\n};\n\nHTMLElement.prototype.css = function (properties) {\n  for (const property in properties) {\n    if (Object.prototype.hasOwnProperty.call(properties, property)) {\n      this.style[property] = properties[property];\n    }\n  }\n};\n\nObject.prototype.omap = function (lambda) {\n  return Object.assign({}, ...Object.keys(this).map(k => ({[k]: lambda(this[k])})));\n};\n\nObject.defineProperty(HTMLElement.prototype, 'elem', {\n  get: function elem() {\n    return this;\n  }\n});\n\n// More interaction-specific tools\nexport const click = (handler, canvas = null) => {\n  if (canvas) {\n    canvas.elem.addEventListener('click', handler, false);\n  } else {\n    window.addEventListener('click', handler, false);\n  }\n};\n\nexport const mouse_down = (handler, canvas = null) => {\n  if (canvas) {\n    canvas.elem.addEventListener('mousedown', handler, false);\n  } else {\n    window.addEventListener('mousedown', handler, false);\n  }\n};\n\nexport const mouse_up = (handler, canvas = null) => {\n  if (canvas) {\n    canvas.elem.addEventListener('mouseup', handler, false);\n  } else {\n    window.addEventListener('mouseup', handler, false);\n  }\n};\n\nexport const key_press = handler => {\n  window.addEventListener('keypress', handler, false);\n};\n\nexport const key_down = handler => {\n  window.addEventListener('keydown', handler, false);\n};\n\nexport const key_up = handler => {\n  window.addEventListener('keyup', handler, false);\n};\n\n// Classes for specific data-types\nclass PointObj {\n  constructor(x, y) {\n    this.x = x;\n    this.y = y;\n  }\n\n  get array() {\n    return [this.x, this.y];\n  }\n\n  set array(a) {\n    [this.x, this.y] = a;\n  }\n\n  floor() {\n    return new PointObj(Math.floor(this.x), Math.floor(this.y));\n  }\n\n  norm(other = new PointObj(0, 0)) {\n    return new PointObj(...this.sub(other).array.norm());\n  }\n\n  unit(...args) {\n    return this.norm(...args);\n  }\n\n  sum() {\n    return this.x + this.y;\n  }\n\n  add(other) {\n    return new PointObj(this.x + other.x, this.y + other.y);\n  }\n\n  offset(x, y) {\n    return new PointObj(this.x + x, this.y + y);\n  }\n\n  sub(other) {\n    return new PointObj(this.x - other.x, this.y - other.y);\n  }\n\n  scale(scalar) {\n    return new PointObj(this.x * scalar, this.y * scalar);\n  }\n\n  mul(other) {\n    if (typeof (other) === 'number') {\n      return this.scale(other);\n    }\n    return new PointObj(this.x * other.x, this.y * other.y);\n  }\n\n  dot(other) {\n    const standard = this.mul(other);\n    return standard.sum();\n  }\n\n  div(other) {\n    if (typeof (other) !== 'number') {\n      throw new TypeError('Can only divide vectors by numerics.');\n    }\n    return new PointObj(this.x / other, this.y / other);\n  }\n\n  mag(other = new PointObj(0, 0)) {\n    return this.sub(other).array.mag();\n  }\n\n  size(...xs) {\n    return this.mag(...xs);\n  }\n\n  length(...xs) {\n    return this.mag(...xs);\n  }\n\n  modulus(...xs) {\n    return this.mag(...xs);\n  }\n\n  angle(other = new PointObj(0, 0)) {\n    const v = this.sub(other);\n    return Math.atan2(v.y, v.x);\n  }\n\n  phase(...xs) {\n    return this.angle(...xs);\n  }\n\n  toString() {\n    return `(${this.x}, ${this.y})`;\n  }\n\n  valueOf() {\n    return this.toString();\n  }\n}\nclass NamedColorObj {\n  constructor(color) {\n    this.color = color;\n  }\n\n  toString() {\n    return this.color;\n  }\n\n  valueOf() {\n    return this.toString();\n  }\n}\nclass RGBAObj {\n  constructor(r, g, b, a) {\n    [this.r, this.g, this.b, this.a] = [r, g, b, a].map(Math.round);\n    this.rgba = [this.r, this.g, this.b, this.a];\n    this.rgb = this.rgba.slice(0, -1);\n  }\n\n  toString() {\n    return `rgba(${this.rgb.join(', ')}, ${this.a / 255})`;\n  }\n\n  valueOf() {\n    return this.toString();\n  }\n}\n\nclass HSLObj {\n  constructor(h, s, l, a) {\n    [this.h, this.s, this.l, this.a] = [h, s, l, a].map(Math.round);\n  }\n\n  toString() {\n    return `hsla(${this.h}, ${this.s}%, ${this.l}%, ${this.a / 255})`;\n  }\n\n  valueOf() {\n    return this.toString();\n  }\n}\n\nclass HSVObj extends HSLObj {\n  toString() {\n    return `hsva(${this.h}, ${this.s}%, ${this.l}%, ${this.a / 255})`;\n  }\n}\nclass HEXobj {\n  constructor(hex) {\n    if (type(hex) === 'array') {\n      this.hex = `#${hex[0].split('#').slice(-1)[0]}`;\n      return;\n    }\n    this.hex = (type(hex) === 'string') ?\n      `#${hex.split('#').slice(-1)[0]}` :\n      `#${('000000' + hex.toString(16)).slice(-6)}`;\n  }\n\n  toString() {\n    return this.hex;\n  }\n\n  valueOf() {\n    return this.toString();\n  }\n}\n\n// Construction functions for data-types\nexport const Point = (x, y) => new PointObj(x, y);\nexport const Polar = (r, theta, origin = Point(0, 0)) => Point(\n  r * Math.cos(theta) + origin.x,\n  r * Math.sin(theta) + origin.y\n);\n\nexport const [P, point, polar] = [Point, Point, Polar];\n\nexport const Color = (r, g = -1, b = -1, a = 255) => {\n  if (type(r) === 'string') {\n    return new NamedColorObj(r);\n  }\n  if (type(r) === 'array') {\n    return new NamedColorObj(r[0]);\n  }\n  if (b < 0 && g >= 0) {\n    a = g;\n  }\n  if (b < 0) {\n    [g, b] = [r, r];\n  }\n\n  return new RGBAObj(r, g, b, a);\n};\nexport const Colour = Color;\nexport const RGBA = Color;\nexport const RGB = Color;\nexport const HEX = hex => new HEXobj(hex);\nexport const HSL = (h, s = 100, l = 50, a = 255) => new HSLObj(h, s, l, a);\nexport const HSLA = HSL;\nexport const HSV = (h, s = 100, v = 100, a = 255) => new HSVObj(h, s, v, a);\nexport const HSVA = HSV;\n\n// Implements and manages every rendered shape seen.\nclass Shape {\n  constructor(name, canvas) {\n    this.name = name;\n    this.canvas = canvas;\n    this.primitive = null;\n\n    this.vertices = [];\n    this.center = Point(0, 0);\n  }\n\n  flesh() {\n    this.canvas.context.fill();\n    this.canvas.context.stroke();\n  }\n\n  style(\n    fill = this.canvas.fill,\n    stroke = this.canvas.stroke,\n    stroke_weight = this.canvas.stroke_weight,\n    stroke_cap = this.canvas.stroke_cap\n  ) {\n    if (stroke_weight === 0) {\n      stroke = 'transparent';\n    }\n    const c = this.canvas.context;\n    c.fillStyle = fill.toString();\n    c.strokeStyle = stroke.toString();\n    c.lineWidth = stroke_weight;\n    c.lineCap = stroke_cap;\n    return this;\n  }\n\n  point(point, color = this.canvas.stroke) {\n    return this.canvas.color(point, color);\n  }\n\n  vertex(point, y = null) {\n    if (y !== null) {\n      point = Point(point, y);\n    }\n    if (this.vertices.length === 0) {\n      this.vertices.push([point.x, point.y]);\n      this.center = point;\n      return point;\n    }\n\n    const c = this.canvas.context;\n    c.beginPath();\n    c.moveTo(...this.vertices[this.vertices.length - 1]);\n    const next = [point.x, point.y];\n    c.lineTo(...next);\n    this.style();\n    this.flesh();\n\n    this.vertices.push(next);\n    return point;\n  }\n\n  rect(point, w, h, fill = this.canvas.fill, stroke = this.canvas.stroke) {\n    this.style(fill, stroke);\n    const c = this.canvas.context;\n\n    this.primitive = () => c.rect(point.x, point.y, w, h);\n    this.primitive();\n    this.flesh();\n  }\n\n  ellipse(point, w, h, fill = this.canvas.fill, stroke = this.canvas.stroke) {\n    this.style(fill, stroke);\n    const c = this.canvas.context;\n\n    this.primitive = () => c.ellipse(point.x, point.y, w, h, 0, 0, Math.TAU);\n    this.primitive();\n    this.flesh();\n  }\n\n  close() {\n    this.vertex(Point(...this.vertices[0]));\n    return this;\n  }\n\n  fill(color = null) {\n    // TODO: Either redraw all vertices and use built-in fill function,\n    //       or, implement own fill function (see: https://stackoverflow.com/questions/31799038/filling-a-polygon)\n\n    // Secretly redraws all vertices,\n    //   SLOW and BAD, SAD! (tbh, prolly faster than whatever I'd write)\n    let temp_color = color;\n    if (temp_color === null) {\n      temp_color = this.canvas.fill;\n    }\n\n    if (this.primitive === null) {\n      const c = this.canvas.context;\n      c.moveTo(...this.vertices[0]);\n      for (const vertex of this.vertices.slice(1)) {\n        c.lineTo(...vertex);\n      }\n    } else {\n      this.primitive();\n    }\n\n    this.style(temp_color);\n    this.flesh();\n  }\n}\n\n// Main Canvas class:\n// --> First point of abstraction away from the standard canvas.\nclass Canvas {\n  constructor(elem) {\n    this.elem = elem;\n    this._width = this.elem.width;\n    this._height = this.elem.height;\n\n    // FPS variables.\n    this._now = null;\n    this._Δ = null;\n    this._then = Date.now();\n    this._interval = 1000 / 60;\n\n    // Canvas Context.\n    this.context = elem.getContext('2d');\n    this.image_data = this.context.getImageData(0, 0, this.width, this.height);\n    this.data = this.image_data.data;\n\n    // Main API properties.\n    this.fill = RGB(255, 255, 255);\n    this.stroke = RGB(0, 0, 0);\n    this._stroke_weight = 1;\n    this.stroke_cap = 'butt';\n    this.font = '16px sans-serif';\n    this.text_align = 'left';\n    this._mouse_position = Point(NaN, NaN);\n    this._mouse_listen = undefined;\n\n    // Used for coördinate calculations.\n    this.corner = {x: 0, y: 0};\n    this.stretch = [1, 1];\n\n    // Saved properties of the objects state at a certain time.\n    this.state_stack = [];\n\n    this.shapes = {};  // All shapes displayed on the canvas.\n    this.update = () => { };  // Lambda for when drawing a frame.\n  }\n\n  get FPS() {\n    return 1000 / this._Δ;\n  }\n\n  set FPS(frame_rate) {\n    this._interval = 1000 / frame_rate;\n  }\n\n  get width() {\n    return this._width;\n  }\n\n  get height() {\n    return this._height;\n  }\n\n  set width(w) {\n    this.elem.width = w;\n    this._width = w;\n    this.update_context();\n  }\n\n  set height(h) {\n    this.elem.height = h;\n    this._height = h;\n    this.update_context();\n  }\n\n  get stroke_weight() {\n    return this._stroke_weight / Math.max(...(this.stretch).map(e => Math.abs(e)));\n  }\n\n  set stroke_weight(w) {\n    if (w === 0) {\n      this.stroke = 'transparent';\n    }\n    this._stroke_weight = w;\n  }\n\n  get mouse() {\n    if (this._mouse_listen === undefined) {\n      this._mouse_listen = this.elem.addEventListener('mousemove', evt => {\n        const rect = this.elem.getBoundingClientRect();\n        this._mouse_position = Point(\n          (evt.clientX - rect.left) / this.stretch[0] + this.corner.x,\n          (evt.clientY - rect.top) / this.stretch[1] + this.corner.y\n        );\n      });\n    }\n    return this._mouse_position;\n  }\n\n  update_context() {\n    this.context = this.elem.getContext('2d');\n    this.image_data = this.context.getImageData(0, 0, this.width, this.height);\n    this.data = this.image_data.data;\n  }\n\n  dimensions(w, h) {\n    this.width = w;\n    this.height = h;\n    this.update_context();\n  }\n\n  translate(x, y) {\n    [this.corner.x, this.corner.y] = [-x, -y];\n    this.context.translate(x, y);\n  }\n\n  rotate(theta) {\n    this.context.rotate(theta);\n  }\n\n  scale(x, y = x) {\n    [this.corner.x, this.corner.y] = [this.corner.x / x, this.corner.y / y];\n    this.stretch = [x, y];\n    this.context.scale(x, y);\n  }\n\n  unscale() {\n    this.scale(1 / this.stretch[0], 1 / this.stretch[1]);\n  }\n\n  save() {\n    const keys = Object.keys(this);\n    const saved = {};\n    for (const key of keys) {\n      if (this[key] !== null && typeof this[key] === 'object' && this[key].constructor === Object) {\n        saved[key] = Object.assign({}, this[key]);\n      } else if (key === 'state_stack') {\n        continue;\n      } else {\n        saved[key] = this[key];\n      }\n    }\n    this.state_stack.push(saved);\n    return this.context.save();\n  }\n\n  restore() {\n    const saved = this.state_stack.pop();\n    for (const key in saved) {\n      if (Object.prototype.hasOwnProperty.call(saved, key)) {\n        this[key] = saved[key];\n      }\n    }\n    return this.context.restore();\n  }\n\n  temp(λ) {\n    this.save();\n    λ();\n    return this.restore();\n  }\n\n  color(point, other = null) {\n    if (!other) {\n      return Color(...this.context.getImageData(point.x, point.y, 1, 1).data);\n    }\n    this.context.fillStyle = other.toString();\n    this.context.fillRect(\n      point.x, point.y,\n      1 / this.stretch[0], 1 / this.stretch[1]\n    );\n    return other;\n  }\n\n  point(point, color = this.stroke) {\n    return this.color(point, color);\n  }\n\n  shape(name, construction = null) {\n    let [_name, _construction] = [null, null];\n    if (construction === null && typeof name === 'function') {\n      _construction = name;\n    } else {\n      _construction = construction;\n    }\n    if (name === null || name === undefined || construction === null) {\n      _name = `ImplicitName${Object.keys(this.shapes).length}`;\n    } else {\n      _name = name;\n    }\n\n    this.shapes[_name] = {\n      draw: _construction,\n      shape: new Shape(_name, this)\n    };\n    this.context.beginPath();\n    _construction(this.shapes[_name].shape);\n    this.context.closePath();\n    return this.shapes[_name].shape;\n  }\n\n  render(...args) {\n    return this.shape(...args);\n  }\n\n  text(string, point, font = this.font, fill = this.fill, storke = this.stroke) {\n    const c = this.context;\n\n    c.font = font;\n    c.textAlign = this.text_align;\n    c.fillStyle = fill;\n    c.strokeStyle = storke;\n    c.fillText(string, point.x, point.y);\n    c.strokeText(string, point.x, point.y);\n  }\n\n  background(c = this.fill, clear = false) {\n    if (clear) {\n      this.context.clearRect(\n        this.corner.x,\n        this.corner.y,\n        -this.corner.x + Math.sign(this.stretch[0]) * this.width,\n        -this.corner.y + Math.sign(this.stretch[1]) * this.height\n      );\n    }\n    this.context.fillStyle = c.toString();\n    this.context.fillRect(\n      this.corner.x,\n      this.corner.y,\n      -this.corner.x + Math.sign(this.stretch[0]) * this.width,\n      -this.corner.y + Math.sign(this.stretch[1]) * this.height\n    );\n  }\n\n  update_frame(canvas) {\n    canvas.shapes = {};\n\n    window.requestAnimationFrame(() => {\n      canvas.update_frame(canvas);\n    });\n\n    canvas._now = Date.now();\n    canvas._Δ = canvas._now - canvas._then;\n\n    if (canvas._Δ > canvas._interval) {\n      canvas._then = canvas._now - (canvas._Δ % canvas._interval);\n      canvas.update(canvas.frame++);\n    }\n  }\n\n  loop(update) {\n    this.shapes = {};\n    this.update = update;\n    this.frame = 1;\n    window.requestAnimationFrame(() => {\n      this.update_frame(this);\n    });\n  }\n}\n\n// Create new `Canvas` instance in various ways.\nexport const canvas = elem => (\n  new Canvas(elem)\n);\n\nexport const canvas_id = id => (\n  canvas(document.getElementById(id))\n);\n\nexport const canvas_new = (id, parent_selector = 'body') => {\n  created = document.createElement('canvas');\n  created.id = id;\n\n  document.querySelector(parent_selector).appendChild(created);\n  return canvas_id(id);\n};\n",
+    "content": "// Basic semi-related tools.\nexport const clone = obj => Object.assign(Object.create(Object.getPrototypeOf(obj)), obj);\nObject.prototype.clone = function () {\n  return clone(this);\n};\n\nexport const type = element => (\n  ({}).toString.call(element).match(/\\s([a-zA-Z]+)/)[1].toLowerCase()\n);\n\n// --> Try to make `use()`, `type()` and `clone()` functions global.\nlet _use;\nif (typeof window === 'undefined') {\n  _use = (namespace, global) => Object.assign(global, namespace);\n} else {\n  _use = (namespace, global = window) => Object.assign(global, namespace);\n\n  window.use = _use;\n  window.type = type;\n  window.clone = clone;\n}\n\nexport const use = _use;\n\nexport const load_font = (name, path, description) => {\n  const font = new FontFace(name, path, description);\n  font.load().then(loaded => document.fonts.add(loaded));\n  return font;\n};\n\nexport const plain = (...args) => String.raw({raw: args[0]}, ...args.slice(1));\n\nexport const style = string => {\n  const node = document.createElement('style');\n  node.innerHTML = string;\n  document.body.appendChild(node);\n};\n\nexport const css = (s, ...exps) => style(plain(s, ...exps));\n\n// Patching and Monkey Patching prototypes.\nMath.TAU = 2 * Math.PI;\nMath.HALF_PI = Math.PI * 0.5;\nNumber.prototype.roundTo = function (dp) {\n  return parseFloat((this).toFixed(dp));\n};\n\nArray.prototype.mag = function () {\n  return Math.sqrt(this.reduce((i, j) => i + j ** 2, 0));\n};\nArray.prototype.norm = function () {\n  if (this.every(e => e === 0)) {\n    return this;\n  }\n  return this.map(e => e / this.mag());\n};\nArray.prototype.rotate = function (theta, origin=[0,0]) {\n  return [\n    origin[0] + (this[0] - origin[0]) * Math.cos(theta) - (this[1] - origin[1]) * Math.sin(theta),\n    origin[1] + (this[0] - origin[0]) * Math.sin(theta) + (this[1] - origin[1]) * Math.cos(theta)\n  ];\n};\n\nString.prototype.replaceAll = function (search, replacement) {\n  return this.replace(new RegExp(search, 'g'), replacement);\n};\n\nHTMLElement.prototype.html = function (s, ...exps) {\n  const contain = document.createElement('del');\n  contain.style.textDecoration = 'none';\n  contain.innerHTML = String.raw(s, ...exps);\n  this.appendChild(contain);\n};\n\nHTMLElement.prototype.css = function (properties) {\n  for (const property in properties) {\n    if (Object.prototype.hasOwnProperty.call(properties, property)) {\n      this.style[property] = properties[property];\n    }\n  }\n};\n\nObject.prototype.omap = function (lambda) {\n  return Object.assign({}, ...Object.keys(this).map(k => ({[k]: lambda(this[k])})));\n};\n\nObject.defineProperty(HTMLElement.prototype, 'elem', {\n  get: function elem() {\n    return this;\n  }\n});\n\n// More interaction-specific tools\nexport const click = (handler, canvas = null) => {\n  if (canvas) {\n    canvas.elem.addEventListener('click', handler, false);\n  } else {\n    window.addEventListener('click', handler, false);\n  }\n};\n\nexport const mouse_down = (handler, canvas = null) => {\n  if (canvas) {\n    canvas.elem.addEventListener('mousedown', handler, false);\n  } else {\n    window.addEventListener('mousedown', handler, false);\n  }\n};\n\nexport const mouse_up = (handler, canvas = null) => {\n  if (canvas) {\n    canvas.elem.addEventListener('mouseup', handler, false);\n  } else {\n    window.addEventListener('mouseup', handler, false);\n  }\n};\n\nexport const key_press = handler => {\n  window.addEventListener('keypress', handler, false);\n};\n\nexport const key_down = handler => {\n  window.addEventListener('keydown', handler, false);\n};\n\nexport const key_up = handler => {\n  window.addEventListener('keyup', handler, false);\n};\n\n// Classes for specific data-types\nclass PointObj {\n  constructor(x, y) {\n    this.x = x;\n    this.y = y;\n  }\n\n  get array() {\n    return [this.x, this.y];\n  }\n\n  set array(a) {\n    [this.x, this.y] = a;\n  }\n\n  floor() {\n    return new PointObj(Math.floor(this.x), Math.floor(this.y));\n  }\n\n  norm(other = new PointObj(0, 0)) {\n    return new PointObj(...this.sub(other).array.norm());\n  }\n\n  unit(...args) {\n    return this.norm(...args);\n  }\n\n  sum() {\n    return this.x + this.y;\n  }\n\n  add(other) {\n    return new PointObj(this.x + other.x, this.y + other.y);\n  }\n\n  offset(x, y) {\n    return new PointObj(this.x + x, this.y + y);\n  }\n\n  sub(other) {\n    return new PointObj(this.x - other.x, this.y - other.y);\n  }\n\n  scale(scalar) {\n    return new PointObj(this.x * scalar, this.y * scalar);\n  }\n\n  mul(other) {\n    if (typeof (other) === 'number') {\n      return this.scale(other);\n    }\n    return new PointObj(this.x * other.x, this.y * other.y);\n  }\n\n  dot(other) {\n    const standard = this.mul(other);\n    return standard.sum();\n  }\n\n  div(other) {\n    if (typeof (other) !== 'number') {\n      throw new TypeError('Can only divide vectors by numerics.');\n    }\n    return new PointObj(this.x / other, this.y / other);\n  }\n\n  mag(other = new PointObj(0, 0)) {\n    return this.sub(other).array.mag();\n  }\n\n  size(...xs) {\n    return this.mag(...xs);\n  }\n\n  length(...xs) {\n    return this.mag(...xs);\n  }\n\n  modulus(...xs) {\n    return this.mag(...xs);\n  }\n\n  angle(other = new PointObj(0, 0)) {\n    const v = this.sub(other);\n    return Math.atan2(v.y, v.x);\n  }\n\n  phase(...xs) {\n    return this.angle(...xs);\n  }\n\n  rotate(theta, origin = new PointObj(0, 0)) {\n    return new PointObj(...this.array.rotate(theta, origin.array));\n  }\n\n  toString() {\n    return `(${this.x}, ${this.y})`;\n  }\n\n  valueOf() {\n    return this.toString();\n  }\n}\n\nclass RGBAObj {\n  constructor(r, g, b, a) {\n    [this.r, this.g, this.b, this.a] = [r, g, b, a].map(Math.round);\n    this.rgba = [this.r, this.g, this.b, this.a];\n    this.rgb = this.rgba.slice(0, -1);\n  }\n\n  toString() {\n    return `rgba(${this.rgb.join(', ')}, ${this.a / 255})`;\n  }\n\n  valueOf() {\n    return this.toString();\n  }\n}\n\nexport const Color = (r, g = -1, b = -1, a = 255) => {\n  if (type(r) === 'string') {\n    return new NamedColorObj(r);\n  }\n  if (type(r) === 'array') {\n    return new NamedColorObj(r[0]);\n  }\n  if (b < 0 && g >= 0) {\n    a = g;\n  }\n  if (b < 0) {\n    [g, b] = [r, r];\n  }\n\n  return new RGBAObj(r, g, b, a);\n};\n\nexport const Colour = Color;\nexport const RGBA = Color;\nexport const RGB = Color;\n\nfunction hue_to_rgb(p, q, t) {\n  if (t < 0) {\n    t += 1;\n  }\n  if (t > 1) {\n    t -= 1;\n  }\n  if (t < 1 / 6) {\n    return p + (q - p) * 6 * t;\n  }\n  if (t < 1 / 2) {\n    return q;\n  }\n  if (t < 2 / 3) {\n    return p + (q - p) * (2 / 3 - t) * 6;\n  }\n  return p;\n}\n\nclass HSLObj {\n  constructor(h, s, l, a) {\n    [this.h, this.s, this.l, this.a] = [h, s, l, a].map(Math.round);\n    this.rgb = this.to_rgb();\n  }\n\n  to_rgb() {\n    let r, g, b;\n    const h = this.h / 360;\n    const [s, l] = [this.s, this.l].map(n => n / 100);\n\n    if (s == 0) {\n      r = g = b = l;\n    } else {\n      const q = l < 0.5 ? l * (1 + s) : l + s - l * s;\n      const p = 2 * l - q;\n\n      r = hue_to_rgb(p, q, h + 1 / 3);\n      g = hue_to_rgb(p, q, h);\n      b = hue_to_rgb(p, q, h - 1 / 3);\n    }\n\n    return RGBA(r * 255, g * 255, b * 255, this.a);\n  }\n\n  toString() {\n    return `hsla(${this.h}, ${this.s}%, ${this.l}%, ${this.a / 255})`;\n  }\n\n  valueOf() {\n    return this.toString();\n  }\n}\n\nclass HSVObj {\n  constructor(h, s, v, a) {\n    [this.h, this.s, this.v, this.a] = [h, s, v, a].map(Math.round);\n    this.rgb = this.to_rgb();\n  }\n\n  to_rgb() {\n    let r, g, b;\n    const h = this.h / 360;\n    const [s, v] = [this.s, this.v].map(n => n / 100);\n\n    const i = Math.floor(h * 6);\n    const f = h * 6 - i;\n    const p = v * (1 - s);\n    const q = v * (1 - f * s);\n    const t = v * (1 - (1 - f) * s);\n\n    switch (i % 6) {\n      case 0: r = v, g = t, b = p; break;\n      case 1: r = q, g = v, b = p; break;\n      case 2: r = p, g = v, b = t; break;\n      case 3: r = p, g = q, b = v; break;\n      case 4: r = t, g = p, b = v; break;\n      case 5: r = v, g = p, b = q; break;\n    }\n\n    return RGBA(r * 255, g * 255, b * 255, this.a);\n  }\n\n  toString() {\n    return `hsla(${this.h}, ${this.s}%, ${this.l}%, ${this.a / 255})`;\n  }\n\n  valueOf() {\n    return this.toString();\n  }\n}\n\nclass HEXobj {\n  constructor(hex) {\n    const chars = '000000ff'.split(''); // 0x000000ff\n\n    let given;\n    if (type(hex) === 'string') {\n      given = hex.split('#').slice(-1)[0];\n    } else if (type(hex) === 'array') {\n      given = plain(...hex).split('#').slice(-1)[0];\n    } else {\n      given = hex.toString(16);\n    }\n\n    if (given.length === 3 || given.length === 4) {\n      chars[0] = given[0];\n      chars[1] = given[0];\n      chars[2] = given[1];\n      chars[3] = given[1];\n      chars[4] = given[2];\n      chars[5] = given[2];\n      if (given.length === 4) {\n        chars[6] = given[3];\n        chars[7] = given[3];\n      }\n    } else if (given.length === 6 || given.length === 8) {\n      chars[0] = given[0];\n      chars[1] = given[1];\n      chars[2] = given[2];\n      chars[3] = given[3];\n      chars[4] = given[4];\n      chars[5] = given[5];\n      if (given.length === 8) {\n        chars[6] = given[6];\n        chars[7] = given[7];\n      }\n    } else {\n      throw new Error('Invalid hex format: ' + given);\n    }\n\n    const str = chars.join('');\n    this.str = '#' + str;\n    this.hex = parseInt(str, 16);\n    this.rgb = this.to_rgb();\n  }\n\n  to_rgb() {\n    const r = this.hex >> 24 & 0xFF;\n    const g = this.hex >> 16 & 0xFF;\n    const b = this.hex >> 8  & 0xFF;\n    const a = this.hex & 0xFF;\n    return RGBA(r, g, b, a);\n  }\n\n  toString() {\n    return this.str;\n  }\n\n  valueOf() {\n    return this.toString();\n  }\n}\n\nexport const NAMED_COLORS = {\n  aliceblue: '#f0f8ff',\n  antiquewhite: '#faebd7',\n  aqua: '#00ffff',\n  aquamarine: '#7fffd4',\n  azure: '#f0ffff',\n  beige: '#f5f5dc',\n  bisque: '#ffe4c4',\n  black: '#000000',\n  blanchedalmond: '#ffebcd',\n  blue: '#0000ff',\n  blueviolet: '#8a2be2',\n  brown: '#a52a2a',\n  burlywood: '#deb887',\n  cadetblue: '#5f9ea0',\n  chartreuse: '#7fff00',\n  chocolate: '#d2691e',\n  coral: '#ff7f50',\n  cornflowerblue: '#6495ed',\n  cornsilk: '#fff8dc',\n  crimson: '#dc143c',\n  cyan: '#00ffff',\n  darkblue: '#00008b',\n  darkcyan: '#008b8b',\n  darkgoldenrod: '#b8860b',\n  darkgray: '#a9a9a9',\n  darkgreen: '#006400',\n  darkgrey: '#a9a9a9',\n  darkkhaki: '#bdb76b',\n  darkmagenta: '#8b008b',\n  darkolivegreen: '#556b2f',\n  darkorange: '#ff8c00',\n  darkorchid: '#9932cc',\n  darkred: '#8b0000',\n  darksalmon: '#e9967a',\n  darkseagreen: '#8fbc8f',\n  darkslateblue: '#483d8b',\n  darkslategray: '#2f4f4f',\n  darkslategrey: '#2f4f4f',\n  darkturquoise: '#00ced1',\n  darkviolet: '#9400d3',\n  deeppink: '#ff1493',\n  deepskyblue: '#00bfff',\n  dimgray: '#696969',\n  dimgrey: '#696969',\n  dodgerblue: '#1e90ff',\n  firebrick: '#b22222',\n  floralwhite: '#fffaf0',\n  forestgreen: '#228b22',\n  fuchsia: '#ff00ff',\n  gainsboro: '#dcdcdc',\n  ghostwhite: '#f8f8ff',\n  goldenrod: '#daa520',\n  gold: '#ffd700',\n  gray: '#808080',\n  green: '#008000',\n  greenyellow: '#adff2f',\n  grey: '#808080',\n  honeydew: '#f0fff0',\n  hotpink: '#ff69b4',\n  indianred: '#cd5c5c',\n  indigo: '#4b0082',\n  ivory: '#fffff0',\n  khaki: '#f0e68c',\n  lavenderblush: '#fff0f5',\n  lavender: '#e6e6fa',\n  lawngreen: '#7cfc00',\n  lemonchiffon: '#fffacd',\n  lightblue: '#add8e6',\n  lightcoral: '#f08080',\n  lightcyan: '#e0ffff',\n  lightgoldenrodyellow: '#fafad2',\n  lightgray: '#d3d3d3',\n  lightgreen: '#90ee90',\n  lightgrey: '#d3d3d3',\n  lightpink: '#ffb6c1',\n  lightsalmon: '#ffa07a',\n  lightseagreen: '#20b2aa',\n  lightskyblue: '#87cefa',\n  lightslategray: '#778899',\n  lightslategrey: '#778899',\n  lightsteelblue: '#b0c4de',\n  lightyellow: '#ffffe0',\n  lime: '#00ff00',\n  limegreen: '#32cd32',\n  linen: '#faf0e6',\n  magenta: '#ff00ff',\n  maroon: '#800000',\n  mediumaquamarine: '#66cdaa',\n  mediumblue: '#0000cd',\n  mediumorchid: '#ba55d3',\n  mediumpurple: '#9370db',\n  mediumseagreen: '#3cb371',\n  mediumslateblue: '#7b68ee',\n  mediumspringgreen: '#00fa9a',\n  mediumturquoise: '#48d1cc',\n  mediumvioletred: '#c71585',\n  midnightblue: '#191970',\n  mintcream: '#f5fffa',\n  mistyrose: '#ffe4e1',\n  moccasin: '#ffe4b5',\n  navajowhite: '#ffdead',\n  navy: '#000080',\n  oldlace: '#fdf5e6',\n  olive: '#808000',\n  olivedrab: '#6b8e23',\n  orange: '#ffa500',\n  orangered: '#ff4500',\n  orchid: '#da70d6',\n  palegoldenrod: '#eee8aa',\n  palegreen: '#98fb98',\n  paleturquoise: '#afeeee',\n  palevioletred: '#db7093',\n  papayawhip: '#ffefd5',\n  peachpuff: '#ffdab9',\n  peru: '#cd853f',\n  pink: '#ffc0cb',\n  plum: '#dda0dd',\n  powderblue: '#b0e0e6',\n  purple: '#800080',\n  rebeccapurple: '#663399',\n  red: '#ff0000',\n  rosybrown: '#bc8f8f',\n  royalblue: '#4169e1',\n  saddlebrown: '#8b4513',\n  salmon: '#fa8072',\n  sandybrown: '#f4a460',\n  seagreen: '#2e8b57',\n  seashell: '#fff5ee',\n  sienna: '#a0522d',\n  silver: '#c0c0c0',\n  skyblue: '#87ceeb',\n  slateblue: '#6a5acd',\n  slategray: '#708090',\n  slategrey: '#708090',\n  snow: '#fffafa',\n  springgreen: '#00ff7f',\n  steelblue: '#4682b4',\n  tan: '#d2b48c',\n  teal: '#008080',\n  thistle: '#d8bfd8',\n  tomato: '#ff6347',\n  transparent: '#00000000',\n  turquoise: '#40e0d0',\n  violet: '#ee82ee',\n  wheat: '#f5deb3',\n  white: '#ffffff',\n  whitesmoke: '#f5f5f5',\n  yellow: '#ffff00',\n  yellowgreen: '#9acd32'\n}.omap(c => (new HEXobj(c)).rgb);\n\nclass NamedColorObj {\n  constructor(color) {\n    this.color = color;\n    this.rgb = this.to_rgb();\n  }\n\n  to_rgb() {\n    return NAMED_COLORS[this.color];\n  }\n\n  toString() {\n    return this.color;\n  }\n\n  valueOf() {\n    return this.toString();\n  }\n}\n\n// Construction functions for data-types\nexport const Point = (x, y) => new PointObj(x, y);\nexport const Polar = (r, theta, origin = Point(0, 0)) => Point(\n  r * Math.cos(theta) + origin.x,\n  r * Math.sin(theta) + origin.y\n);\n\nexport const [P, point, polar] = [Point, Point, Polar];\n\nexport const HEX = hex => new HEXobj(hex);\nexport const HSL = (h, s = 100, l = 50, a = 255) => new HSLObj(h, s, l, a);\nexport const HSLA = HSL;\nexport const HSV = (h, s = 100, v = 100, a = 255) => new HSVObj(h, s, v, a);\nexport const HSVA = HSV;\n\nexport const TRANSPARENT = Object.freeze('transparent');\n\nconst rgb_regex = /^rgb\\s*\\(\\s*(\\d+)\\s*,\\s*(\\d+)\\s*,\\s*(\\d+)\\s*\\)$/i;\nconst hsl_regex = /^hsl\\s*\\(\\s*(\\d+)\\s*,\\s*(\\d+(\\%)?)\\s*,\\s*(\\d+(\\%)?)\\s*\\)$/i;\nconst rgba_regex = /^rgba\\s*\\(\\s*(\\d+)\\s*,\\s*(\\d+)\\s*,\\s*(\\d+)\\s*,\\s*([+-]?\\d+(\\.\\d+)?)\\s*\\)$/i;\nconst hsla_regex = /^hsla\\s*\\(\\s*(\\d+)\\s*,\\s*(\\d+(\\%)?)\\s*,\\s*(\\d+(\\%)?)\\s*,\\s*([+-]?\\d+(\\.\\d+)?)\\s*\\)$/i;\nconst hex_regex = /^#([0-9a-f]{3,4}|[0-9a-f]{6}|[0-9a-f]{8})$/i;\nconst trans_regex = /^transparent$/i;\n\nexport const to_rgb = c => {\n  let match = null;\n\n  if (type(c) === 'string') {\n    // Check rgb\n    match = (\n      c.match(rgb_regex)  ||\n  \t  c.match(rgba_regex)\n    );\n    if (match) {\n      if (match[4]) {\n        alpha = 255 * parseFloat(match[4]);\n      }\n      return RGBA(...([match[1], match[2], match[3]].map(parseFloat)), alpha);\n    }\n    // Check hsl\n    match = (\n      c.match(hsl_regex)  ||\n      c.match(hsla_regex)\n    );\n    if (match) {\n      if (match[4]) {\n        alpha = 255 * parseFloat(match[4]);\n      }\n      return HSLA(...([match[1], match[2], match[3]].map(parseFloat)), alpha).rgb;\n    }\n    // Check hex\n    match = c.match(hex_regex);\n    if (match) {\n      return HEX(c).rgb;\n    }\n    return Color(c).rgb;\n  }\n\n  return c.rgb;\n};\n\nexport const to_rgba = to_rgb;\n\n// Implements and manages every rendered shape seen.\nclass Shape {\n  constructor(name, canvas) {\n    this.name = name;\n    this.canvas = canvas;\n    this.primitive = null;\n\n    this.vertices = [];\n    this.center = null;\n    this.hollow = false;\n\n    this._first_stroke_color = null;\n    this._stroke_changes = false;\n  }\n\n  flesh() {\n    this.canvas.context.fill();\n    this.canvas.context.stroke();\n  }\n\n  style(\n    fill = this.canvas.fill,\n    stroke = this.canvas.stroke,\n    stroke_weight = this.canvas.stroke_weight,\n    stroke_cap = this.canvas.stroke_cap\n  ) {\n    if (stroke_weight === 0) {\n      stroke = TRANSPARENT;\n    }\n    const c = this.canvas.context;\n    c.fillStyle = (this.hollow) ? TRANSPARENT : fill.toString();\n    c.strokeStyle = stroke.toString();\n    c.lineWidth = stroke_weight;\n    c.lineCap = stroke_cap;\n    return this;\n  }\n\n  point(point, color = this.canvas.stroke) {\n    return this.canvas.color(point, color);\n  }\n\n  vertex(point, y = null) {\n    if (y !== null) {\n      if (Number.isNaN(point) || Number.isNaN(y)) {\n        return;\n      }\n      point = Point(point, y);\n    } else if (Number.isNaN(point.x) || Number.isNaN(point.y)) {\n      return;\n    }\n\n    if (this.vertices.length === 0) {\n      this.vertices.push([point.x, point.y]);\n      this.center = point;\n      return point;\n    }\n\n    const c = this.canvas.context;\n    c.beginPath();\n    c.moveTo(...this.vertices[this.vertices.length - 1]);\n    const next = [point.x, point.y];\n    c.lineTo(...next);\n\n    if (this._first_stroke_color === null) {\n      this._first_stroke_color = this.canvas.stroke.valueOf();\n    } else if (this._first_stroke_color !== this.canvas.stroke.valueOf()) {\n      this._stroke_changes = true;\n      this.style();\n      this.flesh();\n    }\n\n    this.vertices.push(next);\n    return point;\n  }\n\n  rect(point, w, h, fill = this.canvas.fill, stroke = this.canvas.stroke) {\n    this.style(fill, stroke);\n    const c = this.canvas.context;\n\n    this.primitive = () => c.rect(point.x, point.y, w, h);\n  }\n\n  ellipse(point, w, h, fill = this.canvas.fill, stroke = this.canvas.stroke) {\n    this.style(fill, stroke);\n    const c = this.canvas.context;\n\n    this.primitive = () => c.ellipse(point.x, point.y, w, h, 0, 0, Math.TAU);\n  }\n\n  close() {\n    this.vertex(...this.vertices[0]);\n    return this;\n  }\n\n  fill(color = null) {\n    let temp_color = color;\n    if (temp_color === null) {\n      temp_color = this.canvas.fill;\n    }\n    if (this.vertices.length < 2 && this.primitive === null) {\n      return;\n    }\n    if (this.hollow\n    || (this.primitive === null && this.vertices.length < 3)\n    || to_rgb(temp_color).a === 0) {\n      temp_color = TRANSPARENT;\n    }\n\n    if (this.primitive === null) {\n      if (this.vertices.length > 0) {\n        const c = this.canvas.context;\n        c.moveTo(...this.vertices[0]);\n        for (const vertex of this.vertices.slice(1)) {\n          c.lineTo(...vertex);\n      \t}\n      }\n    } else {\n      this.primitive();\n      this.style(temp_color);\n      this.flesh();\n      return;\n    }\n\n    let stroke = this.canvas.stroke;\n    if (this._stroke_changes) {\n      stroke = TRANSPARENT;\n    }\n    this.style(temp_color, stroke);\n    this.flesh();\n  }\n\n  stroke(color = this.canvas.stroke) {\n    this.style(RGBA(0, 0), color);\n    this.flesh();\n  }\n\n  render(...args) { this.fill(...args); }\n\n  rotate(theta, origin = this.center) {\n    for (let i = 0; i < this.vertices.length; i++) {\n      this.vertices[i] = this.vertices[i].rotate(theta, origin.array)\n    }\n  }\n\n  translate(x, y) {\n    for (let v of this.vertices) {\n      [v[0], v[1]] = [v[0] + x, v[1] + y]\n    }\n  }\n\n  scale(w, h = null, origin = this.center) {\n    if (h === null) h = w;\n\n    for (let v of this.vertices) {\n      [v[0], v[1]] = [\n        origin.x + w * (v[0] - origin.x),\n        origin.y + h * (v[1] - origin.y)\n      ]\n    }\n  }\n}\n\n// Main Canvas class:\n// --> First point of abstraction away from the standard canvas.\nclass Canvas {\n  constructor(elem) {\n    this.elem = elem;\n    this._width = this.elem.width;\n    this._height = this.elem.height;\n\n    // FPS variables.\n    this._now = null;\n    this._Δ = null;\n    this._then = Date.now();\n    this._interval = 1000 / 60;\n\n    // Canvas Context.\n    this.context = elem.getContext('2d');\n    this.image_data = this.context.getImageData(0, 0, this.width, this.height);\n    this.data = this.image_data.data;\n\n    // Main API properties.\n    this.fill = RGBA(255, 255, 255, 0);\n    this.stroke = RGB(0, 0, 0);\n    this._stroke_weight = 1;\n    this.stroke_cap = 'butt';\n    this.font = '16px sans-serif';\n    this.text_align = 'left';\n    this._mouse_position = Point(NaN, NaN);\n    this._mouse_listen = undefined;\n\n    // Used for coördinate calculations.\n    this.corner = {x: 0, y: 0};\n    this.stretch = [1, 1];\n\n    // Saved properties of the objects state at a certain time.\n    this.state_stack = [];\n\n    this.shapes = {};  // All shapes displayed on the canvas.\n    this.update = () => { };  // Lambda for when drawing a frame.\n  }\n\n  get FPS() {\n    return 1000 / this._Δ;\n  }\n\n  set FPS(frame_rate) {\n    this._interval = 1000 / frame_rate;\n  }\n\n  get width() {\n    return this._width;\n  }\n\n  get height() {\n    return this._height;\n  }\n\n  set width(w) {\n    this.elem.width = w;\n    this._width = w;\n    this.update_context();\n  }\n\n  set height(h) {\n    this.elem.height = h;\n    this._height = h;\n    this.update_context();\n  }\n\n  get stroke_weight() {\n    return this._stroke_weight / Math.max(...(this.stretch).map(e => Math.abs(e)));\n  }\n\n  set stroke_weight(w) {\n    if (w === 0) {\n      this.stroke = TRANSPARENT;\n    }\n    this._stroke_weight = w;\n  }\n\n  get mouse() {\n    if (this._mouse_listen === undefined) {\n      this._mouse_listen = this.elem.addEventListener('mousemove', evt => {\n        const rect = this.elem.getBoundingClientRect();\n        this._mouse_position = Point(\n          (evt.clientX - rect.left) / this.stretch[0] + this.corner.x,\n          (evt.clientY - rect.top) / this.stretch[1] + this.corner.y\n        );\n      });\n    }\n    return this._mouse_position;\n  }\n\n  update_context() {\n    this.context = this.elem.getContext('2d');\n    this.image_data = this.context.getImageData(0, 0, this.width, this.height);\n    this.data = this.image_data.data;\n  }\n\n  dimensions(w, h) {\n    this.width = w;\n    this.height = h;\n    this.update_context();\n  }\n\n  translate(x, y) {\n    [this.corner.x, this.corner.y] = [-x, -y];\n    this.context.translate(x, y);\n  }\n\n  rotate(theta) {\n    this.context.rotate(theta);\n  }\n\n  scale(x, y = x) {\n    [this.corner.x, this.corner.y] = [this.corner.x / x, this.corner.y / y];\n    this.stretch = [x, y];\n    this.context.scale(x, y);\n  }\n\n  unscale() {\n    this.scale(1 / this.stretch[0], 1 / this.stretch[1]);\n  }\n\n  save() {\n    const keys = Object.keys(this);\n    const saved = {};\n    for (const key of keys) {\n      if (this[key] !== null && typeof this[key] === 'object' && this[key].constructor === Object) {\n        saved[key] = Object.assign({}, this[key]);\n      } else if (key === 'state_stack') {\n        continue;\n      } else {\n        saved[key] = this[key];\n      }\n    }\n    this.state_stack.push(saved);\n    return this.context.save();\n  }\n\n  restore() {\n    const saved = this.state_stack.pop();\n    for (const key in saved) {\n      if (Object.prototype.hasOwnProperty.call(saved, key)) {\n        this[key] = saved[key];\n      }\n    }\n    return this.context.restore();\n  }\n\n  temp(λ) {\n    this.save();\n    λ();\n    return this.restore();\n  }\n\n  color(point, other = null) {\n    if (!other) {\n      return Color(...this.context.getImageData(point.x, point.y, 1, 1).data);\n    }\n    this.context.fillStyle = other.toString();\n    this.context.fillRect(\n      point.x, point.y,\n      1 / this.stretch[0], 1 / this.stretch[1]\n    );\n    return other;\n  }\n\n  point(point, color = this.stroke) {\n    return this.color(point, color);\n  }\n\n  shape(name, construction = null) {\n    let [_name, _construction] = [null, null];\n    if (construction === null && typeof name === 'function') {\n      _construction = name;\n    } else {\n      _construction = construction;\n    }\n    if (name === null || name === undefined || construction === null) {\n      _name = `ImplicitName${Object.keys(this.shapes).length}`;\n    } else {\n      _name = name;\n    }\n\n    const SHAPE = new Shape(_name, this);\n    this.shapes[_name] = {\n      draw: _construction,\n      shape: SHAPE\n    };\n    this.context.beginPath();\n    _construction(SHAPE);\n    this.context.closePath();\n\n    return SHAPE;\n  }\n\n  render(...args) {\n    let shape = null;\n    if (args[0] instanceof Shape) shape = args[0];\n    else                          shape = this.shape(...args);\n    shape.fill();\n    return shape;\n  }\n\n  text(string, point, font = this.font, fill = this.fill, storke = this.stroke) {\n    const c = this.context;\n\n    c.font = font;\n    c.textAlign = this.text_align;\n    c.fillStyle = fill;\n    c.strokeStyle = storke;\n    c.fillText(string, point.x, point.y);\n    c.strokeText(string, point.x, point.y);\n  }\n\n  background(c = this.fill, clear = false) {\n    if (clear) {\n      this.context.clearRect(\n        this.corner.x,\n        this.corner.y,\n        -this.corner.x + Math.sign(this.stretch[0]) * this.width,\n        -this.corner.y + Math.sign(this.stretch[1]) * this.height\n      );\n    }\n    this.context.fillStyle = c.toString();\n    this.context.fillRect(\n      this.corner.x,\n      this.corner.y,\n      -this.corner.x + Math.sign(this.stretch[0]) * this.width,\n      -this.corner.y + Math.sign(this.stretch[1]) * this.height\n    );\n  }\n\n  update_frame(canvas) {\n    canvas.shapes = {};\n\n    window.requestAnimationFrame(() => {\n      canvas.update_frame(canvas);\n    });\n\n    canvas._now = Date.now();\n    canvas._Δ = canvas._now - canvas._then;\n\n    if (canvas._Δ > canvas._interval) {\n      canvas._then = canvas._now - (canvas._Δ % canvas._interval);\n      canvas.update(canvas.frame++);\n    }\n  }\n\n  loop(update) {\n    this.shapes = {};\n    this.update = update;\n    this.frame = 1;\n    window.requestAnimationFrame(() => {\n      this.update_frame(this);\n    });\n  }\n}\n\n// Create new `Canvas` instance in various ways.\nexport const canvas = elem => (\n  new Canvas(elem)\n);\n\nexport const canvas_id = id => (\n  canvas(document.getElementById(id))\n);\n\nexport const canvas_new = (id, parent_selector = 'body') => {\n  created = document.createElement('canvas');\n  created.id = id;\n\n  document.querySelector(parent_selector).appendChild(created);\n  return canvas_id(id);\n};\n",
     "static": true,
     "longname": "/home/weet/Git/BasicCanvas/lib/BasicCanvas.js",
     "access": "public",
@@ -899,6 +899,18 @@
         "types": [
           "*"
         ]
+      },
+      {
+        "name": "origin",
+        "optional": true,
+        "types": [
+          "number[]"
+        ],
+        "defaultRaw": [
+          0,
+          0
+        ],
+        "defaultValue": "[0,0]"
       }
     ],
     "return": {
@@ -1777,490 +1789,17 @@
   {
     "__docId__": 94,
     "kind": "method",
-    "name": "toString",
+    "name": "rotate",
     "memberof": "lib/BasicCanvas.js~PointObj",
     "generator": false,
     "async": false,
     "static": false,
-    "longname": "lib/BasicCanvas.js~PointObj#toString",
+    "longname": "lib/BasicCanvas.js~PointObj#rotate",
     "access": "public",
     "description": null,
     "lineNumber": 221,
     "undocument": true,
-    "params": [],
-    "return": {
-      "types": [
-        "string"
-      ]
-    }
-  },
-  {
-    "__docId__": 95,
-    "kind": "method",
-    "name": "valueOf",
-    "memberof": "lib/BasicCanvas.js~PointObj",
-    "generator": false,
-    "async": false,
-    "static": false,
-    "longname": "lib/BasicCanvas.js~PointObj#valueOf",
-    "access": "public",
-    "description": null,
-    "lineNumber": 225,
-    "undocument": true,
-    "params": [],
-    "return": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 96,
-    "kind": "class",
-    "name": "NamedColorObj",
-    "memberof": "lib/BasicCanvas.js",
-    "static": true,
-    "longname": "lib/BasicCanvas.js~NamedColorObj",
-    "access": "public",
-    "export": false,
-    "importPath": "basiccanvas",
-    "importStyle": null,
-    "description": null,
-    "lineNumber": 229,
-    "undocument": true,
-    "interface": false,
-    "ignore": true
-  },
-  {
-    "__docId__": 97,
-    "kind": "constructor",
-    "name": "constructor",
-    "memberof": "lib/BasicCanvas.js~NamedColorObj",
-    "generator": false,
-    "async": false,
-    "static": false,
-    "longname": "lib/BasicCanvas.js~NamedColorObj#constructor",
-    "access": "public",
-    "description": null,
-    "lineNumber": 230,
-    "undocument": true
-  },
-  {
-    "__docId__": 98,
-    "kind": "member",
-    "name": "color",
-    "memberof": "lib/BasicCanvas.js~NamedColorObj",
-    "static": false,
-    "longname": "lib/BasicCanvas.js~NamedColorObj#color",
-    "access": "public",
-    "description": null,
-    "lineNumber": 231,
-    "undocument": true,
-    "type": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 99,
-    "kind": "method",
-    "name": "toString",
-    "memberof": "lib/BasicCanvas.js~NamedColorObj",
-    "generator": false,
-    "async": false,
-    "static": false,
-    "longname": "lib/BasicCanvas.js~NamedColorObj#toString",
-    "access": "public",
-    "description": null,
-    "lineNumber": 234,
-    "undocument": true,
-    "params": [],
-    "return": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 100,
-    "kind": "method",
-    "name": "valueOf",
-    "memberof": "lib/BasicCanvas.js~NamedColorObj",
-    "generator": false,
-    "async": false,
-    "static": false,
-    "longname": "lib/BasicCanvas.js~NamedColorObj#valueOf",
-    "access": "public",
-    "description": null,
-    "lineNumber": 238,
-    "undocument": true,
-    "params": [],
-    "return": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 101,
-    "kind": "class",
-    "name": "RGBAObj",
-    "memberof": "lib/BasicCanvas.js",
-    "static": true,
-    "longname": "lib/BasicCanvas.js~RGBAObj",
-    "access": "public",
-    "export": false,
-    "importPath": "basiccanvas",
-    "importStyle": null,
-    "description": null,
-    "lineNumber": 242,
-    "undocument": true,
-    "interface": false,
-    "ignore": true
-  },
-  {
-    "__docId__": 102,
-    "kind": "constructor",
-    "name": "constructor",
-    "memberof": "lib/BasicCanvas.js~RGBAObj",
-    "generator": false,
-    "async": false,
-    "static": false,
-    "longname": "lib/BasicCanvas.js~RGBAObj#constructor",
-    "access": "public",
-    "description": null,
-    "lineNumber": 243,
-    "undocument": true
-  },
-  {
-    "__docId__": 103,
-    "kind": "member",
-    "name": "rgba",
-    "memberof": "lib/BasicCanvas.js~RGBAObj",
-    "static": false,
-    "longname": "lib/BasicCanvas.js~RGBAObj#rgba",
-    "access": "public",
-    "description": null,
-    "lineNumber": 245,
-    "undocument": true,
-    "type": {
-      "types": [
-        "undefined[]"
-      ]
-    }
-  },
-  {
-    "__docId__": 104,
-    "kind": "member",
-    "name": "rgb",
-    "memberof": "lib/BasicCanvas.js~RGBAObj",
-    "static": false,
-    "longname": "lib/BasicCanvas.js~RGBAObj#rgb",
-    "access": "public",
-    "description": null,
-    "lineNumber": 246,
-    "undocument": true,
-    "type": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 105,
-    "kind": "method",
-    "name": "toString",
-    "memberof": "lib/BasicCanvas.js~RGBAObj",
-    "generator": false,
-    "async": false,
-    "static": false,
-    "longname": "lib/BasicCanvas.js~RGBAObj#toString",
-    "access": "public",
-    "description": null,
-    "lineNumber": 249,
-    "undocument": true,
-    "params": [],
-    "return": {
-      "types": [
-        "string"
-      ]
-    }
-  },
-  {
-    "__docId__": 106,
-    "kind": "method",
-    "name": "valueOf",
-    "memberof": "lib/BasicCanvas.js~RGBAObj",
-    "generator": false,
-    "async": false,
-    "static": false,
-    "longname": "lib/BasicCanvas.js~RGBAObj#valueOf",
-    "access": "public",
-    "description": null,
-    "lineNumber": 253,
-    "undocument": true,
-    "params": [],
-    "return": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 107,
-    "kind": "class",
-    "name": "HSLObj",
-    "memberof": "lib/BasicCanvas.js",
-    "static": true,
-    "longname": "lib/BasicCanvas.js~HSLObj",
-    "access": "public",
-    "export": false,
-    "importPath": "basiccanvas",
-    "importStyle": null,
-    "description": null,
-    "lineNumber": 258,
-    "undocument": true,
-    "interface": false,
-    "ignore": true
-  },
-  {
-    "__docId__": 108,
-    "kind": "constructor",
-    "name": "constructor",
-    "memberof": "lib/BasicCanvas.js~HSLObj",
-    "generator": false,
-    "async": false,
-    "static": false,
-    "longname": "lib/BasicCanvas.js~HSLObj#constructor",
-    "access": "public",
-    "description": null,
-    "lineNumber": 259,
-    "undocument": true
-  },
-  {
-    "__docId__": 109,
-    "kind": "method",
-    "name": "toString",
-    "memberof": "lib/BasicCanvas.js~HSLObj",
-    "generator": false,
-    "async": false,
-    "static": false,
-    "longname": "lib/BasicCanvas.js~HSLObj#toString",
-    "access": "public",
-    "description": null,
-    "lineNumber": 263,
-    "undocument": true,
-    "params": [],
-    "return": {
-      "types": [
-        "string"
-      ]
-    }
-  },
-  {
-    "__docId__": 110,
-    "kind": "method",
-    "name": "valueOf",
-    "memberof": "lib/BasicCanvas.js~HSLObj",
-    "generator": false,
-    "async": false,
-    "static": false,
-    "longname": "lib/BasicCanvas.js~HSLObj#valueOf",
-    "access": "public",
-    "description": null,
-    "lineNumber": 267,
-    "undocument": true,
-    "params": [],
-    "return": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 111,
-    "kind": "class",
-    "name": "HSVObj",
-    "memberof": "lib/BasicCanvas.js",
-    "static": true,
-    "longname": "lib/BasicCanvas.js~HSVObj",
-    "access": "public",
-    "export": false,
-    "importPath": "basiccanvas",
-    "importStyle": null,
-    "description": null,
-    "lineNumber": 272,
-    "undocument": true,
-    "interface": false,
-    "extends": [
-      "HSLObj"
-    ],
-    "ignore": true
-  },
-  {
-    "__docId__": 112,
-    "kind": "method",
-    "name": "toString",
-    "memberof": "lib/BasicCanvas.js~HSVObj",
-    "generator": false,
-    "async": false,
-    "static": false,
-    "longname": "lib/BasicCanvas.js~HSVObj#toString",
-    "access": "public",
-    "description": null,
-    "lineNumber": 273,
-    "undocument": true,
-    "params": [],
-    "return": {
-      "types": [
-        "string"
-      ]
-    }
-  },
-  {
-    "__docId__": 113,
-    "kind": "class",
-    "name": "HEXobj",
-    "memberof": "lib/BasicCanvas.js",
-    "static": true,
-    "longname": "lib/BasicCanvas.js~HEXobj",
-    "access": "public",
-    "export": false,
-    "importPath": "basiccanvas",
-    "importStyle": null,
-    "description": null,
-    "lineNumber": 277,
-    "undocument": true,
-    "interface": false,
-    "ignore": true
-  },
-  {
-    "__docId__": 114,
-    "kind": "constructor",
-    "name": "constructor",
-    "memberof": "lib/BasicCanvas.js~HEXobj",
-    "generator": false,
-    "async": false,
-    "static": false,
-    "longname": "lib/BasicCanvas.js~HEXobj#constructor",
-    "access": "public",
-    "description": null,
-    "lineNumber": 278,
-    "undocument": true
-  },
-  {
-    "__docId__": 115,
-    "kind": "member",
-    "name": "hex",
-    "memberof": "lib/BasicCanvas.js~HEXobj",
-    "static": false,
-    "longname": "lib/BasicCanvas.js~HEXobj#hex",
-    "access": "public",
-    "description": null,
-    "lineNumber": 280,
-    "undocument": true,
-    "type": {
-      "types": [
-        "string"
-      ]
-    }
-  },
-  {
-    "__docId__": 117,
-    "kind": "method",
-    "name": "toString",
-    "memberof": "lib/BasicCanvas.js~HEXobj",
-    "generator": false,
-    "async": false,
-    "static": false,
-    "longname": "lib/BasicCanvas.js~HEXobj#toString",
-    "access": "public",
-    "description": null,
-    "lineNumber": 288,
-    "undocument": true,
-    "params": [],
-    "return": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 118,
-    "kind": "method",
-    "name": "valueOf",
-    "memberof": "lib/BasicCanvas.js~HEXobj",
-    "generator": false,
-    "async": false,
-    "static": false,
-    "longname": "lib/BasicCanvas.js~HEXobj#valueOf",
-    "access": "public",
-    "description": null,
-    "lineNumber": 292,
-    "undocument": true,
-    "params": [],
-    "return": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 119,
-    "kind": "function",
-    "name": "Point",
-    "memberof": "lib/BasicCanvas.js",
-    "generator": false,
-    "async": false,
-    "static": true,
-    "longname": "lib/BasicCanvas.js~Point",
-    "access": "public",
-    "export": true,
-    "importPath": "basiccanvas",
-    "importStyle": "{Point}",
-    "description": null,
-    "lineNumber": 298,
-    "undocument": true,
     "params": [
-      {
-        "name": "x",
-        "types": [
-          "*"
-        ]
-      },
-      {
-        "name": "y",
-        "types": [
-          "*"
-        ]
-      }
-    ],
-    "return": null
-  },
-  {
-    "__docId__": 120,
-    "kind": "function",
-    "name": "Polar",
-    "memberof": "lib/BasicCanvas.js",
-    "generator": false,
-    "async": false,
-    "static": true,
-    "longname": "lib/BasicCanvas.js~Polar",
-    "access": "public",
-    "export": true,
-    "importPath": "basiccanvas",
-    "importStyle": "{Polar}",
-    "description": null,
-    "lineNumber": 299,
-    "undocument": true,
-    "params": [
-      {
-        "name": "r",
-        "types": [
-          "*"
-        ]
-      },
       {
         "name": "theta",
         "types": [
@@ -2275,21 +1814,93 @@
         ]
       }
     ],
-    "return": null
+    "return": {
+      "types": [
+        "*"
+      ]
+    }
   },
   {
-    "__docId__": 121,
-    "kind": "variable",
-    "name": "P",
+    "__docId__": 95,
+    "kind": "method",
+    "name": "toString",
+    "memberof": "lib/BasicCanvas.js~PointObj",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "lib/BasicCanvas.js~PointObj#toString",
+    "access": "public",
+    "description": null,
+    "lineNumber": 225,
+    "undocument": true,
+    "params": [],
+    "return": {
+      "types": [
+        "string"
+      ]
+    }
+  },
+  {
+    "__docId__": 96,
+    "kind": "method",
+    "name": "valueOf",
+    "memberof": "lib/BasicCanvas.js~PointObj",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "lib/BasicCanvas.js~PointObj#valueOf",
+    "access": "public",
+    "description": null,
+    "lineNumber": 229,
+    "undocument": true,
+    "params": [],
+    "return": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 97,
+    "kind": "class",
+    "name": "RGBAObj",
     "memberof": "lib/BasicCanvas.js",
     "static": true,
-    "longname": "lib/BasicCanvas.js~P",
+    "longname": "lib/BasicCanvas.js~RGBAObj",
     "access": "public",
-    "export": true,
+    "export": false,
     "importPath": "basiccanvas",
-    "importStyle": "{P}",
+    "importStyle": null,
     "description": null,
-    "lineNumber": 304,
+    "lineNumber": 234,
+    "undocument": true,
+    "interface": false,
+    "ignore": true
+  },
+  {
+    "__docId__": 98,
+    "kind": "constructor",
+    "name": "constructor",
+    "memberof": "lib/BasicCanvas.js~RGBAObj",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "lib/BasicCanvas.js~RGBAObj#constructor",
+    "access": "public",
+    "description": null,
+    "lineNumber": 235,
+    "undocument": true
+  },
+  {
+    "__docId__": 99,
+    "kind": "member",
+    "name": "rgba",
+    "memberof": "lib/BasicCanvas.js~RGBAObj",
+    "static": false,
+    "longname": "lib/BasicCanvas.js~RGBAObj#rgba",
+    "access": "public",
+    "description": null,
+    "lineNumber": 237,
     "undocument": true,
     "type": {
       "types": [
@@ -2298,7 +1909,64 @@
     }
   },
   {
-    "__docId__": 122,
+    "__docId__": 100,
+    "kind": "member",
+    "name": "rgb",
+    "memberof": "lib/BasicCanvas.js~RGBAObj",
+    "static": false,
+    "longname": "lib/BasicCanvas.js~RGBAObj#rgb",
+    "access": "public",
+    "description": null,
+    "lineNumber": 238,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 101,
+    "kind": "method",
+    "name": "toString",
+    "memberof": "lib/BasicCanvas.js~RGBAObj",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "lib/BasicCanvas.js~RGBAObj#toString",
+    "access": "public",
+    "description": null,
+    "lineNumber": 241,
+    "undocument": true,
+    "params": [],
+    "return": {
+      "types": [
+        "string"
+      ]
+    }
+  },
+  {
+    "__docId__": 102,
+    "kind": "method",
+    "name": "valueOf",
+    "memberof": "lib/BasicCanvas.js~RGBAObj",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "lib/BasicCanvas.js~RGBAObj#valueOf",
+    "access": "public",
+    "description": null,
+    "lineNumber": 245,
+    "undocument": true,
+    "params": [],
+    "return": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 103,
     "kind": "function",
     "name": "Color",
     "memberof": "lib/BasicCanvas.js",
@@ -2311,7 +1979,7 @@
     "importPath": "basiccanvas",
     "importStyle": "{Color}",
     "description": null,
-    "lineNumber": 306,
+    "lineNumber": 250,
     "undocument": true,
     "params": [
       {
@@ -2351,7 +2019,7 @@
     }
   },
   {
-    "__docId__": 123,
+    "__docId__": 104,
     "kind": "variable",
     "name": "Colour",
     "memberof": "lib/BasicCanvas.js",
@@ -2362,7 +2030,7 @@
     "importPath": "basiccanvas",
     "importStyle": "{Colour}",
     "description": null,
-    "lineNumber": 322,
+    "lineNumber": 267,
     "undocument": true,
     "type": {
       "types": [
@@ -2371,7 +2039,7 @@
     }
   },
   {
-    "__docId__": 124,
+    "__docId__": 105,
     "kind": "variable",
     "name": "RGBA",
     "memberof": "lib/BasicCanvas.js",
@@ -2382,7 +2050,7 @@
     "importPath": "basiccanvas",
     "importStyle": "{RGBA}",
     "description": null,
-    "lineNumber": 323,
+    "lineNumber": 268,
     "undocument": true,
     "type": {
       "types": [
@@ -2391,7 +2059,7 @@
     }
   },
   {
-    "__docId__": 125,
+    "__docId__": 106,
     "kind": "variable",
     "name": "RGB",
     "memberof": "lib/BasicCanvas.js",
@@ -2402,7 +2070,7 @@
     "importPath": "basiccanvas",
     "importStyle": "{RGB}",
     "description": null,
-    "lineNumber": 324,
+    "lineNumber": 269,
     "undocument": true,
     "type": {
       "types": [
@@ -2411,7 +2079,644 @@
     }
   },
   {
+    "__docId__": 107,
+    "kind": "function",
+    "name": "hue_to_rgb",
+    "memberof": "lib/BasicCanvas.js",
+    "generator": false,
+    "async": false,
+    "static": true,
+    "longname": "lib/BasicCanvas.js~hue_to_rgb",
+    "access": "public",
+    "export": false,
+    "importPath": "basiccanvas",
+    "importStyle": null,
+    "description": null,
+    "lineNumber": 271,
+    "undocument": true,
+    "params": [
+      {
+        "name": "p",
+        "types": [
+          "*"
+        ]
+      },
+      {
+        "name": "q",
+        "types": [
+          "*"
+        ]
+      },
+      {
+        "name": "t",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "return": {
+      "types": [
+        "*"
+      ]
+    },
+    "ignore": true
+  },
+  {
+    "__docId__": 108,
+    "kind": "class",
+    "name": "HSLObj",
+    "memberof": "lib/BasicCanvas.js",
+    "static": true,
+    "longname": "lib/BasicCanvas.js~HSLObj",
+    "access": "public",
+    "export": false,
+    "importPath": "basiccanvas",
+    "importStyle": null,
+    "description": null,
+    "lineNumber": 290,
+    "undocument": true,
+    "interface": false,
+    "ignore": true
+  },
+  {
+    "__docId__": 109,
+    "kind": "constructor",
+    "name": "constructor",
+    "memberof": "lib/BasicCanvas.js~HSLObj",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "lib/BasicCanvas.js~HSLObj#constructor",
+    "access": "public",
+    "description": null,
+    "lineNumber": 291,
+    "undocument": true
+  },
+  {
+    "__docId__": 110,
+    "kind": "member",
+    "name": "rgb",
+    "memberof": "lib/BasicCanvas.js~HSLObj",
+    "static": false,
+    "longname": "lib/BasicCanvas.js~HSLObj#rgb",
+    "access": "public",
+    "description": null,
+    "lineNumber": 293,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 111,
+    "kind": "method",
+    "name": "to_rgb",
+    "memberof": "lib/BasicCanvas.js~HSLObj",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "lib/BasicCanvas.js~HSLObj#to_rgb",
+    "access": "public",
+    "description": null,
+    "lineNumber": 296,
+    "undocument": true,
+    "params": [],
+    "return": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 112,
+    "kind": "method",
+    "name": "toString",
+    "memberof": "lib/BasicCanvas.js~HSLObj",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "lib/BasicCanvas.js~HSLObj#toString",
+    "access": "public",
+    "description": null,
+    "lineNumber": 315,
+    "undocument": true,
+    "params": [],
+    "return": {
+      "types": [
+        "string"
+      ]
+    }
+  },
+  {
+    "__docId__": 113,
+    "kind": "method",
+    "name": "valueOf",
+    "memberof": "lib/BasicCanvas.js~HSLObj",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "lib/BasicCanvas.js~HSLObj#valueOf",
+    "access": "public",
+    "description": null,
+    "lineNumber": 319,
+    "undocument": true,
+    "params": [],
+    "return": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 114,
+    "kind": "class",
+    "name": "HSVObj",
+    "memberof": "lib/BasicCanvas.js",
+    "static": true,
+    "longname": "lib/BasicCanvas.js~HSVObj",
+    "access": "public",
+    "export": false,
+    "importPath": "basiccanvas",
+    "importStyle": null,
+    "description": null,
+    "lineNumber": 324,
+    "undocument": true,
+    "interface": false,
+    "ignore": true
+  },
+  {
+    "__docId__": 115,
+    "kind": "constructor",
+    "name": "constructor",
+    "memberof": "lib/BasicCanvas.js~HSVObj",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "lib/BasicCanvas.js~HSVObj#constructor",
+    "access": "public",
+    "description": null,
+    "lineNumber": 325,
+    "undocument": true
+  },
+  {
+    "__docId__": 116,
+    "kind": "member",
+    "name": "rgb",
+    "memberof": "lib/BasicCanvas.js~HSVObj",
+    "static": false,
+    "longname": "lib/BasicCanvas.js~HSVObj#rgb",
+    "access": "public",
+    "description": null,
+    "lineNumber": 327,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 117,
+    "kind": "method",
+    "name": "to_rgb",
+    "memberof": "lib/BasicCanvas.js~HSVObj",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "lib/BasicCanvas.js~HSVObj#to_rgb",
+    "access": "public",
+    "description": null,
+    "lineNumber": 330,
+    "undocument": true,
+    "params": [],
+    "return": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 118,
+    "kind": "method",
+    "name": "toString",
+    "memberof": "lib/BasicCanvas.js~HSVObj",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "lib/BasicCanvas.js~HSVObj#toString",
+    "access": "public",
+    "description": null,
+    "lineNumber": 353,
+    "undocument": true,
+    "params": [],
+    "return": {
+      "types": [
+        "string"
+      ]
+    }
+  },
+  {
+    "__docId__": 119,
+    "kind": "method",
+    "name": "valueOf",
+    "memberof": "lib/BasicCanvas.js~HSVObj",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "lib/BasicCanvas.js~HSVObj#valueOf",
+    "access": "public",
+    "description": null,
+    "lineNumber": 357,
+    "undocument": true,
+    "params": [],
+    "return": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 120,
+    "kind": "class",
+    "name": "HEXobj",
+    "memberof": "lib/BasicCanvas.js",
+    "static": true,
+    "longname": "lib/BasicCanvas.js~HEXobj",
+    "access": "public",
+    "export": false,
+    "importPath": "basiccanvas",
+    "importStyle": null,
+    "description": null,
+    "lineNumber": 362,
+    "undocument": true,
+    "interface": false,
+    "ignore": true
+  },
+  {
+    "__docId__": 121,
+    "kind": "constructor",
+    "name": "constructor",
+    "memberof": "lib/BasicCanvas.js~HEXobj",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "lib/BasicCanvas.js~HEXobj#constructor",
+    "access": "public",
+    "description": null,
+    "lineNumber": 363,
+    "undocument": true
+  },
+  {
+    "__docId__": 122,
+    "kind": "member",
+    "name": "str",
+    "memberof": "lib/BasicCanvas.js~HEXobj",
+    "static": false,
+    "longname": "lib/BasicCanvas.js~HEXobj#str",
+    "access": "public",
+    "description": null,
+    "lineNumber": 402,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 123,
+    "kind": "member",
+    "name": "hex",
+    "memberof": "lib/BasicCanvas.js~HEXobj",
+    "static": false,
+    "longname": "lib/BasicCanvas.js~HEXobj#hex",
+    "access": "public",
+    "description": null,
+    "lineNumber": 403,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 124,
+    "kind": "member",
+    "name": "rgb",
+    "memberof": "lib/BasicCanvas.js~HEXobj",
+    "static": false,
+    "longname": "lib/BasicCanvas.js~HEXobj#rgb",
+    "access": "public",
+    "description": null,
+    "lineNumber": 404,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 125,
+    "kind": "method",
+    "name": "to_rgb",
+    "memberof": "lib/BasicCanvas.js~HEXobj",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "lib/BasicCanvas.js~HEXobj#to_rgb",
+    "access": "public",
+    "description": null,
+    "lineNumber": 407,
+    "undocument": true,
+    "params": [],
+    "return": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
     "__docId__": 126,
+    "kind": "method",
+    "name": "toString",
+    "memberof": "lib/BasicCanvas.js~HEXobj",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "lib/BasicCanvas.js~HEXobj#toString",
+    "access": "public",
+    "description": null,
+    "lineNumber": 415,
+    "undocument": true,
+    "params": [],
+    "return": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 127,
+    "kind": "method",
+    "name": "valueOf",
+    "memberof": "lib/BasicCanvas.js~HEXobj",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "lib/BasicCanvas.js~HEXobj#valueOf",
+    "access": "public",
+    "description": null,
+    "lineNumber": 419,
+    "undocument": true,
+    "params": [],
+    "return": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 128,
+    "kind": "variable",
+    "name": "NAMED_COLORS",
+    "memberof": "lib/BasicCanvas.js",
+    "static": true,
+    "longname": "lib/BasicCanvas.js~NAMED_COLORS",
+    "access": "public",
+    "export": true,
+    "importPath": "basiccanvas",
+    "importStyle": "{NAMED_COLORS}",
+    "description": null,
+    "lineNumber": 424,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 129,
+    "kind": "class",
+    "name": "NamedColorObj",
+    "memberof": "lib/BasicCanvas.js",
+    "static": true,
+    "longname": "lib/BasicCanvas.js~NamedColorObj",
+    "access": "public",
+    "export": false,
+    "importPath": "basiccanvas",
+    "importStyle": null,
+    "description": null,
+    "lineNumber": 576,
+    "undocument": true,
+    "interface": false,
+    "ignore": true
+  },
+  {
+    "__docId__": 130,
+    "kind": "constructor",
+    "name": "constructor",
+    "memberof": "lib/BasicCanvas.js~NamedColorObj",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "lib/BasicCanvas.js~NamedColorObj#constructor",
+    "access": "public",
+    "description": null,
+    "lineNumber": 577,
+    "undocument": true
+  },
+  {
+    "__docId__": 131,
+    "kind": "member",
+    "name": "color",
+    "memberof": "lib/BasicCanvas.js~NamedColorObj",
+    "static": false,
+    "longname": "lib/BasicCanvas.js~NamedColorObj#color",
+    "access": "public",
+    "description": null,
+    "lineNumber": 578,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 132,
+    "kind": "member",
+    "name": "rgb",
+    "memberof": "lib/BasicCanvas.js~NamedColorObj",
+    "static": false,
+    "longname": "lib/BasicCanvas.js~NamedColorObj#rgb",
+    "access": "public",
+    "description": null,
+    "lineNumber": 579,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 133,
+    "kind": "method",
+    "name": "to_rgb",
+    "memberof": "lib/BasicCanvas.js~NamedColorObj",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "lib/BasicCanvas.js~NamedColorObj#to_rgb",
+    "access": "public",
+    "description": null,
+    "lineNumber": 582,
+    "undocument": true,
+    "params": [],
+    "return": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 134,
+    "kind": "method",
+    "name": "toString",
+    "memberof": "lib/BasicCanvas.js~NamedColorObj",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "lib/BasicCanvas.js~NamedColorObj#toString",
+    "access": "public",
+    "description": null,
+    "lineNumber": 586,
+    "undocument": true,
+    "params": [],
+    "return": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 135,
+    "kind": "method",
+    "name": "valueOf",
+    "memberof": "lib/BasicCanvas.js~NamedColorObj",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "lib/BasicCanvas.js~NamedColorObj#valueOf",
+    "access": "public",
+    "description": null,
+    "lineNumber": 590,
+    "undocument": true,
+    "params": [],
+    "return": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 136,
+    "kind": "function",
+    "name": "Point",
+    "memberof": "lib/BasicCanvas.js",
+    "generator": false,
+    "async": false,
+    "static": true,
+    "longname": "lib/BasicCanvas.js~Point",
+    "access": "public",
+    "export": true,
+    "importPath": "basiccanvas",
+    "importStyle": "{Point}",
+    "description": null,
+    "lineNumber": 596,
+    "undocument": true,
+    "params": [
+      {
+        "name": "x",
+        "types": [
+          "*"
+        ]
+      },
+      {
+        "name": "y",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "return": null
+  },
+  {
+    "__docId__": 137,
+    "kind": "function",
+    "name": "Polar",
+    "memberof": "lib/BasicCanvas.js",
+    "generator": false,
+    "async": false,
+    "static": true,
+    "longname": "lib/BasicCanvas.js~Polar",
+    "access": "public",
+    "export": true,
+    "importPath": "basiccanvas",
+    "importStyle": "{Polar}",
+    "description": null,
+    "lineNumber": 597,
+    "undocument": true,
+    "params": [
+      {
+        "name": "r",
+        "types": [
+          "*"
+        ]
+      },
+      {
+        "name": "theta",
+        "types": [
+          "*"
+        ]
+      },
+      {
+        "name": "origin",
+        "optional": true,
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "return": null
+  },
+  {
+    "__docId__": 138,
+    "kind": "variable",
+    "name": "P",
+    "memberof": "lib/BasicCanvas.js",
+    "static": true,
+    "longname": "lib/BasicCanvas.js~P",
+    "access": "public",
+    "export": true,
+    "importPath": "basiccanvas",
+    "importStyle": "{P}",
+    "description": null,
+    "lineNumber": 602,
+    "undocument": true,
+    "type": {
+      "types": [
+        "undefined[]"
+      ]
+    }
+  },
+  {
+    "__docId__": 139,
     "kind": "function",
     "name": "HEX",
     "memberof": "lib/BasicCanvas.js",
@@ -2424,7 +2729,7 @@
     "importPath": "basiccanvas",
     "importStyle": "{HEX}",
     "description": null,
-    "lineNumber": 325,
+    "lineNumber": 604,
     "undocument": true,
     "params": [
       {
@@ -2437,7 +2742,7 @@
     "return": null
   },
   {
-    "__docId__": 127,
+    "__docId__": 140,
     "kind": "function",
     "name": "HSL",
     "memberof": "lib/BasicCanvas.js",
@@ -2450,7 +2755,7 @@
     "importPath": "basiccanvas",
     "importStyle": "{HSL}",
     "description": null,
-    "lineNumber": 326,
+    "lineNumber": 605,
     "undocument": true,
     "params": [
       {
@@ -2490,7 +2795,7 @@
     "return": null
   },
   {
-    "__docId__": 128,
+    "__docId__": 141,
     "kind": "variable",
     "name": "HSLA",
     "memberof": "lib/BasicCanvas.js",
@@ -2501,7 +2806,7 @@
     "importPath": "basiccanvas",
     "importStyle": "{HSLA}",
     "description": null,
-    "lineNumber": 327,
+    "lineNumber": 606,
     "undocument": true,
     "type": {
       "types": [
@@ -2510,7 +2815,7 @@
     }
   },
   {
-    "__docId__": 129,
+    "__docId__": 142,
     "kind": "function",
     "name": "HSV",
     "memberof": "lib/BasicCanvas.js",
@@ -2523,7 +2828,7 @@
     "importPath": "basiccanvas",
     "importStyle": "{HSV}",
     "description": null,
-    "lineNumber": 328,
+    "lineNumber": 607,
     "undocument": true,
     "params": [
       {
@@ -2563,7 +2868,7 @@
     "return": null
   },
   {
-    "__docId__": 130,
+    "__docId__": 143,
     "kind": "variable",
     "name": "HSVA",
     "memberof": "lib/BasicCanvas.js",
@@ -2574,7 +2879,7 @@
     "importPath": "basiccanvas",
     "importStyle": "{HSVA}",
     "description": null,
-    "lineNumber": 329,
+    "lineNumber": 608,
     "undocument": true,
     "type": {
       "types": [
@@ -2583,7 +2888,203 @@
     }
   },
   {
-    "__docId__": 131,
+    "__docId__": 144,
+    "kind": "variable",
+    "name": "TRANSPARENT",
+    "memberof": "lib/BasicCanvas.js",
+    "static": true,
+    "longname": "lib/BasicCanvas.js~TRANSPARENT",
+    "access": "public",
+    "export": true,
+    "importPath": "basiccanvas",
+    "importStyle": "{TRANSPARENT}",
+    "description": null,
+    "lineNumber": 610,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 145,
+    "kind": "variable",
+    "name": "rgb_regex",
+    "memberof": "lib/BasicCanvas.js",
+    "static": true,
+    "longname": "lib/BasicCanvas.js~rgb_regex",
+    "access": "public",
+    "export": false,
+    "importPath": "basiccanvas",
+    "importStyle": null,
+    "description": null,
+    "lineNumber": 612,
+    "undocument": true,
+    "type": {
+      "types": [
+        "undefined"
+      ]
+    },
+    "ignore": true
+  },
+  {
+    "__docId__": 146,
+    "kind": "variable",
+    "name": "hsl_regex",
+    "memberof": "lib/BasicCanvas.js",
+    "static": true,
+    "longname": "lib/BasicCanvas.js~hsl_regex",
+    "access": "public",
+    "export": false,
+    "importPath": "basiccanvas",
+    "importStyle": null,
+    "description": null,
+    "lineNumber": 613,
+    "undocument": true,
+    "type": {
+      "types": [
+        "undefined"
+      ]
+    },
+    "ignore": true
+  },
+  {
+    "__docId__": 147,
+    "kind": "variable",
+    "name": "rgba_regex",
+    "memberof": "lib/BasicCanvas.js",
+    "static": true,
+    "longname": "lib/BasicCanvas.js~rgba_regex",
+    "access": "public",
+    "export": false,
+    "importPath": "basiccanvas",
+    "importStyle": null,
+    "description": null,
+    "lineNumber": 614,
+    "undocument": true,
+    "type": {
+      "types": [
+        "undefined"
+      ]
+    },
+    "ignore": true
+  },
+  {
+    "__docId__": 148,
+    "kind": "variable",
+    "name": "hsla_regex",
+    "memberof": "lib/BasicCanvas.js",
+    "static": true,
+    "longname": "lib/BasicCanvas.js~hsla_regex",
+    "access": "public",
+    "export": false,
+    "importPath": "basiccanvas",
+    "importStyle": null,
+    "description": null,
+    "lineNumber": 615,
+    "undocument": true,
+    "type": {
+      "types": [
+        "undefined"
+      ]
+    },
+    "ignore": true
+  },
+  {
+    "__docId__": 149,
+    "kind": "variable",
+    "name": "hex_regex",
+    "memberof": "lib/BasicCanvas.js",
+    "static": true,
+    "longname": "lib/BasicCanvas.js~hex_regex",
+    "access": "public",
+    "export": false,
+    "importPath": "basiccanvas",
+    "importStyle": null,
+    "description": null,
+    "lineNumber": 616,
+    "undocument": true,
+    "type": {
+      "types": [
+        "undefined"
+      ]
+    },
+    "ignore": true
+  },
+  {
+    "__docId__": 150,
+    "kind": "variable",
+    "name": "trans_regex",
+    "memberof": "lib/BasicCanvas.js",
+    "static": true,
+    "longname": "lib/BasicCanvas.js~trans_regex",
+    "access": "public",
+    "export": false,
+    "importPath": "basiccanvas",
+    "importStyle": null,
+    "description": null,
+    "lineNumber": 617,
+    "undocument": true,
+    "type": {
+      "types": [
+        "undefined"
+      ]
+    },
+    "ignore": true
+  },
+  {
+    "__docId__": 151,
+    "kind": "function",
+    "name": "to_rgb",
+    "memberof": "lib/BasicCanvas.js",
+    "generator": false,
+    "async": false,
+    "static": true,
+    "longname": "lib/BasicCanvas.js~to_rgb",
+    "access": "public",
+    "export": true,
+    "importPath": "basiccanvas",
+    "importStyle": "{to_rgb}",
+    "description": null,
+    "lineNumber": 619,
+    "undocument": true,
+    "params": [
+      {
+        "name": "c",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "return": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 152,
+    "kind": "variable",
+    "name": "to_rgba",
+    "memberof": "lib/BasicCanvas.js",
+    "static": true,
+    "longname": "lib/BasicCanvas.js~to_rgba",
+    "access": "public",
+    "export": true,
+    "importPath": "basiccanvas",
+    "importStyle": "{to_rgba}",
+    "description": null,
+    "lineNumber": 656,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 153,
     "kind": "class",
     "name": "Shape",
     "memberof": "lib/BasicCanvas.js",
@@ -2594,13 +3095,13 @@
     "importPath": "basiccanvas",
     "importStyle": null,
     "description": null,
-    "lineNumber": 332,
+    "lineNumber": 659,
     "undocument": true,
     "interface": false,
     "ignore": true
   },
   {
-    "__docId__": 132,
+    "__docId__": 154,
     "kind": "constructor",
     "name": "constructor",
     "memberof": "lib/BasicCanvas.js~Shape",
@@ -2610,11 +3111,11 @@
     "longname": "lib/BasicCanvas.js~Shape#constructor",
     "access": "public",
     "description": null,
-    "lineNumber": 333,
+    "lineNumber": 660,
     "undocument": true
   },
   {
-    "__docId__": 133,
+    "__docId__": 155,
     "kind": "member",
     "name": "name",
     "memberof": "lib/BasicCanvas.js~Shape",
@@ -2622,7 +3123,7 @@
     "longname": "lib/BasicCanvas.js~Shape#name",
     "access": "public",
     "description": null,
-    "lineNumber": 334,
+    "lineNumber": 661,
     "undocument": true,
     "type": {
       "types": [
@@ -2631,7 +3132,7 @@
     }
   },
   {
-    "__docId__": 134,
+    "__docId__": 156,
     "kind": "member",
     "name": "canvas",
     "memberof": "lib/BasicCanvas.js~Shape",
@@ -2639,7 +3140,7 @@
     "longname": "lib/BasicCanvas.js~Shape#canvas",
     "access": "public",
     "description": null,
-    "lineNumber": 335,
+    "lineNumber": 662,
     "undocument": true,
     "type": {
       "types": [
@@ -2648,7 +3149,7 @@
     }
   },
   {
-    "__docId__": 135,
+    "__docId__": 157,
     "kind": "member",
     "name": "primitive",
     "memberof": "lib/BasicCanvas.js~Shape",
@@ -2656,7 +3157,7 @@
     "longname": "lib/BasicCanvas.js~Shape#primitive",
     "access": "public",
     "description": null,
-    "lineNumber": 336,
+    "lineNumber": 663,
     "undocument": true,
     "type": {
       "types": [
@@ -2665,7 +3166,7 @@
     }
   },
   {
-    "__docId__": 136,
+    "__docId__": 158,
     "kind": "member",
     "name": "vertices",
     "memberof": "lib/BasicCanvas.js~Shape",
@@ -2673,7 +3174,7 @@
     "longname": "lib/BasicCanvas.js~Shape#vertices",
     "access": "public",
     "description": null,
-    "lineNumber": 338,
+    "lineNumber": 665,
     "undocument": true,
     "type": {
       "types": [
@@ -2682,7 +3183,7 @@
     }
   },
   {
-    "__docId__": 137,
+    "__docId__": 159,
     "kind": "member",
     "name": "center",
     "memberof": "lib/BasicCanvas.js~Shape",
@@ -2690,7 +3191,7 @@
     "longname": "lib/BasicCanvas.js~Shape#center",
     "access": "public",
     "description": null,
-    "lineNumber": 339,
+    "lineNumber": 666,
     "undocument": true,
     "type": {
       "types": [
@@ -2699,7 +3200,58 @@
     }
   },
   {
-    "__docId__": 138,
+    "__docId__": 160,
+    "kind": "member",
+    "name": "hollow",
+    "memberof": "lib/BasicCanvas.js~Shape",
+    "static": false,
+    "longname": "lib/BasicCanvas.js~Shape#hollow",
+    "access": "public",
+    "description": null,
+    "lineNumber": 667,
+    "undocument": true,
+    "type": {
+      "types": [
+        "boolean"
+      ]
+    }
+  },
+  {
+    "__docId__": 161,
+    "kind": "member",
+    "name": "_first_stroke_color",
+    "memberof": "lib/BasicCanvas.js~Shape",
+    "static": false,
+    "longname": "lib/BasicCanvas.js~Shape#_first_stroke_color",
+    "access": "private",
+    "description": null,
+    "lineNumber": 669,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 162,
+    "kind": "member",
+    "name": "_stroke_changes",
+    "memberof": "lib/BasicCanvas.js~Shape",
+    "static": false,
+    "longname": "lib/BasicCanvas.js~Shape#_stroke_changes",
+    "access": "private",
+    "description": null,
+    "lineNumber": 670,
+    "undocument": true,
+    "type": {
+      "types": [
+        "boolean"
+      ]
+    }
+  },
+  {
+    "__docId__": 163,
     "kind": "method",
     "name": "flesh",
     "memberof": "lib/BasicCanvas.js~Shape",
@@ -2709,13 +3261,13 @@
     "longname": "lib/BasicCanvas.js~Shape#flesh",
     "access": "public",
     "description": null,
-    "lineNumber": 342,
+    "lineNumber": 673,
     "undocument": true,
     "params": [],
     "return": null
   },
   {
-    "__docId__": 139,
+    "__docId__": 164,
     "kind": "method",
     "name": "style",
     "memberof": "lib/BasicCanvas.js~Shape",
@@ -2725,7 +3277,7 @@
     "longname": "lib/BasicCanvas.js~Shape#style",
     "access": "public",
     "description": null,
-    "lineNumber": 347,
+    "lineNumber": 678,
     "undocument": true,
     "params": [
       {
@@ -2764,7 +3316,7 @@
     }
   },
   {
-    "__docId__": 140,
+    "__docId__": 165,
     "kind": "method",
     "name": "point",
     "memberof": "lib/BasicCanvas.js~Shape",
@@ -2774,7 +3326,7 @@
     "longname": "lib/BasicCanvas.js~Shape#point",
     "access": "public",
     "description": null,
-    "lineNumber": 364,
+    "lineNumber": 695,
     "undocument": true,
     "params": [
       {
@@ -2798,7 +3350,7 @@
     }
   },
   {
-    "__docId__": 141,
+    "__docId__": 166,
     "kind": "method",
     "name": "vertex",
     "memberof": "lib/BasicCanvas.js~Shape",
@@ -2808,7 +3360,7 @@
     "longname": "lib/BasicCanvas.js~Shape#vertex",
     "access": "public",
     "description": null,
-    "lineNumber": 368,
+    "lineNumber": 699,
     "undocument": true,
     "params": [
       {
@@ -2833,7 +3385,7 @@
     }
   },
   {
-    "__docId__": 143,
+    "__docId__": 170,
     "kind": "method",
     "name": "rect",
     "memberof": "lib/BasicCanvas.js~Shape",
@@ -2843,7 +3395,7 @@
     "longname": "lib/BasicCanvas.js~Shape#rect",
     "access": "public",
     "description": null,
-    "lineNumber": 390,
+    "lineNumber": 733,
     "undocument": true,
     "params": [
       {
@@ -2882,7 +3434,7 @@
     "return": null
   },
   {
-    "__docId__": 145,
+    "__docId__": 172,
     "kind": "method",
     "name": "ellipse",
     "memberof": "lib/BasicCanvas.js~Shape",
@@ -2892,7 +3444,7 @@
     "longname": "lib/BasicCanvas.js~Shape#ellipse",
     "access": "public",
     "description": null,
-    "lineNumber": 399,
+    "lineNumber": 740,
     "undocument": true,
     "params": [
       {
@@ -2931,7 +3483,7 @@
     "return": null
   },
   {
-    "__docId__": 147,
+    "__docId__": 174,
     "kind": "method",
     "name": "close",
     "memberof": "lib/BasicCanvas.js~Shape",
@@ -2941,7 +3493,7 @@
     "longname": "lib/BasicCanvas.js~Shape#close",
     "access": "public",
     "description": null,
-    "lineNumber": 408,
+    "lineNumber": 747,
     "undocument": true,
     "params": [],
     "return": {
@@ -2951,7 +3503,7 @@
     }
   },
   {
-    "__docId__": 148,
+    "__docId__": 175,
     "kind": "method",
     "name": "fill",
     "memberof": "lib/BasicCanvas.js~Shape",
@@ -2961,7 +3513,7 @@
     "longname": "lib/BasicCanvas.js~Shape#fill",
     "access": "public",
     "description": null,
-    "lineNumber": 413,
+    "lineNumber": 752,
     "undocument": true,
     "params": [
       {
@@ -2976,616 +3528,22 @@
     "return": null
   },
   {
-    "__docId__": 149,
-    "kind": "class",
-    "name": "Canvas",
-    "memberof": "lib/BasicCanvas.js",
-    "static": true,
-    "longname": "lib/BasicCanvas.js~Canvas",
-    "access": "public",
-    "export": false,
-    "importPath": "basiccanvas",
-    "importStyle": null,
-    "description": null,
-    "lineNumber": 441,
-    "undocument": true,
-    "interface": false,
-    "ignore": true
-  },
-  {
-    "__docId__": 150,
-    "kind": "constructor",
-    "name": "constructor",
-    "memberof": "lib/BasicCanvas.js~Canvas",
-    "generator": false,
-    "async": false,
-    "static": false,
-    "longname": "lib/BasicCanvas.js~Canvas#constructor",
-    "access": "public",
-    "description": null,
-    "lineNumber": 442,
-    "undocument": true
-  },
-  {
-    "__docId__": 151,
-    "kind": "member",
-    "name": "elem",
-    "memberof": "lib/BasicCanvas.js~Canvas",
-    "static": false,
-    "longname": "lib/BasicCanvas.js~Canvas#elem",
-    "access": "public",
-    "description": null,
-    "lineNumber": 443,
-    "undocument": true,
-    "type": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 152,
-    "kind": "member",
-    "name": "_width",
-    "memberof": "lib/BasicCanvas.js~Canvas",
-    "static": false,
-    "longname": "lib/BasicCanvas.js~Canvas#_width",
-    "access": "private",
-    "description": null,
-    "lineNumber": 444,
-    "undocument": true,
-    "type": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 153,
-    "kind": "member",
-    "name": "_height",
-    "memberof": "lib/BasicCanvas.js~Canvas",
-    "static": false,
-    "longname": "lib/BasicCanvas.js~Canvas#_height",
-    "access": "private",
-    "description": null,
-    "lineNumber": 445,
-    "undocument": true,
-    "type": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 154,
-    "kind": "member",
-    "name": "_now",
-    "memberof": "lib/BasicCanvas.js~Canvas",
-    "static": false,
-    "longname": "lib/BasicCanvas.js~Canvas#_now",
-    "access": "private",
-    "description": null,
-    "lineNumber": 448,
-    "undocument": true,
-    "type": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 155,
-    "kind": "member",
-    "name": "_Δ",
-    "memberof": "lib/BasicCanvas.js~Canvas",
-    "static": false,
-    "longname": "lib/BasicCanvas.js~Canvas#_Δ",
-    "access": "private",
-    "description": null,
-    "lineNumber": 449,
-    "undocument": true,
-    "type": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 156,
-    "kind": "member",
-    "name": "_then",
-    "memberof": "lib/BasicCanvas.js~Canvas",
-    "static": false,
-    "longname": "lib/BasicCanvas.js~Canvas#_then",
-    "access": "private",
-    "description": null,
-    "lineNumber": 450,
-    "undocument": true,
-    "type": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 157,
-    "kind": "member",
-    "name": "_interval",
-    "memberof": "lib/BasicCanvas.js~Canvas",
-    "static": false,
-    "longname": "lib/BasicCanvas.js~Canvas#_interval",
-    "access": "private",
-    "description": null,
-    "lineNumber": 451,
-    "undocument": true,
-    "type": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 158,
-    "kind": "member",
-    "name": "context",
-    "memberof": "lib/BasicCanvas.js~Canvas",
-    "static": false,
-    "longname": "lib/BasicCanvas.js~Canvas#context",
-    "access": "public",
-    "description": null,
-    "lineNumber": 454,
-    "undocument": true,
-    "type": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 159,
-    "kind": "member",
-    "name": "image_data",
-    "memberof": "lib/BasicCanvas.js~Canvas",
-    "static": false,
-    "longname": "lib/BasicCanvas.js~Canvas#image_data",
-    "access": "public",
-    "description": null,
-    "lineNumber": 455,
-    "undocument": true,
-    "type": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 160,
-    "kind": "member",
-    "name": "data",
-    "memberof": "lib/BasicCanvas.js~Canvas",
-    "static": false,
-    "longname": "lib/BasicCanvas.js~Canvas#data",
-    "access": "public",
-    "description": null,
-    "lineNumber": 456,
-    "undocument": true,
-    "type": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 161,
-    "kind": "member",
-    "name": "fill",
-    "memberof": "lib/BasicCanvas.js~Canvas",
-    "static": false,
-    "longname": "lib/BasicCanvas.js~Canvas#fill",
-    "access": "public",
-    "description": null,
-    "lineNumber": 459,
-    "undocument": true,
-    "type": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 162,
-    "kind": "member",
+    "__docId__": 176,
+    "kind": "method",
     "name": "stroke",
-    "memberof": "lib/BasicCanvas.js~Canvas",
-    "static": false,
-    "longname": "lib/BasicCanvas.js~Canvas#stroke",
-    "access": "public",
-    "description": null,
-    "lineNumber": 460,
-    "undocument": true,
-    "type": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 163,
-    "kind": "member",
-    "name": "_stroke_weight",
-    "memberof": "lib/BasicCanvas.js~Canvas",
-    "static": false,
-    "longname": "lib/BasicCanvas.js~Canvas#_stroke_weight",
-    "access": "private",
-    "description": null,
-    "lineNumber": 461,
-    "undocument": true,
-    "type": {
-      "types": [
-        "number"
-      ]
-    }
-  },
-  {
-    "__docId__": 164,
-    "kind": "member",
-    "name": "stroke_cap",
-    "memberof": "lib/BasicCanvas.js~Canvas",
-    "static": false,
-    "longname": "lib/BasicCanvas.js~Canvas#stroke_cap",
-    "access": "public",
-    "description": null,
-    "lineNumber": 462,
-    "undocument": true,
-    "type": {
-      "types": [
-        "string"
-      ]
-    }
-  },
-  {
-    "__docId__": 165,
-    "kind": "member",
-    "name": "font",
-    "memberof": "lib/BasicCanvas.js~Canvas",
-    "static": false,
-    "longname": "lib/BasicCanvas.js~Canvas#font",
-    "access": "public",
-    "description": null,
-    "lineNumber": 463,
-    "undocument": true,
-    "type": {
-      "types": [
-        "string"
-      ]
-    }
-  },
-  {
-    "__docId__": 166,
-    "kind": "member",
-    "name": "text_align",
-    "memberof": "lib/BasicCanvas.js~Canvas",
-    "static": false,
-    "longname": "lib/BasicCanvas.js~Canvas#text_align",
-    "access": "public",
-    "description": null,
-    "lineNumber": 464,
-    "undocument": true,
-    "type": {
-      "types": [
-        "string"
-      ]
-    }
-  },
-  {
-    "__docId__": 167,
-    "kind": "member",
-    "name": "_mouse_position",
-    "memberof": "lib/BasicCanvas.js~Canvas",
-    "static": false,
-    "longname": "lib/BasicCanvas.js~Canvas#_mouse_position",
-    "access": "private",
-    "description": null,
-    "lineNumber": 465,
-    "undocument": true,
-    "type": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 168,
-    "kind": "member",
-    "name": "_mouse_listen",
-    "memberof": "lib/BasicCanvas.js~Canvas",
-    "static": false,
-    "longname": "lib/BasicCanvas.js~Canvas#_mouse_listen",
-    "access": "private",
-    "description": null,
-    "lineNumber": 466,
-    "undocument": true,
-    "type": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 169,
-    "kind": "member",
-    "name": "corner",
-    "memberof": "lib/BasicCanvas.js~Canvas",
-    "static": false,
-    "longname": "lib/BasicCanvas.js~Canvas#corner",
-    "access": "public",
-    "description": null,
-    "lineNumber": 469,
-    "undocument": true,
-    "type": {
-      "types": [
-        "{\"x\": *, \"y\": *}"
-      ]
-    }
-  },
-  {
-    "__docId__": 170,
-    "kind": "member",
-    "name": "stretch",
-    "memberof": "lib/BasicCanvas.js~Canvas",
-    "static": false,
-    "longname": "lib/BasicCanvas.js~Canvas#stretch",
-    "access": "public",
-    "description": null,
-    "lineNumber": 470,
-    "undocument": true,
-    "type": {
-      "types": [
-        "number[]"
-      ]
-    }
-  },
-  {
-    "__docId__": 171,
-    "kind": "member",
-    "name": "state_stack",
-    "memberof": "lib/BasicCanvas.js~Canvas",
-    "static": false,
-    "longname": "lib/BasicCanvas.js~Canvas#state_stack",
-    "access": "public",
-    "description": null,
-    "lineNumber": 473,
-    "undocument": true,
-    "type": {
-      "types": [
-        "*[]"
-      ]
-    }
-  },
-  {
-    "__docId__": 172,
-    "kind": "member",
-    "name": "shapes",
-    "memberof": "lib/BasicCanvas.js~Canvas",
-    "static": false,
-    "longname": "lib/BasicCanvas.js~Canvas#shapes",
-    "access": "public",
-    "description": null,
-    "lineNumber": 475,
-    "undocument": true,
-    "type": {
-      "types": [
-        "{}"
-      ]
-    }
-  },
-  {
-    "__docId__": 173,
-    "kind": "member",
-    "name": "update",
-    "memberof": "lib/BasicCanvas.js~Canvas",
-    "static": false,
-    "longname": "lib/BasicCanvas.js~Canvas#update",
-    "access": "public",
-    "description": null,
-    "lineNumber": 476,
-    "undocument": true,
-    "type": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 174,
-    "kind": "get",
-    "name": "FPS",
-    "memberof": "lib/BasicCanvas.js~Canvas",
+    "memberof": "lib/BasicCanvas.js~Shape",
     "generator": false,
     "async": false,
     "static": false,
-    "longname": "lib/BasicCanvas.js~Canvas#FPS",
+    "longname": "lib/BasicCanvas.js~Shape#stroke",
     "access": "public",
     "description": null,
-    "lineNumber": 479,
-    "undocument": true,
-    "type": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 175,
-    "kind": "set",
-    "name": "FPS",
-    "memberof": "lib/BasicCanvas.js~Canvas",
-    "generator": false,
-    "async": false,
-    "static": false,
-    "longname": "lib/BasicCanvas.js~Canvas#FPS",
-    "access": "public",
-    "description": null,
-    "lineNumber": 483,
-    "undocument": true
-  },
-  {
-    "__docId__": 177,
-    "kind": "get",
-    "name": "width",
-    "memberof": "lib/BasicCanvas.js~Canvas",
-    "generator": false,
-    "async": false,
-    "static": false,
-    "longname": "lib/BasicCanvas.js~Canvas#width",
-    "access": "public",
-    "description": null,
-    "lineNumber": 487,
-    "undocument": true,
-    "type": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 178,
-    "kind": "get",
-    "name": "height",
-    "memberof": "lib/BasicCanvas.js~Canvas",
-    "generator": false,
-    "async": false,
-    "static": false,
-    "longname": "lib/BasicCanvas.js~Canvas#height",
-    "access": "public",
-    "description": null,
-    "lineNumber": 491,
-    "undocument": true,
-    "type": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 179,
-    "kind": "set",
-    "name": "width",
-    "memberof": "lib/BasicCanvas.js~Canvas",
-    "generator": false,
-    "async": false,
-    "static": false,
-    "longname": "lib/BasicCanvas.js~Canvas#width",
-    "access": "public",
-    "description": null,
-    "lineNumber": 495,
-    "undocument": true
-  },
-  {
-    "__docId__": 181,
-    "kind": "set",
-    "name": "height",
-    "memberof": "lib/BasicCanvas.js~Canvas",
-    "generator": false,
-    "async": false,
-    "static": false,
-    "longname": "lib/BasicCanvas.js~Canvas#height",
-    "access": "public",
-    "description": null,
-    "lineNumber": 501,
-    "undocument": true
-  },
-  {
-    "__docId__": 183,
-    "kind": "get",
-    "name": "stroke_weight",
-    "memberof": "lib/BasicCanvas.js~Canvas",
-    "generator": false,
-    "async": false,
-    "static": false,
-    "longname": "lib/BasicCanvas.js~Canvas#stroke_weight",
-    "access": "public",
-    "description": null,
-    "lineNumber": 507,
-    "undocument": true,
-    "type": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 184,
-    "kind": "set",
-    "name": "stroke_weight",
-    "memberof": "lib/BasicCanvas.js~Canvas",
-    "generator": false,
-    "async": false,
-    "static": false,
-    "longname": "lib/BasicCanvas.js~Canvas#stroke_weight",
-    "access": "public",
-    "description": null,
-    "lineNumber": 511,
-    "undocument": true
-  },
-  {
-    "__docId__": 187,
-    "kind": "get",
-    "name": "mouse",
-    "memberof": "lib/BasicCanvas.js~Canvas",
-    "generator": false,
-    "async": false,
-    "static": false,
-    "longname": "lib/BasicCanvas.js~Canvas#mouse",
-    "access": "public",
-    "description": null,
-    "lineNumber": 518,
-    "undocument": true,
-    "type": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 190,
-    "kind": "method",
-    "name": "update_context",
-    "memberof": "lib/BasicCanvas.js~Canvas",
-    "generator": false,
-    "async": false,
-    "static": false,
-    "longname": "lib/BasicCanvas.js~Canvas#update_context",
-    "access": "public",
-    "description": null,
-    "lineNumber": 531,
-    "undocument": true,
-    "params": [],
-    "return": null
-  },
-  {
-    "__docId__": 194,
-    "kind": "method",
-    "name": "dimensions",
-    "memberof": "lib/BasicCanvas.js~Canvas",
-    "generator": false,
-    "async": false,
-    "static": false,
-    "longname": "lib/BasicCanvas.js~Canvas#dimensions",
-    "access": "public",
-    "description": null,
-    "lineNumber": 537,
+    "lineNumber": 789,
     "undocument": true,
     "params": [
       {
-        "name": "w",
-        "types": [
-          "*"
-        ]
-      },
-      {
-        "name": "h",
+        "name": "color",
+        "optional": true,
         "types": [
           "*"
         ]
@@ -3594,17 +3552,71 @@
     "return": null
   },
   {
-    "__docId__": 197,
+    "__docId__": 177,
     "kind": "method",
-    "name": "translate",
-    "memberof": "lib/BasicCanvas.js~Canvas",
+    "name": "render",
+    "memberof": "lib/BasicCanvas.js~Shape",
     "generator": false,
     "async": false,
     "static": false,
-    "longname": "lib/BasicCanvas.js~Canvas#translate",
+    "longname": "lib/BasicCanvas.js~Shape#render",
     "access": "public",
     "description": null,
-    "lineNumber": 543,
+    "lineNumber": 794,
+    "undocument": true,
+    "params": [
+      {
+        "name": "args",
+        "types": [
+          "...*"
+        ],
+        "spread": true
+      }
+    ],
+    "return": null
+  },
+  {
+    "__docId__": 178,
+    "kind": "method",
+    "name": "rotate",
+    "memberof": "lib/BasicCanvas.js~Shape",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "lib/BasicCanvas.js~Shape#rotate",
+    "access": "public",
+    "description": null,
+    "lineNumber": 796,
+    "undocument": true,
+    "params": [
+      {
+        "name": "theta",
+        "types": [
+          "*"
+        ]
+      },
+      {
+        "name": "origin",
+        "optional": true,
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "return": null
+  },
+  {
+    "__docId__": 179,
+    "kind": "method",
+    "name": "translate",
+    "memberof": "lib/BasicCanvas.js~Shape",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "lib/BasicCanvas.js~Shape#translate",
+    "access": "public",
+    "description": null,
+    "lineNumber": 802,
     "undocument": true,
     "params": [
       {
@@ -3623,7 +3635,692 @@
     "return": null
   },
   {
+    "__docId__": 180,
+    "kind": "method",
+    "name": "scale",
+    "memberof": "lib/BasicCanvas.js~Shape",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "lib/BasicCanvas.js~Shape#scale",
+    "access": "public",
+    "description": null,
+    "lineNumber": 808,
+    "undocument": true,
+    "params": [
+      {
+        "name": "w",
+        "types": [
+          "*"
+        ]
+      },
+      {
+        "name": "h",
+        "optional": true,
+        "types": [
+          "undefined"
+        ],
+        "defaultValue": "undefined"
+      },
+      {
+        "name": "origin",
+        "optional": true,
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "return": null
+  },
+  {
+    "__docId__": 181,
+    "kind": "class",
+    "name": "Canvas",
+    "memberof": "lib/BasicCanvas.js",
+    "static": true,
+    "longname": "lib/BasicCanvas.js~Canvas",
+    "access": "public",
+    "export": false,
+    "importPath": "basiccanvas",
+    "importStyle": null,
+    "description": null,
+    "lineNumber": 822,
+    "undocument": true,
+    "interface": false,
+    "ignore": true
+  },
+  {
+    "__docId__": 182,
+    "kind": "constructor",
+    "name": "constructor",
+    "memberof": "lib/BasicCanvas.js~Canvas",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "lib/BasicCanvas.js~Canvas#constructor",
+    "access": "public",
+    "description": null,
+    "lineNumber": 823,
+    "undocument": true
+  },
+  {
+    "__docId__": 183,
+    "kind": "member",
+    "name": "elem",
+    "memberof": "lib/BasicCanvas.js~Canvas",
+    "static": false,
+    "longname": "lib/BasicCanvas.js~Canvas#elem",
+    "access": "public",
+    "description": null,
+    "lineNumber": 824,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 184,
+    "kind": "member",
+    "name": "_width",
+    "memberof": "lib/BasicCanvas.js~Canvas",
+    "static": false,
+    "longname": "lib/BasicCanvas.js~Canvas#_width",
+    "access": "private",
+    "description": null,
+    "lineNumber": 825,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 185,
+    "kind": "member",
+    "name": "_height",
+    "memberof": "lib/BasicCanvas.js~Canvas",
+    "static": false,
+    "longname": "lib/BasicCanvas.js~Canvas#_height",
+    "access": "private",
+    "description": null,
+    "lineNumber": 826,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 186,
+    "kind": "member",
+    "name": "_now",
+    "memberof": "lib/BasicCanvas.js~Canvas",
+    "static": false,
+    "longname": "lib/BasicCanvas.js~Canvas#_now",
+    "access": "private",
+    "description": null,
+    "lineNumber": 829,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 187,
+    "kind": "member",
+    "name": "_Δ",
+    "memberof": "lib/BasicCanvas.js~Canvas",
+    "static": false,
+    "longname": "lib/BasicCanvas.js~Canvas#_Δ",
+    "access": "private",
+    "description": null,
+    "lineNumber": 830,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 188,
+    "kind": "member",
+    "name": "_then",
+    "memberof": "lib/BasicCanvas.js~Canvas",
+    "static": false,
+    "longname": "lib/BasicCanvas.js~Canvas#_then",
+    "access": "private",
+    "description": null,
+    "lineNumber": 831,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 189,
+    "kind": "member",
+    "name": "_interval",
+    "memberof": "lib/BasicCanvas.js~Canvas",
+    "static": false,
+    "longname": "lib/BasicCanvas.js~Canvas#_interval",
+    "access": "private",
+    "description": null,
+    "lineNumber": 832,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 190,
+    "kind": "member",
+    "name": "context",
+    "memberof": "lib/BasicCanvas.js~Canvas",
+    "static": false,
+    "longname": "lib/BasicCanvas.js~Canvas#context",
+    "access": "public",
+    "description": null,
+    "lineNumber": 835,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 191,
+    "kind": "member",
+    "name": "image_data",
+    "memberof": "lib/BasicCanvas.js~Canvas",
+    "static": false,
+    "longname": "lib/BasicCanvas.js~Canvas#image_data",
+    "access": "public",
+    "description": null,
+    "lineNumber": 836,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 192,
+    "kind": "member",
+    "name": "data",
+    "memberof": "lib/BasicCanvas.js~Canvas",
+    "static": false,
+    "longname": "lib/BasicCanvas.js~Canvas#data",
+    "access": "public",
+    "description": null,
+    "lineNumber": 837,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 193,
+    "kind": "member",
+    "name": "fill",
+    "memberof": "lib/BasicCanvas.js~Canvas",
+    "static": false,
+    "longname": "lib/BasicCanvas.js~Canvas#fill",
+    "access": "public",
+    "description": null,
+    "lineNumber": 840,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 194,
+    "kind": "member",
+    "name": "stroke",
+    "memberof": "lib/BasicCanvas.js~Canvas",
+    "static": false,
+    "longname": "lib/BasicCanvas.js~Canvas#stroke",
+    "access": "public",
+    "description": null,
+    "lineNumber": 841,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 195,
+    "kind": "member",
+    "name": "_stroke_weight",
+    "memberof": "lib/BasicCanvas.js~Canvas",
+    "static": false,
+    "longname": "lib/BasicCanvas.js~Canvas#_stroke_weight",
+    "access": "private",
+    "description": null,
+    "lineNumber": 842,
+    "undocument": true,
+    "type": {
+      "types": [
+        "number"
+      ]
+    }
+  },
+  {
+    "__docId__": 196,
+    "kind": "member",
+    "name": "stroke_cap",
+    "memberof": "lib/BasicCanvas.js~Canvas",
+    "static": false,
+    "longname": "lib/BasicCanvas.js~Canvas#stroke_cap",
+    "access": "public",
+    "description": null,
+    "lineNumber": 843,
+    "undocument": true,
+    "type": {
+      "types": [
+        "string"
+      ]
+    }
+  },
+  {
+    "__docId__": 197,
+    "kind": "member",
+    "name": "font",
+    "memberof": "lib/BasicCanvas.js~Canvas",
+    "static": false,
+    "longname": "lib/BasicCanvas.js~Canvas#font",
+    "access": "public",
+    "description": null,
+    "lineNumber": 844,
+    "undocument": true,
+    "type": {
+      "types": [
+        "string"
+      ]
+    }
+  },
+  {
     "__docId__": 198,
+    "kind": "member",
+    "name": "text_align",
+    "memberof": "lib/BasicCanvas.js~Canvas",
+    "static": false,
+    "longname": "lib/BasicCanvas.js~Canvas#text_align",
+    "access": "public",
+    "description": null,
+    "lineNumber": 845,
+    "undocument": true,
+    "type": {
+      "types": [
+        "string"
+      ]
+    }
+  },
+  {
+    "__docId__": 199,
+    "kind": "member",
+    "name": "_mouse_position",
+    "memberof": "lib/BasicCanvas.js~Canvas",
+    "static": false,
+    "longname": "lib/BasicCanvas.js~Canvas#_mouse_position",
+    "access": "private",
+    "description": null,
+    "lineNumber": 846,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 200,
+    "kind": "member",
+    "name": "_mouse_listen",
+    "memberof": "lib/BasicCanvas.js~Canvas",
+    "static": false,
+    "longname": "lib/BasicCanvas.js~Canvas#_mouse_listen",
+    "access": "private",
+    "description": null,
+    "lineNumber": 847,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 201,
+    "kind": "member",
+    "name": "corner",
+    "memberof": "lib/BasicCanvas.js~Canvas",
+    "static": false,
+    "longname": "lib/BasicCanvas.js~Canvas#corner",
+    "access": "public",
+    "description": null,
+    "lineNumber": 850,
+    "undocument": true,
+    "type": {
+      "types": [
+        "{\"x\": *, \"y\": *}"
+      ]
+    }
+  },
+  {
+    "__docId__": 202,
+    "kind": "member",
+    "name": "stretch",
+    "memberof": "lib/BasicCanvas.js~Canvas",
+    "static": false,
+    "longname": "lib/BasicCanvas.js~Canvas#stretch",
+    "access": "public",
+    "description": null,
+    "lineNumber": 851,
+    "undocument": true,
+    "type": {
+      "types": [
+        "number[]"
+      ]
+    }
+  },
+  {
+    "__docId__": 203,
+    "kind": "member",
+    "name": "state_stack",
+    "memberof": "lib/BasicCanvas.js~Canvas",
+    "static": false,
+    "longname": "lib/BasicCanvas.js~Canvas#state_stack",
+    "access": "public",
+    "description": null,
+    "lineNumber": 854,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*[]"
+      ]
+    }
+  },
+  {
+    "__docId__": 204,
+    "kind": "member",
+    "name": "shapes",
+    "memberof": "lib/BasicCanvas.js~Canvas",
+    "static": false,
+    "longname": "lib/BasicCanvas.js~Canvas#shapes",
+    "access": "public",
+    "description": null,
+    "lineNumber": 856,
+    "undocument": true,
+    "type": {
+      "types": [
+        "{}"
+      ]
+    }
+  },
+  {
+    "__docId__": 205,
+    "kind": "member",
+    "name": "update",
+    "memberof": "lib/BasicCanvas.js~Canvas",
+    "static": false,
+    "longname": "lib/BasicCanvas.js~Canvas#update",
+    "access": "public",
+    "description": null,
+    "lineNumber": 857,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 206,
+    "kind": "get",
+    "name": "FPS",
+    "memberof": "lib/BasicCanvas.js~Canvas",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "lib/BasicCanvas.js~Canvas#FPS",
+    "access": "public",
+    "description": null,
+    "lineNumber": 860,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 207,
+    "kind": "set",
+    "name": "FPS",
+    "memberof": "lib/BasicCanvas.js~Canvas",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "lib/BasicCanvas.js~Canvas#FPS",
+    "access": "public",
+    "description": null,
+    "lineNumber": 864,
+    "undocument": true
+  },
+  {
+    "__docId__": 209,
+    "kind": "get",
+    "name": "width",
+    "memberof": "lib/BasicCanvas.js~Canvas",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "lib/BasicCanvas.js~Canvas#width",
+    "access": "public",
+    "description": null,
+    "lineNumber": 868,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 210,
+    "kind": "get",
+    "name": "height",
+    "memberof": "lib/BasicCanvas.js~Canvas",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "lib/BasicCanvas.js~Canvas#height",
+    "access": "public",
+    "description": null,
+    "lineNumber": 872,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 211,
+    "kind": "set",
+    "name": "width",
+    "memberof": "lib/BasicCanvas.js~Canvas",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "lib/BasicCanvas.js~Canvas#width",
+    "access": "public",
+    "description": null,
+    "lineNumber": 876,
+    "undocument": true
+  },
+  {
+    "__docId__": 213,
+    "kind": "set",
+    "name": "height",
+    "memberof": "lib/BasicCanvas.js~Canvas",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "lib/BasicCanvas.js~Canvas#height",
+    "access": "public",
+    "description": null,
+    "lineNumber": 882,
+    "undocument": true
+  },
+  {
+    "__docId__": 215,
+    "kind": "get",
+    "name": "stroke_weight",
+    "memberof": "lib/BasicCanvas.js~Canvas",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "lib/BasicCanvas.js~Canvas#stroke_weight",
+    "access": "public",
+    "description": null,
+    "lineNumber": 888,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 216,
+    "kind": "set",
+    "name": "stroke_weight",
+    "memberof": "lib/BasicCanvas.js~Canvas",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "lib/BasicCanvas.js~Canvas#stroke_weight",
+    "access": "public",
+    "description": null,
+    "lineNumber": 892,
+    "undocument": true
+  },
+  {
+    "__docId__": 219,
+    "kind": "get",
+    "name": "mouse",
+    "memberof": "lib/BasicCanvas.js~Canvas",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "lib/BasicCanvas.js~Canvas#mouse",
+    "access": "public",
+    "description": null,
+    "lineNumber": 899,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 222,
+    "kind": "method",
+    "name": "update_context",
+    "memberof": "lib/BasicCanvas.js~Canvas",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "lib/BasicCanvas.js~Canvas#update_context",
+    "access": "public",
+    "description": null,
+    "lineNumber": 912,
+    "undocument": true,
+    "params": [],
+    "return": null
+  },
+  {
+    "__docId__": 226,
+    "kind": "method",
+    "name": "dimensions",
+    "memberof": "lib/BasicCanvas.js~Canvas",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "lib/BasicCanvas.js~Canvas#dimensions",
+    "access": "public",
+    "description": null,
+    "lineNumber": 918,
+    "undocument": true,
+    "params": [
+      {
+        "name": "w",
+        "types": [
+          "*"
+        ]
+      },
+      {
+        "name": "h",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "return": null
+  },
+  {
+    "__docId__": 229,
+    "kind": "method",
+    "name": "translate",
+    "memberof": "lib/BasicCanvas.js~Canvas",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "lib/BasicCanvas.js~Canvas#translate",
+    "access": "public",
+    "description": null,
+    "lineNumber": 924,
+    "undocument": true,
+    "params": [
+      {
+        "name": "x",
+        "types": [
+          "*"
+        ]
+      },
+      {
+        "name": "y",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "return": null
+  },
+  {
+    "__docId__": 230,
     "kind": "method",
     "name": "rotate",
     "memberof": "lib/BasicCanvas.js~Canvas",
@@ -3633,7 +4330,7 @@
     "longname": "lib/BasicCanvas.js~Canvas#rotate",
     "access": "public",
     "description": null,
-    "lineNumber": 548,
+    "lineNumber": 929,
     "undocument": true,
     "params": [
       {
@@ -3646,7 +4343,7 @@
     "return": null
   },
   {
-    "__docId__": 199,
+    "__docId__": 231,
     "kind": "method",
     "name": "scale",
     "memberof": "lib/BasicCanvas.js~Canvas",
@@ -3656,7 +4353,7 @@
     "longname": "lib/BasicCanvas.js~Canvas#scale",
     "access": "public",
     "description": null,
-    "lineNumber": 552,
+    "lineNumber": 933,
     "undocument": true,
     "params": [
       {
@@ -3678,7 +4375,7 @@
     "return": null
   },
   {
-    "__docId__": 201,
+    "__docId__": 233,
     "kind": "method",
     "name": "unscale",
     "memberof": "lib/BasicCanvas.js~Canvas",
@@ -3688,13 +4385,13 @@
     "longname": "lib/BasicCanvas.js~Canvas#unscale",
     "access": "public",
     "description": null,
-    "lineNumber": 558,
+    "lineNumber": 939,
     "undocument": true,
     "params": [],
     "return": null
   },
   {
-    "__docId__": 202,
+    "__docId__": 234,
     "kind": "method",
     "name": "save",
     "memberof": "lib/BasicCanvas.js~Canvas",
@@ -3704,7 +4401,7 @@
     "longname": "lib/BasicCanvas.js~Canvas#save",
     "access": "public",
     "description": null,
-    "lineNumber": 562,
+    "lineNumber": 943,
     "undocument": true,
     "params": [],
     "return": {
@@ -3714,7 +4411,7 @@
     }
   },
   {
-    "__docId__": 203,
+    "__docId__": 235,
     "kind": "method",
     "name": "restore",
     "memberof": "lib/BasicCanvas.js~Canvas",
@@ -3724,7 +4421,7 @@
     "longname": "lib/BasicCanvas.js~Canvas#restore",
     "access": "public",
     "description": null,
-    "lineNumber": 578,
+    "lineNumber": 959,
     "undocument": true,
     "params": [],
     "return": {
@@ -3734,7 +4431,7 @@
     }
   },
   {
-    "__docId__": 204,
+    "__docId__": 236,
     "kind": "member",
     "name": "[key]",
     "memberof": "lib/BasicCanvas.js~Canvas",
@@ -3742,7 +4439,7 @@
     "longname": "lib/BasicCanvas.js~Canvas#[key]",
     "access": "public",
     "description": null,
-    "lineNumber": 582,
+    "lineNumber": 963,
     "undocument": true,
     "type": {
       "types": [
@@ -3751,7 +4448,7 @@
     }
   },
   {
-    "__docId__": 205,
+    "__docId__": 237,
     "kind": "method",
     "name": "temp",
     "memberof": "lib/BasicCanvas.js~Canvas",
@@ -3761,7 +4458,7 @@
     "longname": "lib/BasicCanvas.js~Canvas#temp",
     "access": "public",
     "description": null,
-    "lineNumber": 588,
+    "lineNumber": 969,
     "undocument": true,
     "params": [
       {
@@ -3778,7 +4475,7 @@
     }
   },
   {
-    "__docId__": 206,
+    "__docId__": 238,
     "kind": "method",
     "name": "color",
     "memberof": "lib/BasicCanvas.js~Canvas",
@@ -3788,7 +4485,7 @@
     "longname": "lib/BasicCanvas.js~Canvas#color",
     "access": "public",
     "description": null,
-    "lineNumber": 594,
+    "lineNumber": 975,
     "undocument": true,
     "params": [
       {
@@ -3813,7 +4510,7 @@
     }
   },
   {
-    "__docId__": 207,
+    "__docId__": 239,
     "kind": "method",
     "name": "point",
     "memberof": "lib/BasicCanvas.js~Canvas",
@@ -3823,7 +4520,7 @@
     "longname": "lib/BasicCanvas.js~Canvas#point",
     "access": "public",
     "description": null,
-    "lineNumber": 606,
+    "lineNumber": 987,
     "undocument": true,
     "params": [
       {
@@ -3847,7 +4544,7 @@
     }
   },
   {
-    "__docId__": 208,
+    "__docId__": 240,
     "kind": "method",
     "name": "shape",
     "memberof": "lib/BasicCanvas.js~Canvas",
@@ -3857,7 +4554,7 @@
     "longname": "lib/BasicCanvas.js~Canvas#shape",
     "access": "public",
     "description": null,
-    "lineNumber": 610,
+    "lineNumber": 991,
     "undocument": true,
     "params": [
       {
@@ -3882,7 +4579,7 @@
     }
   },
   {
-    "__docId__": 209,
+    "__docId__": 241,
     "kind": "method",
     "name": "render",
     "memberof": "lib/BasicCanvas.js~Canvas",
@@ -3892,7 +4589,7 @@
     "longname": "lib/BasicCanvas.js~Canvas#render",
     "access": "public",
     "description": null,
-    "lineNumber": 633,
+    "lineNumber": 1016,
     "undocument": true,
     "params": [
       {
@@ -3910,7 +4607,7 @@
     }
   },
   {
-    "__docId__": 210,
+    "__docId__": 242,
     "kind": "method",
     "name": "text",
     "memberof": "lib/BasicCanvas.js~Canvas",
@@ -3920,7 +4617,7 @@
     "longname": "lib/BasicCanvas.js~Canvas#text",
     "access": "public",
     "description": null,
-    "lineNumber": 637,
+    "lineNumber": 1024,
     "undocument": true,
     "params": [
       {
@@ -3960,7 +4657,7 @@
     "return": null
   },
   {
-    "__docId__": 211,
+    "__docId__": 243,
     "kind": "method",
     "name": "background",
     "memberof": "lib/BasicCanvas.js~Canvas",
@@ -3970,7 +4667,7 @@
     "longname": "lib/BasicCanvas.js~Canvas#background",
     "access": "public",
     "description": null,
-    "lineNumber": 648,
+    "lineNumber": 1035,
     "undocument": true,
     "params": [
       {
@@ -3993,7 +4690,7 @@
     "return": null
   },
   {
-    "__docId__": 212,
+    "__docId__": 244,
     "kind": "method",
     "name": "update_frame",
     "memberof": "lib/BasicCanvas.js~Canvas",
@@ -4003,7 +4700,7 @@
     "longname": "lib/BasicCanvas.js~Canvas#update_frame",
     "access": "public",
     "description": null,
-    "lineNumber": 666,
+    "lineNumber": 1053,
     "undocument": true,
     "params": [
       {
@@ -4016,7 +4713,7 @@
     "return": null
   },
   {
-    "__docId__": 213,
+    "__docId__": 245,
     "kind": "method",
     "name": "loop",
     "memberof": "lib/BasicCanvas.js~Canvas",
@@ -4026,7 +4723,7 @@
     "longname": "lib/BasicCanvas.js~Canvas#loop",
     "access": "public",
     "description": null,
-    "lineNumber": 682,
+    "lineNumber": 1069,
     "undocument": true,
     "params": [
       {
@@ -4039,7 +4736,7 @@
     "return": null
   },
   {
-    "__docId__": 216,
+    "__docId__": 248,
     "kind": "member",
     "name": "frame",
     "memberof": "lib/BasicCanvas.js~Canvas",
@@ -4047,7 +4744,7 @@
     "longname": "lib/BasicCanvas.js~Canvas#frame",
     "access": "public",
     "description": null,
-    "lineNumber": 685,
+    "lineNumber": 1072,
     "undocument": true,
     "type": {
       "types": [
@@ -4056,7 +4753,7 @@
     }
   },
   {
-    "__docId__": 217,
+    "__docId__": 249,
     "kind": "function",
     "name": "canvas",
     "memberof": "lib/BasicCanvas.js",
@@ -4069,7 +4766,7 @@
     "importPath": "basiccanvas",
     "importStyle": "{canvas}",
     "description": null,
-    "lineNumber": 693,
+    "lineNumber": 1080,
     "undocument": true,
     "params": [
       {
@@ -4082,7 +4779,7 @@
     "return": null
   },
   {
-    "__docId__": 218,
+    "__docId__": 250,
     "kind": "function",
     "name": "canvas_id",
     "memberof": "lib/BasicCanvas.js",
@@ -4095,7 +4792,7 @@
     "importPath": "basiccanvas",
     "importStyle": "{canvas_id}",
     "description": null,
-    "lineNumber": 697,
+    "lineNumber": 1084,
     "undocument": true,
     "params": [
       {
@@ -4108,7 +4805,7 @@
     "return": null
   },
   {
-    "__docId__": 219,
+    "__docId__": 251,
     "kind": "function",
     "name": "canvas_new",
     "memberof": "lib/BasicCanvas.js",
@@ -4121,7 +4818,7 @@
     "importPath": "basiccanvas",
     "importStyle": "{canvas_new}",
     "description": null,
-    "lineNumber": 701,
+    "lineNumber": 1088,
     "undocument": true,
     "params": [
       {
@@ -4147,7 +4844,7 @@
     }
   },
   {
-    "__docId__": 220,
+    "__docId__": 252,
     "kind": "file",
     "name": "lib/BasicDOM.js",
     "content": "import * as BC from './BasicCanvas.js';\n\nexport const id_map = new WeakMap();\nexport let object_count = 0;\n\nexport const id = object => {\n  if (!id_map.has(object)) {\n    id_map.set(object, ++object_count);\n  }\n  return id_map.get(object);\n};\n\nclass Input {\n  constructor(parent, type) {\n    this.parent = parent;\n    this.type = type;\n    this.timeout = 0;\n\n    this.elem = document.createElement('input');\n    this.id = id(this.elem);\n\n    this.elem.type = this.type;\n    this.elem.className = `BasicDOM-input DOM${this.id}`;\n    document.querySelector(this.parent).appendChild(this.elem);\n  }\n\n  dismount() {\n    return document.querySelector(this.parent).removeChild(this.elem);\n  }\n\n  mount(parent = this.parent) {\n    return document.querySelector(parent).appendChild(this.elem);\n  }\n\n  change(lambda, timeout = this.timeout) {\n    if (timeout === 0) {\n      return this.elem.addEventListener('input', lambda);\n    }\n\n    let timed = null;\n    this.elem.addEventListener('keyup', () => {\n      clearTimeout(timed);\n      timed = setTimeout(lambda, timeout);\n    });\n  }\n\n  get value() {\n    return this.elem.value;\n  }\n\n  set value(v) {\n    this.elem.value = v;\n  }\n}\n\nexport const input = (type = 'text', parent = 'body', value = '') => {\n  const in_obj = new Input(parent, type);\n  in_obj.value = value;\n  return in_obj;\n};\n\nexport const text = (parent = 'body', value = '') => {\n  const in_obj = new Input(parent, 'text');\n  in_obj.value = value;\n  return in_obj;\n};\n",
@@ -4158,7 +4855,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 221,
+    "__docId__": 253,
     "kind": "variable",
     "name": "id_map",
     "memberof": "lib/BasicDOM.js",
@@ -4178,7 +4875,7 @@
     }
   },
   {
-    "__docId__": 222,
+    "__docId__": 254,
     "kind": "variable",
     "name": "object_count",
     "memberof": "lib/BasicDOM.js",
@@ -4198,7 +4895,7 @@
     }
   },
   {
-    "__docId__": 223,
+    "__docId__": 255,
     "kind": "function",
     "name": "id",
     "memberof": "lib/BasicDOM.js",
@@ -4228,7 +4925,7 @@
     }
   },
   {
-    "__docId__": 224,
+    "__docId__": 256,
     "kind": "class",
     "name": "Input",
     "memberof": "lib/BasicDOM.js",
@@ -4245,7 +4942,7 @@
     "ignore": true
   },
   {
-    "__docId__": 225,
+    "__docId__": 257,
     "kind": "constructor",
     "name": "constructor",
     "memberof": "lib/BasicDOM.js~Input",
@@ -4259,7 +4956,7 @@
     "undocument": true
   },
   {
-    "__docId__": 226,
+    "__docId__": 258,
     "kind": "member",
     "name": "parent",
     "memberof": "lib/BasicDOM.js~Input",
@@ -4276,7 +4973,7 @@
     }
   },
   {
-    "__docId__": 227,
+    "__docId__": 259,
     "kind": "member",
     "name": "type",
     "memberof": "lib/BasicDOM.js~Input",
@@ -4293,7 +4990,7 @@
     }
   },
   {
-    "__docId__": 228,
+    "__docId__": 260,
     "kind": "member",
     "name": "timeout",
     "memberof": "lib/BasicDOM.js~Input",
@@ -4310,7 +5007,7 @@
     }
   },
   {
-    "__docId__": 229,
+    "__docId__": 261,
     "kind": "member",
     "name": "elem",
     "memberof": "lib/BasicDOM.js~Input",
@@ -4327,7 +5024,7 @@
     }
   },
   {
-    "__docId__": 230,
+    "__docId__": 262,
     "kind": "member",
     "name": "id",
     "memberof": "lib/BasicDOM.js~Input",
@@ -4344,7 +5041,7 @@
     }
   },
   {
-    "__docId__": 231,
+    "__docId__": 263,
     "kind": "method",
     "name": "dismount",
     "memberof": "lib/BasicDOM.js~Input",
@@ -4364,7 +5061,7 @@
     }
   },
   {
-    "__docId__": 232,
+    "__docId__": 264,
     "kind": "method",
     "name": "mount",
     "memberof": "lib/BasicDOM.js~Input",
@@ -4392,7 +5089,7 @@
     }
   },
   {
-    "__docId__": 233,
+    "__docId__": 265,
     "kind": "method",
     "name": "change",
     "memberof": "lib/BasicDOM.js~Input",
@@ -4426,7 +5123,7 @@
     }
   },
   {
-    "__docId__": 234,
+    "__docId__": 266,
     "kind": "get",
     "name": "value",
     "memberof": "lib/BasicDOM.js~Input",
@@ -4445,7 +5142,7 @@
     }
   },
   {
-    "__docId__": 235,
+    "__docId__": 267,
     "kind": "set",
     "name": "value",
     "memberof": "lib/BasicDOM.js~Input",
@@ -4459,7 +5156,7 @@
     "undocument": true
   },
   {
-    "__docId__": 236,
+    "__docId__": 268,
     "kind": "function",
     "name": "input",
     "memberof": "lib/BasicDOM.js",
@@ -4510,7 +5207,7 @@
     }
   },
   {
-    "__docId__": 237,
+    "__docId__": 269,
     "kind": "function",
     "name": "text",
     "memberof": "lib/BasicDOM.js",
@@ -4552,10 +5249,10 @@
     }
   },
   {
-    "__docId__": 238,
+    "__docId__": 270,
     "kind": "file",
     "name": "lib/BasicShapes.js",
-    "content": "import * as BC from './BasicCanvas.js';\n\nexport const rectangle = (point, w, h = null, fill = null, stroke = null) => shape => {\n  const f = fill || shape.canvas.fill;\n  const s = stroke || shape.canvas.stroke;\n  shape.rect(point, w, h ? h : w, f, s);\n  shape.center = point;\n};\n\nexport const ellipse = (point, w, h = null, fill = null, stroke = null) => shape => {\n  const f = fill || shape.canvas.fill;\n  const s = stroke || shape.canvas.stroke;\n\n  shape.ellipse(point, w, h ? h : w, f, s);\n  shape.center = point;\n};\n\nexport const line = (origin, position) => shape => {\n  shape.vertex(origin);\n  shape.vertex(position);\n};\n\nexport const polygon = (centre, sides, radius) => shape => {\n  sides = Math.abs(sides);\n  const exterior = 2 * Math.PI / sides;\n  for (let partial = -Math.HALF_PI; partial <= Math.TAU - Math.HALF_PI; partial += exterior) {\n    shape.vertex(\n      centre.x + radius * Math.cos(partial),\n      centre.y + radius * Math.sin(partial)\n    );\n  }\n  shape.center = centre;\n};\n\nexport const star = (point, inner, outer, points) => shape => {\n  const angle_frac = Math.TAU / points;\n  const half_angle = angle_frac / 2;\n\n  for (let theta = 0; theta < Math.TAU; theta += angle_frac) {\n    shape.vertex(BC.Polar(outer, theta, point));\n    shape.vertex(BC.Polar(inner, theta + half_angle, point));\n  }\n  shape.close();\n  shape.center = point;\n};\n\nexport const polar_line = (mag, angle, origin = BC.Point(0, 0)) => shape => {\n  shape.vertex(origin);\n  shape.vertex(BC.Polar(mag, angle, origin));\n};\n\nexport const arrow = (mag, angle, origin = BC.Point(0, 0), headsize = 1 / 5) => shape => {\n  polar_line(mag, angle, origin)(shape);\n  const arrow_angle = 2.4;\n  const point = BC.Polar(mag, angle, origin);\n  shape.vertex(point);\n  shape.vertex(BC.Polar(mag * headsize, angle - arrow_angle, point));\n  shape.vertex(point);\n  shape.vertex(BC.Polar(mag * headsize, angle + arrow_angle, point));\n};\n\nexport const vector = (point, origin = BC.Point(0, 0), headsize = 1 / 5) => shape => {\n  line(origin, point)(shape);\n  const arrow_angle = 2.4;\n  const length = point.length(origin);\n  const angle = point.angle(origin);\n  shape.vertex(point);\n  shape.vertex(BC.Polar(length * headsize, angle - arrow_angle, point));\n  shape.vertex(point);\n  shape.vertex(BC.Polar(length * headsize, angle + arrow_angle, point));\n};\n\nexport const grid = (opaque = 40, night = false) => shape => {  // Maybe allow arguments to modify how the grid works.\n  const {canvas} = shape;\n  const {stretch} = canvas;\n  canvas.temp(() => {\n    canvas.stroke_weight = 2;\n    const base = night ? 255 : 0;\n    const [light, dark] = [BC.RGBA(base, opaque), BC.RGBA(base, opaque + 40)];\n\n    const x_range = [canvas.corner.x, canvas.corner.x + canvas.width / stretch[0]];\n    for (let x = Math.floor(Math.min(...x_range));\n      x <= Math.max(...x_range);\n      x++) {\n      canvas.stroke = light;\n      canvas.shape(`x${x}_gridline`, shape => {\n        shape.vertex(x, canvas.corner.y);\n        shape.vertex(x, canvas.corner.y + canvas.height / stretch[1]);\n      });\n      canvas.stroke = dark;\n      canvas.shape(`x${x}_tick`, shape => {\n        shape.vertex(x, -3 / stretch[1]);\n        shape.vertex(x, 3 / stretch[1]);\n      });\n\n      canvas.temp(() => {\n        canvas.unscale();\n        canvas.stroke = BC.Color('transparent');\n        canvas.fill = dark;\n        canvas.text_align = 'right';\n        if (x !== 0) {\n          canvas.text(x, BC.Point(x * stretch[0] + 4, 14));\n        }\n      });\n    }\n\n    const y_range = [canvas.corner.y, canvas.corner.y + canvas.height / stretch[1]];\n    for (let y = Math.floor(Math.min(...y_range));\n      y <= Math.max(...y_range);\n      y++) {\n      canvas.stroke = light;\n      canvas.shape(`y${y}_gridline`, shape => {\n        shape.vertex(canvas.corner.x, y);\n        shape.vertex(canvas.corner.x + canvas.width / stretch[0], y);\n      });\n      canvas.stroke = dark;\n      canvas.shape(`y${y}_tickline`, shape => {\n        shape.vertex(-3 / stretch[0], y);\n        shape.vertex(3 / stretch[0], y);\n      });\n\n      canvas.temp(() => {\n        canvas.unscale();\n        canvas.stroke = BC.Color('transparent');\n        canvas.fill = dark;\n        canvas.text_align = 'right';\n        if (y !== 0) {\n          canvas.text(y, BC.Point(-4, y * stretch[1] + 4));\n        }\n      });\n    }\n\n    // Origin\n    canvas.temp(() => {\n      canvas.unscale();\n      canvas.stroke = BC.Color('transparent');\n      canvas.fill = dark;\n      canvas.text_align = 'right';\n      canvas.text('0', BC.Point(-4, 4));\n    });\n\n    canvas.stroke = dark;\n    canvas.shape('x_axis', shape => {\n      shape.vertex(canvas.corner.x, 0);\n      shape.vertex(canvas.corner.x + canvas.width / stretch[0], 0);\n    });\n    canvas.shape('y_axis', shape => {\n      shape.vertex(0, canvas.corner.y);\n      shape.vertex(0, canvas.corner.y + canvas.height / stretch[1]);\n    });\n  });\n};\n",
+    "content": "import * as BC from './BasicCanvas.js';\n\nexport const rectangle = (point, w, h = null, fill = null, stroke = null) => shape => {\n  const f = fill || shape.canvas.fill;\n  const s = stroke || shape.canvas.stroke;\n  shape.rect(point, w, h ? h : w, f, s);\n  shape.center = point;\n};\n\nexport const ellipse = (point, w, h = null, fill = null, stroke = null) => shape => {\n  const f = fill || shape.canvas.fill;\n  const s = stroke || shape.canvas.stroke;\n\n  shape.ellipse(point, w, h ? h : w, f, s);\n  shape.center = point;\n};\n\nexport const line = (origin, position) => shape => {\n  shape.hollow = true;\n  shape.vertex(origin);\n  shape.vertex(position);\n};\n\nexport const polygon = (centre, sides, radius) => shape => {\n  sides = Math.abs(sides);\n  const exterior = 2 * Math.PI / sides;\n  for (let partial = -Math.HALF_PI; partial <= Math.TAU - Math.HALF_PI; partial += exterior) {\n    shape.vertex(\n      centre.x + radius * Math.cos(partial),\n      centre.y + radius * Math.sin(partial)\n    );\n  }\n  shape.center = centre;\n};\n\nexport const star = (point, inner, outer, points) => shape => {\n  const angle_frac = Math.TAU / points;\n  const half_angle = angle_frac / 2;\n\n  for (let theta = 0; theta < Math.TAU; theta += angle_frac) {\n    shape.vertex(BC.Polar(outer, theta, point));\n    shape.vertex(BC.Polar(inner, theta + half_angle, point));\n  }\n  shape.close();\n  shape.center = point;\n};\n\nexport const polar_line = (mag, angle, origin = BC.Point(0, 0)) => shape => {\n  shape.vertex(origin);\n  shape.vertex(BC.Polar(mag, angle, origin));\n};\n\nexport const arrow = (mag, angle, origin = BC.Point(0, 0), headsize = 1 / 5) => shape => {\n  shape.hollow = true;\n  polar_line(mag, angle, origin)(shape);\n  const arrow_angle = 2.4;\n  const point = BC.Polar(mag, angle, origin);\n  shape.vertex(point);\n  shape.vertex(BC.Polar(mag * headsize, angle - arrow_angle, point));\n  shape.vertex(point);\n  shape.vertex(BC.Polar(mag * headsize, angle + arrow_angle, point));\n};\n\nexport const vector = (point, origin = BC.Point(0, 0), headsize = 1 / 5) => shape => {\n  shape.hollow = true;\n  line(origin, point)(shape);\n  const arrow_angle = 2.4;\n  const length = point.length(origin);\n  const angle = point.angle(origin);\n  shape.vertex(point);\n  shape.vertex(BC.Polar(length * headsize, angle - arrow_angle, point));\n  shape.vertex(point);\n  shape.vertex(BC.Polar(length * headsize, angle + arrow_angle, point));\n};\n\nexport const grid = (opaque = 40, night = false) => shape => {  // Maybe allow arguments to modify how the grid works.\n  const {canvas} = shape;\n  const {stretch} = canvas;\n  canvas.temp(() => {\n    canvas.stroke_weight = 2;\n    const base = night ? 255 : 0;\n    const [light, dark] = [BC.RGBA(base, opaque), BC.RGBA(base, opaque + 40)];\n\n    const x_range = [canvas.corner.x, canvas.corner.x + canvas.width / stretch[0]];\n    for (let x = Math.floor(Math.min(...x_range));\n      x <= Math.max(...x_range);\n      x++) {\n      canvas.stroke = light;\n      canvas.render(`x${x}_gridline`, shape => {\n        shape.vertex(x, canvas.corner.y);\n        shape.vertex(x, canvas.corner.y + canvas.height / stretch[1]);\n      });\n      canvas.stroke = dark;\n      canvas.render(`x${x}_tick`, shape => {\n        shape.vertex(x, -3 / stretch[1]);\n        shape.vertex(x, 3 / stretch[1]);\n      });\n\n      canvas.temp(() => {\n        canvas.unscale();\n        canvas.stroke = BC.Color('transparent');\n        canvas.fill = dark;\n        canvas.text_align = 'right';\n        if (x !== 0) {\n          canvas.text(x, BC.Point(x * stretch[0] + 4, 14));\n        }\n      });\n    }\n\n    const y_range = [canvas.corner.y, canvas.corner.y + canvas.height / stretch[1]];\n    for (let y = Math.floor(Math.min(...y_range));\n      y <= Math.max(...y_range);\n      y++) {\n      canvas.stroke = light;\n      canvas.render(`y${y}_gridline`, shape => {\n        shape.vertex(canvas.corner.x, y);\n        shape.vertex(canvas.corner.x + canvas.width / stretch[0], y);\n      });\n      canvas.stroke = dark;\n      canvas.render(`y${y}_tickline`, shape => {\n        shape.vertex(-3 / stretch[0], y);\n        shape.vertex(3 / stretch[0], y);\n      });\n\n      canvas.temp(() => {\n        canvas.unscale();\n        canvas.stroke = BC.Color('transparent');\n        canvas.fill = dark;\n        canvas.text_align = 'right';\n        if (y !== 0) {\n          canvas.text(y, BC.Point(-4, y * stretch[1] + 4));\n        }\n      });\n    }\n\n    // Origin\n    canvas.temp(() => {\n      canvas.unscale();\n      canvas.stroke = BC.Color('transparent');\n      canvas.fill = dark;\n      canvas.text_align = 'right';\n      canvas.text('0', BC.Point(-4, 4));\n    });\n\n    canvas.stroke = dark;\n    canvas.render('x_axis', shape => {\n      shape.vertex(canvas.corner.x, 0);\n      shape.vertex(canvas.corner.x + canvas.width / stretch[0], 0);\n    });\n    canvas.render('y_axis', shape => {\n      shape.vertex(0, canvas.corner.y);\n      shape.vertex(0, canvas.corner.y + canvas.height / stretch[1]);\n    });\n  });\n};\n",
     "static": true,
     "longname": "/home/weet/Git/BasicCanvas/lib/BasicShapes.js",
     "access": "public",
@@ -4563,7 +5260,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 239,
+    "__docId__": 271,
     "kind": "function",
     "name": "rectangle",
     "memberof": "lib/BasicShapes.js",
@@ -4619,7 +5316,7 @@
     "return": null
   },
   {
-    "__docId__": 240,
+    "__docId__": 272,
     "kind": "function",
     "name": "ellipse",
     "memberof": "lib/BasicShapes.js",
@@ -4675,7 +5372,7 @@
     "return": null
   },
   {
-    "__docId__": 241,
+    "__docId__": 273,
     "kind": "function",
     "name": "line",
     "memberof": "lib/BasicShapes.js",
@@ -4707,7 +5404,7 @@
     "return": null
   },
   {
-    "__docId__": 242,
+    "__docId__": 274,
     "kind": "function",
     "name": "polygon",
     "memberof": "lib/BasicShapes.js",
@@ -4720,7 +5417,7 @@
     "importPath": "basiccanvas/lib/BasicShapes.js",
     "importStyle": "{polygon}",
     "description": null,
-    "lineNumber": 23,
+    "lineNumber": 24,
     "undocument": true,
     "params": [
       {
@@ -4745,7 +5442,7 @@
     "return": null
   },
   {
-    "__docId__": 243,
+    "__docId__": 275,
     "kind": "function",
     "name": "star",
     "memberof": "lib/BasicShapes.js",
@@ -4758,7 +5455,7 @@
     "importPath": "basiccanvas/lib/BasicShapes.js",
     "importStyle": "{star}",
     "description": null,
-    "lineNumber": 35,
+    "lineNumber": 36,
     "undocument": true,
     "params": [
       {
@@ -4789,7 +5486,7 @@
     "return": null
   },
   {
-    "__docId__": 244,
+    "__docId__": 276,
     "kind": "function",
     "name": "polar_line",
     "memberof": "lib/BasicShapes.js",
@@ -4802,7 +5499,7 @@
     "importPath": "basiccanvas/lib/BasicShapes.js",
     "importStyle": "{polar_line}",
     "description": null,
-    "lineNumber": 47,
+    "lineNumber": 48,
     "undocument": true,
     "params": [
       {
@@ -4828,7 +5525,7 @@
     "return": null
   },
   {
-    "__docId__": 245,
+    "__docId__": 277,
     "kind": "function",
     "name": "arrow",
     "memberof": "lib/BasicShapes.js",
@@ -4841,7 +5538,7 @@
     "importPath": "basiccanvas/lib/BasicShapes.js",
     "importStyle": "{arrow}",
     "description": null,
-    "lineNumber": 52,
+    "lineNumber": 53,
     "undocument": true,
     "params": [
       {
@@ -4874,7 +5571,7 @@
     "return": null
   },
   {
-    "__docId__": 246,
+    "__docId__": 278,
     "kind": "function",
     "name": "vector",
     "memberof": "lib/BasicShapes.js",
@@ -4887,7 +5584,7 @@
     "importPath": "basiccanvas/lib/BasicShapes.js",
     "importStyle": "{vector}",
     "description": null,
-    "lineNumber": 62,
+    "lineNumber": 64,
     "undocument": true,
     "params": [
       {
@@ -4914,7 +5611,7 @@
     "return": null
   },
   {
-    "__docId__": 247,
+    "__docId__": 279,
     "kind": "function",
     "name": "grid",
     "memberof": "lib/BasicShapes.js",
@@ -4927,7 +5624,7 @@
     "importPath": "basiccanvas/lib/BasicShapes.js",
     "importStyle": "{grid}",
     "description": null,
-    "lineNumber": 73,
+    "lineNumber": 76,
     "undocument": true,
     "params": [
       {
@@ -4953,7 +5650,7 @@
   },
   {
     "kind": "index",
-    "content": "# BasicCanvas\nA friendlier way interact with the canvas.\n\n## Usage\njsdelivr CDN (use this to import):\n- Canvas\n  ```\n  https://cdn.jsdelivr.net/gh/Demonstrandum/BasicCanvas@v1.0.6/lib/BasicCanvas.js\n  ```\n- Shapes\n  ```\n  https://cdn.jsdelivr.net/gh/Demonstrandum/BasicCanvas@v1.0.6/lib/BasicShapes.js\n  ```\n- DOM\n  ```\n  https://cdn.jsdelivr.net/gh/Demonstrandum/BasicCanvas@v1.0.6/lib/BasicDOM.js\n  ```\n\nTODO: Instructions on usage, for now look at the example files (and/or source files), still a small project.\n\n## Run Examples\nExample hosted with ▲now: [canvas.knutsen.co](https://canvas.knutsen.co/example/)\n\nTo run unlisted examples, or run specific examples by a specifc URL, simply go to:\n- [canvas.knutsen.co/example/?](https://canvas.knutsen.co/example/?) + _name of the js file_\n- e.g. [canvas.knutsen.co/example/?music.js](https://canvas.knutsen.co/example/?music.js)\n\nFirst clone:\n```sh\ngit clone https://github.com/Demonstrandum/BasicCanvas.git\ncd BasicCanvas\n```\nthen run with:\n```sh\n./server.sh\n```\nAnd go to http://localhost:8000/example/ (for an example file, see the index.html code to switch example).\n\n## Try Yourself\nCheck out the CodePen: https://codepen.io/wernstrom/project/editor/DKzVaY\nExplore the library by making small modifications to the CodePen and/or rewriting it to do something new.\n\n### Quick Example\nDrawing a simple sinusoidal progressive wave:\n```js\nimport * as BC from 'https://cdn.jsdelivr.net/gh/Demonstrandum/BasicCanvas@v1.0.3/lib/BasicCanvas.js';\n// If running this locally, you need a server running for `import`s to work, (for now).\n\nuse(BC)  // To avoid having to write `BC.` all the time.\n         // (Be ware of collisions)\n\nconst sketch = canvas_id('sketch'); // Gets canvas with id=\"sketch\".\nsketch.dimensions(400, 400); // width x height, size of the canvas.\n\nsketch.stroke = RGB(0); // Same as BC.RGBA(0, 0, 0, 255).\nsketch.stroke_weight = 8; // 8px wide.\nsketch.stroke_cap = 'round';\n\nconst BG = RGB(255, 255, 110);\nsketch.loop(frame => {  // `frame` is an integer, starts at 0 and increments for every frame drawn.\n  sketch.background(BG); // Redraw background each frame.\n\n  sketch.shape('sine', shape => { // Create new shape, `shape(name, construction of shape callback)`\n    for (let x = 0; x < 3 * Math.PI; x += 0.2) { // Draw sine curve for this frame, next frame will be different\n      shape.vertex(BC.Point(32 * x + 50, 32 * Math.sin(x + frame / 10) + 200));\n    }\n  });\n});\n```\nMake sure the relative path to the BasicCanvas.js file is correct.\n\nIf the above file is called something like `sine_wave.js` then the `index.html` file (in the same folder) should look something like:\n```html\n<!DOCTYPE html>\n<html lang=\"en\" dir=\"ltr\">\n  <head>\n    <meta charset=\"utf-8\">\n    <title>Simple Sinusoidal Wave</title>\n  </head>\n  <body>\n    <canvas id=\"sketch\"></canvas>\n    <script src=\"sine_wave.js\" type=\"module\" charset=\"utf-8\"></script>\n  </body>\n</html>\n```\nOr, you could use the `your_example.js` file found in the example/ folder of the repo.\n",
+    "content": "# BasicCanvas\nA friendlier way interact with the canvas.\n\n## Usage\njsdelivr CDN (use this to import):\n- Canvas\n  ```\n  https://cdn.jsdelivr.net/gh/Demonstrandum/BasicCanvas@v1.1.0/lib/BasicCanvas.js\n  ```\n- Shapes\n  ```\n  https://cdn.jsdelivr.net/gh/Demonstrandum/BasicCanvas@v1.1.0/lib/BasicShapes.js\n  ```\n- DOM\n  ```\n  https://cdn.jsdelivr.net/gh/Demonstrandum/BasicCanvas@v1.1.0/lib/BasicDOM.js\n  ```\n### Docs\n\nAuto-generated documentation: [canvas.knutsen.co/docs/](https://canvas.knutsen.co/docs/)\n\nTODO: Instructions on usage, for now look at the example files (and/or source files), still a small project.\n\n\n## Run Examples\nExample hosted with ▲now: [canvas.knutsen.co](https://canvas.knutsen.co/example/)\n\nTo run unlisted examples, or run specific examples by a specifc URL, simply go to:\n- [canvas.knutsen.co/example/?](https://canvas.knutsen.co/example/?) + _name of the js file_\n- e.g. [canvas.knutsen.co/example/?music.js](https://canvas.knutsen.co/example/?music.js)\n\nFirst clone:\n```sh\ngit clone https://github.com/Demonstrandum/BasicCanvas.git\ncd BasicCanvas\n```\nthen run with:\n```sh\n./server.sh\n```\nAnd go to http://localhost:8000/example/ (for an example file, see the index.html code to switch example).\n\n## Quick Examples\n![tree.js](https://user-images.githubusercontent.com/26842759/54957430-a7a08580-4f4a-11e9-8928-7477b41ca01e.png)\n\n[See Animation.](https://canvas.knutsen.co/example/?tree.js)\n\n```js\nimport * as BC from '../lib/BasicCanvas.js';\nimport {line} from '../lib/BasicShapes.js';\n\nuse(BC);\n\nconst sketch = canvas_id('sketch');\nsketch.dimensions(400, 400);\nsketch.translate(sketch.width / 2, sketch.height / 2);\n\nsketch.fill = RGB(50, 30, 80);\nsketch.stroke = HSL(340, 100, 45, 170);\nsketch.stroke_weight = 4;\nsketch.stroke_cap = 'round';\n\nconst branch = (previous, angle, depth, inc, first = true) => {\n  if (depth < 0) return;\n\n  let next = previous;\n  if (!first) {\n    next = Polar(Math.sqrt(depth) * 16, -angle, previous);\n    sketch.render(line(next, previous));\n  }\n\n  branch(next, angle + inc, depth - 1, inc, false);\n  branch(next, angle - inc, depth - 1, inc, false);\n};\n\nconst tree = P(0, 10);\nsketch.loop(frame => {\n  sketch.background();\n  sketch.render(line(P(0, 200), tree));\n  branch(tree, Math.PI / 2, 7, 0.6 + Math.sin(frame / 20) / 3);\n});\n```\n\nDrawing a simple sinusoidal progressive wave:\n```js\nimport * as BC from 'https://cdn.jsdelivr.net/gh/Demonstrandum/BasicCanvas@v1.1.0/lib/BasicCanvas.js';\n// If running this locally, you need a server running for `import`s to work, (for now).\n\nuse(BC)  // To avoid having to write `BC.` all the time.\n         // (Be ware of collisions)\n\nconst sketch = canvas_id('sketch'); // Gets canvas with id=\"sketch\".\nsketch.dimensions(400, 400); // width x height, size of the canvas.\n\nsketch.stroke = RGB(0); // Same as BC.RGBA(0, 0, 0, 255).\nsketch.stroke_weight = 8; // 8px wide.\nsketch.stroke_cap = 'round';\n\nconst BG = RGB(255, 255, 110);\nsketch.loop(frame => {  // `frame` is an integer, starts at 0 and increments for every frame drawn.\n  sketch.background(BG); // Redraw background each frame.\n\n  sketch.shape('sine', shape => { // Create new shape, `shape(name, construction of shape callback)`\n    for (let x = 0; x < 3 * Math.PI; x += 0.2) { // Draw sine curve for this frame, next frame will be different\n      shape.vertex(BC.Point(32 * x + 50, 32 * Math.sin(x + frame / 10) + 200));\n    }\n  });\n});\n```\nMake sure the relative path to the BasicCanvas.js file is correct.\n\nIf the above file is called something like `sine_wave.js` then the `index.html` file (in the same folder) should look something like:\n```html\n<!DOCTYPE html>\n<html lang=\"en\" dir=\"ltr\">\n  <head>\n    <meta charset=\"utf-8\">\n    <title>Simple Sinusoidal Wave</title>\n  </head>\n  <body>\n    <canvas id=\"sketch\"></canvas>\n    <script src=\"sine_wave.js\" type=\"module\" charset=\"utf-8\"></script>\n  </body>\n</html>\n```\nOr, you could use the `your_example.js` file found in the example/ folder of the repo.\n\n\n## Try Yourself\nCheck out the CodePen: https://codepen.io/wernstrom/project/editor/DKzVaY\nExplore the library by making small modifications to the CodePen and/or rewriting it to do something new.\n",
     "longname": "/home/weet/Git/BasicCanvas/README.md",
     "name": "./README.md",
     "static": true,
@@ -4961,7 +5658,7 @@
   },
   {
     "kind": "packageJSON",
-    "content": "{\n  \"name\": \"basiccanvas\",\n  \"title\": \"BasicCanvas\",\n  \"description\": \"Simple JavaScript canvas abstractions.\",\n  \"version\": \"1.0.6\",\n  \"main\": \"lib/BasicCanvas.js\",\n  \"homepage\": \"https://github.com/Demonstrandum/BasicCanvas/\",\n  \"author\": {\n    \"name\": \"Fredrik\",\n    \"url\": \"https://github.com/Demonstrandum/\"\n  },\n  \"repository\": {\n    \"type\": \"git\",\n    \"url\": \"https://github.com/Demonstrandum/BasicCanvas.git\"\n  },\n  \"keywords\": [\n    \"BasicCanvas\",\n    \"javascript\",\n    \"browser\",\n    \"library\",\n    \"canvas\",\n    \"art\"\n  ],\n  \"bugs\": {\n    \"url\": \"https://github.com/Demonstrandum/BasicCanvas/issues\"\n  },\n  \"license\": \"GPL-2.0\",\n  \"dependencies\": {\n    \"esdoc\": \"^1.1.0\",\n    \"esdoc-standard-plugin\": \"^1.0.0\"\n  },\n  \"scripts\": {\n    \"test\": \"xo\"\n  },\n  \"devDependencies\": {\n    \"xo\": \"^0.21.1\"\n  },\n  \"xo\": {\n    \"space\": true,\n    \"rules\": {\n      \"camelcase\": \"off\",\n      \"unicorn/filename-case\": \"off\",\n      \"new-cap\": \"off\",\n      \"no-mixed-operators\": \"off\",\n      \"no-undef\": \"off\",\n      \"import/extensions\": \"off\",\n      \"max-params\": \"off\",\n      \"no-warning-comments\": \"off\",\n      \"no-multi-spaces\": \"off\",\n      \"func-name-matching\": \"off\",\n      \"func-names\": \"off\",\n      \"no-use-extend-native/no-use-extend-native\": \"off\",\n      \"no-extend-native\": \"off\",\n      \"no-unused-expressions\": \"off\",\n      \"unicorn/escape-case\": \"off\"\n    }\n  }\n}\n",
+    "content": "{\n  \"name\": \"basiccanvas\",\n  \"title\": \"BasicCanvas\",\n  \"description\": \"Simple JavaScript canvas abstractions.\",\n  \"version\": \"1.1.0\",\n  \"main\": \"lib/BasicCanvas.js\",\n  \"homepage\": \"https://github.com/Demonstrandum/BasicCanvas/\",\n  \"author\": {\n    \"name\": \"Fredrik\",\n    \"url\": \"https://github.com/Demonstrandum/\"\n  },\n  \"repository\": {\n    \"type\": \"git\",\n    \"url\": \"https://github.com/Demonstrandum/BasicCanvas.git\"\n  },\n  \"keywords\": [\n    \"BasicCanvas\",\n    \"javascript\",\n    \"browser\",\n    \"library\",\n    \"canvas\",\n    \"art\"\n  ],\n  \"bugs\": {\n    \"url\": \"https://github.com/Demonstrandum/BasicCanvas/issues\"\n  },\n  \"license\": \"GPL-2.0\",\n  \"dependencies\": {\n    \"esdoc\": \"^1.1.0\",\n    \"esdoc-standard-plugin\": \"^1.0.0\"\n  },\n  \"scripts\": {\n    \"test\": \"xo\"\n  },\n  \"devDependencies\": {\n    \"xo\": \"^0.21.1\"\n  },\n  \"xo\": {\n    \"space\": true,\n    \"rules\": {\n      \"curly\": \"off\",\n      \"camelcase\": \"off\",\n      \"unicorn/filename-case\": \"off\",\n      \"new-cap\": \"off\",\n      \"no-mixed-operators\": \"off\",\n      \"no-undef\": \"off\",\n      \"import/extensions\": \"off\",\n      \"max-params\": \"off\",\n      \"no-warning-comments\": \"off\",\n      \"no-multi-spaces\": \"off\",\n      \"func-name-matching\": \"off\",\n      \"func-names\": \"off\",\n      \"no-use-extend-native/no-use-extend-native\": \"off\",\n      \"no-extend-native\": \"off\",\n      \"no-unused-expressions\": \"off\",\n      \"unicorn/escape-case\": \"off\"\n    }\n  }\n}\n",
     "longname": "/home/weet/Git/BasicCanvas/package.json",
     "name": "package.json",
     "static": true,

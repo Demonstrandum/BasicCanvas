@@ -49,6 +49,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-mouse_up">mouse_up</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-plain">plain</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-style">style</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-to_rgb">to_rgb</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-type">type</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-id">id</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-input">input</a></span></span></li>
@@ -65,9 +66,12 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-Colour">Colour</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-HSLA">HSLA</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-HSVA">HSVA</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-NAMED_COLORS">NAMED_COLORS</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-P">P</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-RGB">RGB</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-RGBA">RGBA</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-TRANSPARENT">TRANSPARENT</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-to_rgba">to_rgba</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-use">use</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-id_map">id_map</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-object_count">object_count</a></span></span></li>
@@ -132,11 +136,11 @@ Array.prototype.norm = function () {
   }
   return this.map(e =&gt; e / this.mag());
 };
-Array.prototype.rotate = function (theta) {
+Array.prototype.rotate = function (theta, origin=[0,0]) {
   return [
-    this[0] * Math.cos(theta) - this[1] * Math.sin(theta),
-    this[0] * Math.sin(theta) + this[1] * Math.cos(theta)
-  ];  // 2D roataion only.
+    origin[0] + (this[0] - origin[0]) * Math.cos(theta) - (this[1] - origin[1]) * Math.sin(theta),
+    origin[1] + (this[0] - origin[0]) * Math.sin(theta) + (this[1] - origin[1]) * Math.cos(theta)
+  ];
 };
 
 String.prototype.replaceAll = function (search, replacement) {
@@ -296,6 +300,10 @@ class PointObj {
     return this.angle(...xs);
   }
 
+  rotate(theta, origin = new PointObj(0, 0)) {
+    return new PointObj(...this.array.rotate(theta, origin.array));
+  }
+
   toString() {
     return `(${this.x}, ${this.y})`;
   }
@@ -304,19 +312,7 @@ class PointObj {
     return this.toString();
   }
 }
-class NamedColorObj {
-  constructor(color) {
-    this.color = color;
-  }
 
-  toString() {
-    return this.color;
-  }
-
-  valueOf() {
-    return this.toString();
-  }
-}
 class RGBAObj {
   constructor(r, g, b, a) {
     [this.r, this.g, this.b, this.a] = [r, g, b, a].map(Math.round);
@@ -332,54 +328,6 @@ class RGBAObj {
     return this.toString();
   }
 }
-
-class HSLObj {
-  constructor(h, s, l, a) {
-    [this.h, this.s, this.l, this.a] = [h, s, l, a].map(Math.round);
-  }
-
-  toString() {
-    return `hsla(${this.h}, ${this.s}%, ${this.l}%, ${this.a / 255})`;
-  }
-
-  valueOf() {
-    return this.toString();
-  }
-}
-
-class HSVObj extends HSLObj {
-  toString() {
-    return `hsva(${this.h}, ${this.s}%, ${this.l}%, ${this.a / 255})`;
-  }
-}
-class HEXobj {
-  constructor(hex) {
-    if (type(hex) === &apos;array&apos;) {
-      this.hex = `#${hex[0].split(&apos;#&apos;).slice(-1)[0]}`;
-      return;
-    }
-    this.hex = (type(hex) === &apos;string&apos;) ?
-      `#${hex.split(&apos;#&apos;).slice(-1)[0]}` :
-      `#${(&apos;000000&apos; + hex.toString(16)).slice(-6)}`;
-  }
-
-  toString() {
-    return this.hex;
-  }
-
-  valueOf() {
-    return this.toString();
-  }
-}
-
-// Construction functions for data-types
-export const Point = (x, y) =&gt; new PointObj(x, y);
-export const Polar = (r, theta, origin = Point(0, 0)) =&gt; Point(
-  r * Math.cos(theta) + origin.x,
-  r * Math.sin(theta) + origin.y
-);
-
-export const [P, point, polar] = [Point, Point, Polar];
 
 export const Color = (r, g = -1, b = -1, a = 255) =&gt; {
   if (type(r) === &apos;string&apos;) {
@@ -397,14 +345,397 @@ export const Color = (r, g = -1, b = -1, a = 255) =&gt; {
 
   return new RGBAObj(r, g, b, a);
 };
+
 export const Colour = Color;
 export const RGBA = Color;
 export const RGB = Color;
+
+function hue_to_rgb(p, q, t) {
+  if (t &lt; 0) {
+    t += 1;
+  }
+  if (t &gt; 1) {
+    t -= 1;
+  }
+  if (t &lt; 1 / 6) {
+    return p + (q - p) * 6 * t;
+  }
+  if (t &lt; 1 / 2) {
+    return q;
+  }
+  if (t &lt; 2 / 3) {
+    return p + (q - p) * (2 / 3 - t) * 6;
+  }
+  return p;
+}
+
+class HSLObj {
+  constructor(h, s, l, a) {
+    [this.h, this.s, this.l, this.a] = [h, s, l, a].map(Math.round);
+    this.rgb = this.to_rgb();
+  }
+
+  to_rgb() {
+    let r, g, b;
+    const h = this.h / 360;
+    const [s, l] = [this.s, this.l].map(n =&gt; n / 100);
+
+    if (s == 0) {
+      r = g = b = l;
+    } else {
+      const q = l &lt; 0.5 ? l * (1 + s) : l + s - l * s;
+      const p = 2 * l - q;
+
+      r = hue_to_rgb(p, q, h + 1 / 3);
+      g = hue_to_rgb(p, q, h);
+      b = hue_to_rgb(p, q, h - 1 / 3);
+    }
+
+    return RGBA(r * 255, g * 255, b * 255, this.a);
+  }
+
+  toString() {
+    return `hsla(${this.h}, ${this.s}%, ${this.l}%, ${this.a / 255})`;
+  }
+
+  valueOf() {
+    return this.toString();
+  }
+}
+
+class HSVObj {
+  constructor(h, s, v, a) {
+    [this.h, this.s, this.v, this.a] = [h, s, v, a].map(Math.round);
+    this.rgb = this.to_rgb();
+  }
+
+  to_rgb() {
+    let r, g, b;
+    const h = this.h / 360;
+    const [s, v] = [this.s, this.v].map(n =&gt; n / 100);
+
+    const i = Math.floor(h * 6);
+    const f = h * 6 - i;
+    const p = v * (1 - s);
+    const q = v * (1 - f * s);
+    const t = v * (1 - (1 - f) * s);
+
+    switch (i % 6) {
+      case 0: r = v, g = t, b = p; break;
+      case 1: r = q, g = v, b = p; break;
+      case 2: r = p, g = v, b = t; break;
+      case 3: r = p, g = q, b = v; break;
+      case 4: r = t, g = p, b = v; break;
+      case 5: r = v, g = p, b = q; break;
+    }
+
+    return RGBA(r * 255, g * 255, b * 255, this.a);
+  }
+
+  toString() {
+    return `hsla(${this.h}, ${this.s}%, ${this.l}%, ${this.a / 255})`;
+  }
+
+  valueOf() {
+    return this.toString();
+  }
+}
+
+class HEXobj {
+  constructor(hex) {
+    const chars = &apos;000000ff&apos;.split(&apos;&apos;); // 0x000000ff
+
+    let given;
+    if (type(hex) === &apos;string&apos;) {
+      given = hex.split(&apos;#&apos;).slice(-1)[0];
+    } else if (type(hex) === &apos;array&apos;) {
+      given = plain(...hex).split(&apos;#&apos;).slice(-1)[0];
+    } else {
+      given = hex.toString(16);
+    }
+
+    if (given.length === 3 || given.length === 4) {
+      chars[0] = given[0];
+      chars[1] = given[0];
+      chars[2] = given[1];
+      chars[3] = given[1];
+      chars[4] = given[2];
+      chars[5] = given[2];
+      if (given.length === 4) {
+        chars[6] = given[3];
+        chars[7] = given[3];
+      }
+    } else if (given.length === 6 || given.length === 8) {
+      chars[0] = given[0];
+      chars[1] = given[1];
+      chars[2] = given[2];
+      chars[3] = given[3];
+      chars[4] = given[4];
+      chars[5] = given[5];
+      if (given.length === 8) {
+        chars[6] = given[6];
+        chars[7] = given[7];
+      }
+    } else {
+      throw new Error(&apos;Invalid hex format: &apos; + given);
+    }
+
+    const str = chars.join(&apos;&apos;);
+    this.str = &apos;#&apos; + str;
+    this.hex = parseInt(str, 16);
+    this.rgb = this.to_rgb();
+  }
+
+  to_rgb() {
+    const r = this.hex &gt;&gt; 24 &amp; 0xFF;
+    const g = this.hex &gt;&gt; 16 &amp; 0xFF;
+    const b = this.hex &gt;&gt; 8  &amp; 0xFF;
+    const a = this.hex &amp; 0xFF;
+    return RGBA(r, g, b, a);
+  }
+
+  toString() {
+    return this.str;
+  }
+
+  valueOf() {
+    return this.toString();
+  }
+}
+
+export const NAMED_COLORS = {
+  aliceblue: &apos;#f0f8ff&apos;,
+  antiquewhite: &apos;#faebd7&apos;,
+  aqua: &apos;#00ffff&apos;,
+  aquamarine: &apos;#7fffd4&apos;,
+  azure: &apos;#f0ffff&apos;,
+  beige: &apos;#f5f5dc&apos;,
+  bisque: &apos;#ffe4c4&apos;,
+  black: &apos;#000000&apos;,
+  blanchedalmond: &apos;#ffebcd&apos;,
+  blue: &apos;#0000ff&apos;,
+  blueviolet: &apos;#8a2be2&apos;,
+  brown: &apos;#a52a2a&apos;,
+  burlywood: &apos;#deb887&apos;,
+  cadetblue: &apos;#5f9ea0&apos;,
+  chartreuse: &apos;#7fff00&apos;,
+  chocolate: &apos;#d2691e&apos;,
+  coral: &apos;#ff7f50&apos;,
+  cornflowerblue: &apos;#6495ed&apos;,
+  cornsilk: &apos;#fff8dc&apos;,
+  crimson: &apos;#dc143c&apos;,
+  cyan: &apos;#00ffff&apos;,
+  darkblue: &apos;#00008b&apos;,
+  darkcyan: &apos;#008b8b&apos;,
+  darkgoldenrod: &apos;#b8860b&apos;,
+  darkgray: &apos;#a9a9a9&apos;,
+  darkgreen: &apos;#006400&apos;,
+  darkgrey: &apos;#a9a9a9&apos;,
+  darkkhaki: &apos;#bdb76b&apos;,
+  darkmagenta: &apos;#8b008b&apos;,
+  darkolivegreen: &apos;#556b2f&apos;,
+  darkorange: &apos;#ff8c00&apos;,
+  darkorchid: &apos;#9932cc&apos;,
+  darkred: &apos;#8b0000&apos;,
+  darksalmon: &apos;#e9967a&apos;,
+  darkseagreen: &apos;#8fbc8f&apos;,
+  darkslateblue: &apos;#483d8b&apos;,
+  darkslategray: &apos;#2f4f4f&apos;,
+  darkslategrey: &apos;#2f4f4f&apos;,
+  darkturquoise: &apos;#00ced1&apos;,
+  darkviolet: &apos;#9400d3&apos;,
+  deeppink: &apos;#ff1493&apos;,
+  deepskyblue: &apos;#00bfff&apos;,
+  dimgray: &apos;#696969&apos;,
+  dimgrey: &apos;#696969&apos;,
+  dodgerblue: &apos;#1e90ff&apos;,
+  firebrick: &apos;#b22222&apos;,
+  floralwhite: &apos;#fffaf0&apos;,
+  forestgreen: &apos;#228b22&apos;,
+  fuchsia: &apos;#ff00ff&apos;,
+  gainsboro: &apos;#dcdcdc&apos;,
+  ghostwhite: &apos;#f8f8ff&apos;,
+  goldenrod: &apos;#daa520&apos;,
+  gold: &apos;#ffd700&apos;,
+  gray: &apos;#808080&apos;,
+  green: &apos;#008000&apos;,
+  greenyellow: &apos;#adff2f&apos;,
+  grey: &apos;#808080&apos;,
+  honeydew: &apos;#f0fff0&apos;,
+  hotpink: &apos;#ff69b4&apos;,
+  indianred: &apos;#cd5c5c&apos;,
+  indigo: &apos;#4b0082&apos;,
+  ivory: &apos;#fffff0&apos;,
+  khaki: &apos;#f0e68c&apos;,
+  lavenderblush: &apos;#fff0f5&apos;,
+  lavender: &apos;#e6e6fa&apos;,
+  lawngreen: &apos;#7cfc00&apos;,
+  lemonchiffon: &apos;#fffacd&apos;,
+  lightblue: &apos;#add8e6&apos;,
+  lightcoral: &apos;#f08080&apos;,
+  lightcyan: &apos;#e0ffff&apos;,
+  lightgoldenrodyellow: &apos;#fafad2&apos;,
+  lightgray: &apos;#d3d3d3&apos;,
+  lightgreen: &apos;#90ee90&apos;,
+  lightgrey: &apos;#d3d3d3&apos;,
+  lightpink: &apos;#ffb6c1&apos;,
+  lightsalmon: &apos;#ffa07a&apos;,
+  lightseagreen: &apos;#20b2aa&apos;,
+  lightskyblue: &apos;#87cefa&apos;,
+  lightslategray: &apos;#778899&apos;,
+  lightslategrey: &apos;#778899&apos;,
+  lightsteelblue: &apos;#b0c4de&apos;,
+  lightyellow: &apos;#ffffe0&apos;,
+  lime: &apos;#00ff00&apos;,
+  limegreen: &apos;#32cd32&apos;,
+  linen: &apos;#faf0e6&apos;,
+  magenta: &apos;#ff00ff&apos;,
+  maroon: &apos;#800000&apos;,
+  mediumaquamarine: &apos;#66cdaa&apos;,
+  mediumblue: &apos;#0000cd&apos;,
+  mediumorchid: &apos;#ba55d3&apos;,
+  mediumpurple: &apos;#9370db&apos;,
+  mediumseagreen: &apos;#3cb371&apos;,
+  mediumslateblue: &apos;#7b68ee&apos;,
+  mediumspringgreen: &apos;#00fa9a&apos;,
+  mediumturquoise: &apos;#48d1cc&apos;,
+  mediumvioletred: &apos;#c71585&apos;,
+  midnightblue: &apos;#191970&apos;,
+  mintcream: &apos;#f5fffa&apos;,
+  mistyrose: &apos;#ffe4e1&apos;,
+  moccasin: &apos;#ffe4b5&apos;,
+  navajowhite: &apos;#ffdead&apos;,
+  navy: &apos;#000080&apos;,
+  oldlace: &apos;#fdf5e6&apos;,
+  olive: &apos;#808000&apos;,
+  olivedrab: &apos;#6b8e23&apos;,
+  orange: &apos;#ffa500&apos;,
+  orangered: &apos;#ff4500&apos;,
+  orchid: &apos;#da70d6&apos;,
+  palegoldenrod: &apos;#eee8aa&apos;,
+  palegreen: &apos;#98fb98&apos;,
+  paleturquoise: &apos;#afeeee&apos;,
+  palevioletred: &apos;#db7093&apos;,
+  papayawhip: &apos;#ffefd5&apos;,
+  peachpuff: &apos;#ffdab9&apos;,
+  peru: &apos;#cd853f&apos;,
+  pink: &apos;#ffc0cb&apos;,
+  plum: &apos;#dda0dd&apos;,
+  powderblue: &apos;#b0e0e6&apos;,
+  purple: &apos;#800080&apos;,
+  rebeccapurple: &apos;#663399&apos;,
+  red: &apos;#ff0000&apos;,
+  rosybrown: &apos;#bc8f8f&apos;,
+  royalblue: &apos;#4169e1&apos;,
+  saddlebrown: &apos;#8b4513&apos;,
+  salmon: &apos;#fa8072&apos;,
+  sandybrown: &apos;#f4a460&apos;,
+  seagreen: &apos;#2e8b57&apos;,
+  seashell: &apos;#fff5ee&apos;,
+  sienna: &apos;#a0522d&apos;,
+  silver: &apos;#c0c0c0&apos;,
+  skyblue: &apos;#87ceeb&apos;,
+  slateblue: &apos;#6a5acd&apos;,
+  slategray: &apos;#708090&apos;,
+  slategrey: &apos;#708090&apos;,
+  snow: &apos;#fffafa&apos;,
+  springgreen: &apos;#00ff7f&apos;,
+  steelblue: &apos;#4682b4&apos;,
+  tan: &apos;#d2b48c&apos;,
+  teal: &apos;#008080&apos;,
+  thistle: &apos;#d8bfd8&apos;,
+  tomato: &apos;#ff6347&apos;,
+  transparent: &apos;#00000000&apos;,
+  turquoise: &apos;#40e0d0&apos;,
+  violet: &apos;#ee82ee&apos;,
+  wheat: &apos;#f5deb3&apos;,
+  white: &apos;#ffffff&apos;,
+  whitesmoke: &apos;#f5f5f5&apos;,
+  yellow: &apos;#ffff00&apos;,
+  yellowgreen: &apos;#9acd32&apos;
+}.omap(c =&gt; (new HEXobj(c)).rgb);
+
+class NamedColorObj {
+  constructor(color) {
+    this.color = color;
+    this.rgb = this.to_rgb();
+  }
+
+  to_rgb() {
+    return NAMED_COLORS[this.color];
+  }
+
+  toString() {
+    return this.color;
+  }
+
+  valueOf() {
+    return this.toString();
+  }
+}
+
+// Construction functions for data-types
+export const Point = (x, y) =&gt; new PointObj(x, y);
+export const Polar = (r, theta, origin = Point(0, 0)) =&gt; Point(
+  r * Math.cos(theta) + origin.x,
+  r * Math.sin(theta) + origin.y
+);
+
+export const [P, point, polar] = [Point, Point, Polar];
+
 export const HEX = hex =&gt; new HEXobj(hex);
 export const HSL = (h, s = 100, l = 50, a = 255) =&gt; new HSLObj(h, s, l, a);
 export const HSLA = HSL;
 export const HSV = (h, s = 100, v = 100, a = 255) =&gt; new HSVObj(h, s, v, a);
 export const HSVA = HSV;
+
+export const TRANSPARENT = Object.freeze(&apos;transparent&apos;);
+
+const rgb_regex = /^rgb\s*\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*\)$/i;
+const hsl_regex = /^hsl\s*\(\s*(\d+)\s*,\s*(\d+(\%)?)\s*,\s*(\d+(\%)?)\s*\)$/i;
+const rgba_regex = /^rgba\s*\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*,\s*([+-]?\d+(\.\d+)?)\s*\)$/i;
+const hsla_regex = /^hsla\s*\(\s*(\d+)\s*,\s*(\d+(\%)?)\s*,\s*(\d+(\%)?)\s*,\s*([+-]?\d+(\.\d+)?)\s*\)$/i;
+const hex_regex = /^#([0-9a-f]{3,4}|[0-9a-f]{6}|[0-9a-f]{8})$/i;
+const trans_regex = /^transparent$/i;
+
+export const to_rgb = c =&gt; {
+  let match = null;
+
+  if (type(c) === &apos;string&apos;) {
+    // Check rgb
+    match = (
+      c.match(rgb_regex)  ||
+  	  c.match(rgba_regex)
+    );
+    if (match) {
+      if (match[4]) {
+        alpha = 255 * parseFloat(match[4]);
+      }
+      return RGBA(...([match[1], match[2], match[3]].map(parseFloat)), alpha);
+    }
+    // Check hsl
+    match = (
+      c.match(hsl_regex)  ||
+      c.match(hsla_regex)
+    );
+    if (match) {
+      if (match[4]) {
+        alpha = 255 * parseFloat(match[4]);
+      }
+      return HSLA(...([match[1], match[2], match[3]].map(parseFloat)), alpha).rgb;
+    }
+    // Check hex
+    match = c.match(hex_regex);
+    if (match) {
+      return HEX(c).rgb;
+    }
+    return Color(c).rgb;
+  }
+
+  return c.rgb;
+};
+
+export const to_rgba = to_rgb;
 
 // Implements and manages every rendered shape seen.
 class Shape {
@@ -414,7 +745,11 @@ class Shape {
     this.primitive = null;
 
     this.vertices = [];
-    this.center = Point(0, 0);
+    this.center = null;
+    this.hollow = false;
+
+    this._first_stroke_color = null;
+    this._stroke_changes = false;
   }
 
   flesh() {
@@ -429,10 +764,10 @@ class Shape {
     stroke_cap = this.canvas.stroke_cap
   ) {
     if (stroke_weight === 0) {
-      stroke = &apos;transparent&apos;;
+      stroke = TRANSPARENT;
     }
     const c = this.canvas.context;
-    c.fillStyle = fill.toString();
+    c.fillStyle = (this.hollow) ? TRANSPARENT : fill.toString();
     c.strokeStyle = stroke.toString();
     c.lineWidth = stroke_weight;
     c.lineCap = stroke_cap;
@@ -445,8 +780,14 @@ class Shape {
 
   vertex(point, y = null) {
     if (y !== null) {
+      if (Number.isNaN(point) || Number.isNaN(y)) {
+        return;
+      }
       point = Point(point, y);
+    } else if (Number.isNaN(point.x) || Number.isNaN(point.y)) {
+      return;
     }
+
     if (this.vertices.length === 0) {
       this.vertices.push([point.x, point.y]);
       this.center = point;
@@ -458,8 +799,14 @@ class Shape {
     c.moveTo(...this.vertices[this.vertices.length - 1]);
     const next = [point.x, point.y];
     c.lineTo(...next);
-    this.style();
-    this.flesh();
+
+    if (this._first_stroke_color === null) {
+      this._first_stroke_color = this.canvas.stroke.valueOf();
+    } else if (this._first_stroke_color !== this.canvas.stroke.valueOf()) {
+      this._stroke_changes = true;
+      this.style();
+      this.flesh();
+    }
 
     this.vertices.push(next);
     return point;
@@ -470,8 +817,6 @@ class Shape {
     const c = this.canvas.context;
 
     this.primitive = () =&gt; c.rect(point.x, point.y, w, h);
-    this.primitive();
-    this.flesh();
   }
 
   ellipse(point, w, h, fill = this.canvas.fill, stroke = this.canvas.stroke) {
@@ -479,38 +824,78 @@ class Shape {
     const c = this.canvas.context;
 
     this.primitive = () =&gt; c.ellipse(point.x, point.y, w, h, 0, 0, Math.TAU);
-    this.primitive();
-    this.flesh();
   }
 
   close() {
-    this.vertex(Point(...this.vertices[0]));
+    this.vertex(...this.vertices[0]);
     return this;
   }
 
   fill(color = null) {
-    // TODO: Either redraw all vertices and use built-in fill function,
-    //       or, implement own fill function (see: https://stackoverflow.com/questions/31799038/filling-a-polygon)
-
-    // Secretly redraws all vertices,
-    //   SLOW and BAD, SAD! (tbh, prolly faster than whatever I&apos;d write)
     let temp_color = color;
     if (temp_color === null) {
       temp_color = this.canvas.fill;
     }
+    if (this.vertices.length &lt; 2 &amp;&amp; this.primitive === null) {
+      return;
+    }
+    if (this.hollow
+    || (this.primitive === null &amp;&amp; this.vertices.length &lt; 3)
+    || to_rgb(temp_color).a === 0) {
+      temp_color = TRANSPARENT;
+    }
 
     if (this.primitive === null) {
-      const c = this.canvas.context;
-      c.moveTo(...this.vertices[0]);
-      for (const vertex of this.vertices.slice(1)) {
-        c.lineTo(...vertex);
+      if (this.vertices.length &gt; 0) {
+        const c = this.canvas.context;
+        c.moveTo(...this.vertices[0]);
+        for (const vertex of this.vertices.slice(1)) {
+          c.lineTo(...vertex);
+      	}
       }
     } else {
       this.primitive();
+      this.style(temp_color);
+      this.flesh();
+      return;
     }
 
-    this.style(temp_color);
+    let stroke = this.canvas.stroke;
+    if (this._stroke_changes) {
+      stroke = TRANSPARENT;
+    }
+    this.style(temp_color, stroke);
     this.flesh();
+  }
+
+  stroke(color = this.canvas.stroke) {
+    this.style(RGBA(0, 0), color);
+    this.flesh();
+  }
+
+  render(...args) { this.fill(...args); }
+
+  rotate(theta, origin = this.center) {
+    for (let i = 0; i &lt; this.vertices.length; i++) {
+      this.vertices[i] = this.vertices[i].rotate(theta, origin.array)
+    }
+  }
+
+  translate(x, y) {
+    for (let v of this.vertices) {
+      [v[0], v[1]] = [v[0] + x, v[1] + y]
+    }
+  }
+
+  scale(w, h = null, origin = this.center) {
+    if (h === null) h = w;
+
+    for (let v of this.vertices) {
+      [v[0], v[1]] = [
+        origin.x + w * (v[0] - origin.x),
+        origin.y + h * (v[1] - origin.y)
+      ]
+    }
   }
 }
 
@@ -534,7 +919,7 @@ class Canvas {
     this.data = this.image_data.data;
 
     // Main API properties.
-    this.fill = RGB(255, 255, 255);
+    this.fill = RGBA(255, 255, 255, 0);
     this.stroke = RGB(0, 0, 0);
     this._stroke_weight = 1;
     this.stroke_cap = &apos;butt&apos;;
@@ -588,7 +973,7 @@ class Canvas {
 
   set stroke_weight(w) {
     if (w === 0) {
-      this.stroke = &apos;transparent&apos;;
+      this.stroke = TRANSPARENT;
     }
     this._stroke_weight = w;
   }
@@ -698,18 +1083,24 @@ class Canvas {
       _name = name;
     }
 
+    const SHAPE = new Shape(_name, this);
     this.shapes[_name] = {
       draw: _construction,
-      shape: new Shape(_name, this)
+      shape: SHAPE
     };
     this.context.beginPath();
-    _construction(this.shapes[_name].shape);
+    _construction(SHAPE);
     this.context.closePath();
-    return this.shapes[_name].shape;
+
+    return SHAPE;
   }
 
   render(...args) {
-    return this.shape(...args);
+    let shape = null;
+    if (args[0] instanceof Shape) shape = args[0];
+    else                          shape = this.shape(...args);
+    shape.fill();
+    return shape;
   }
 
   text(string, point, font = this.font, fill = this.fill, storke = this.stroke) {

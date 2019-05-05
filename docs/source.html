@@ -49,6 +49,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-mouse_up">mouse_up</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-plain">plain</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-style">style</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-to_rgb">to_rgb</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-type">type</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-id">id</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-input">input</a></span></span></li>
@@ -65,9 +66,12 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-Colour">Colour</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-HSLA">HSLA</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-HSVA">HSVA</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-NAMED_COLORS">NAMED_COLORS</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-P">P</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-RGB">RGB</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-RGBA">RGBA</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-TRANSPARENT">TRANSPARENT</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-to_rgba">to_rgba</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-use">use</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-id_map">id_map</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-object_count">object_count</a></span></span></li>
@@ -75,7 +79,7 @@
 </div>
 </nav>
 
-<div class="content" data-ice="content"><h1>Source <img data-ice="coverageBadge" src="./badge.svg"><span data-ice="totalCoverageCount" class="total-coverage-count">0/178</span></h1>
+<div class="content" data-ice="content"><h1>Source <img data-ice="coverageBadge" src="./badge.svg"><span data-ice="totalCoverageCount" class="total-coverage-count">0/209</span></h1>
 
 <table class="files-summary" data-ice="files" data-use-coverage="true">
   <thead>
@@ -91,7 +95,7 @@
   <tbody>
     
   <tr data-ice="file">
-      <td data-ice="filePath"><span><a href="file/lib/BasicCanvas.js.html#errorLines=102,110,118,122,126,131,132,133,134,137,141,145,149,153,157,161,165,169,173,177,184,189,196,2,200,204,208,212,217,221,225,229,23,230,231,234,238,242,243,245,246,249,25,253,258,259,263,267,272,273,277,278,280,288,292,298,299,3,304,306,31,322,323,324,325,326,327,328,329,33,332,333,334,335,336,338,339,342,347,364,368,39,390,399,408,413,44,441,442,443,444,445,448,449,450,451,454,455,456,459,460,461,462,463,464,465,466,469,470,473,475,476,479,48,483,487,491,495,501,507,51,511,518,531,537,543,548,552,558,562,57,578,582,588,594,606,610,633,637,64,648,666,68,682,685,693,697,7,701,75,83,94">lib/BasicCanvas.js</a></span></td>
+      <td data-ice="filePath"><span><a href="file/lib/BasicCanvas.js.html#errorLines=1016,102,1024,1035,1053,1069,1072,1080,1084,1088,110,118,122,126,131,132,133,134,137,141,145,149,153,157,161,165,169,173,177,184,189,196,2,200,204,208,212,217,221,225,229,23,234,235,237,238,241,245,25,250,267,268,269,271,290,291,293,296,3,31,315,319,324,325,327,33,330,353,357,362,363,39,402,403,404,407,415,419,424,44,48,51,57,576,577,578,579,582,586,590,596,597,602,604,605,606,607,608,610,612,613,614,615,616,617,619,64,656,659,660,661,662,663,665,666,667,669,670,673,678,68,695,699,7,733,740,747,75,752,789,794,796,802,808,822,823,824,825,826,829,83,830,831,832,835,836,837,840,841,842,843,844,845,846,847,850,851,854,856,857,860,864,868,872,876,882,888,892,899,912,918,924,929,933,939,94,943,959,963,969,975,987,991">lib/BasicCanvas.js</a></span></td>
       <td data-ice="identifier" class="identifiers"><span><a href="function/index.html#static-function-Color">Color</a></span>
 <span><a href="variable/index.html#static-variable-Colour">Colour</a></span>
 <span><a href="function/index.html#static-function-HEX">HEX</a></span>
@@ -99,11 +103,13 @@
 <span><a href="variable/index.html#static-variable-HSLA">HSLA</a></span>
 <span><a href="function/index.html#static-function-HSV">HSV</a></span>
 <span><a href="variable/index.html#static-variable-HSVA">HSVA</a></span>
+<span><a href="variable/index.html#static-variable-NAMED_COLORS">NAMED_COLORS</a></span>
 <span><a href="variable/index.html#static-variable-P">P</a></span>
 <span><a href="function/index.html#static-function-Point">Point</a></span>
 <span><a href="function/index.html#static-function-Polar">Polar</a></span>
 <span><a href="variable/index.html#static-variable-RGB">RGB</a></span>
 <span><a href="variable/index.html#static-variable-RGBA">RGBA</a></span>
+<span><a href="variable/index.html#static-variable-TRANSPARENT">TRANSPARENT</a></span>
 <span><a href="function/index.html#static-function-canvas">canvas</a></span>
 <span><a href="function/index.html#static-function-canvas_id">canvas_id</a></span>
 <span><a href="function/index.html#static-function-canvas_new">canvas_new</a></span>
@@ -118,12 +124,14 @@
 <span><a href="function/index.html#static-function-mouse_up">mouse_up</a></span>
 <span><a href="function/index.html#static-function-plain">plain</a></span>
 <span><a href="function/index.html#static-function-style">style</a></span>
+<span><a href="function/index.html#static-function-to_rgb">to_rgb</a></span>
+<span><a href="variable/index.html#static-variable-to_rgba">to_rgba</a></span>
 <span><a href="function/index.html#static-function-type">type</a></span>
 <span><a href="variable/index.html#static-variable-use">use</a></span></td>
-      <td class="coverage"><span data-ice="coverage">0 %</span><span data-ice="coverageCount" class="coverage-count">0/152</span></td>
-      <td style="display: none;" data-ice="size">16584 byte</td>
-      <td style="display: none;" data-ice="lines">707</td>
-      <td style="display: none;" data-ice="updated">2019-01-07 15:23:23 (UTC)</td>
+      <td class="coverage"><span data-ice="coverage">0 %</span><span data-ice="coverageCount" class="coverage-count">0/183</span></td>
+      <td style="display: none;" data-ice="size">25738 byte</td>
+      <td style="display: none;" data-ice="lines">1094</td>
+      <td style="display: none;" data-ice="updated">2019-05-01 23:48:29 (UTC)</td>
     </tr>
 <tr data-ice="file">
       <td data-ice="filePath"><span><a href="file/lib/BasicDOM.js.html#errorLines=13,14,15,16,17,19,20,27,3,31,35,4,47,51,56,6,62">lib/BasicDOM.js</a></span></td>
@@ -138,7 +146,7 @@
       <td style="display: none;" data-ice="updated">2019-01-07 15:18:30 (UTC)</td>
     </tr>
 <tr data-ice="file">
-      <td data-ice="filePath"><span><a href="file/lib/BasicShapes.js.html#errorLines=10,18,23,3,35,47,52,62,73">lib/BasicShapes.js</a></span></td>
+      <td data-ice="filePath"><span><a href="file/lib/BasicShapes.js.html#errorLines=10,18,24,3,36,48,53,64,76">lib/BasicShapes.js</a></span></td>
       <td data-ice="identifier" class="identifiers"><span><a href="function/index.html#static-function-arrow">arrow</a></span>
 <span><a href="function/index.html#static-function-ellipse">ellipse</a></span>
 <span><a href="function/index.html#static-function-grid">grid</a></span>
@@ -149,9 +157,9 @@
 <span><a href="function/index.html#static-function-star">star</a></span>
 <span><a href="function/index.html#static-function-vector">vector</a></span></td>
       <td class="coverage"><span data-ice="coverage">0 %</span><span data-ice="coverageCount" class="coverage-count">0/9</span></td>
-      <td style="display: none;" data-ice="size">4879 byte</td>
-      <td style="display: none;" data-ice="lines">152</td>
-      <td style="display: none;" data-ice="updated">2019-01-07 15:19:48 (UTC)</td>
+      <td style="display: none;" data-ice="size">4954 byte</td>
+      <td style="display: none;" data-ice="lines">155</td>
+      <td style="display: none;" data-ice="updated">2019-05-01 23:17:12 (UTC)</td>
     </tr>
 </tbody>
 </table>

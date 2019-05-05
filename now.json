@@ -6,6 +6,6 @@
     { "src": "*", "use": "@now/static" },
     { "src": "lib/*", "use": "@now/static"},
     { "src": "example/*", "use": "@now/static" }
+    { "src": "docs/*", "use": "@now/static" }
   ]
 }
-
