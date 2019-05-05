@@ -29,32 +29,33 @@ const bar = radius * (
 const trail = [];
 const outline = [];
 
+const series = (theta, n = 1, tail = P(0, 0)) => {
+  if (n > DEPTH) {
+    sketch.stroke = HEX`#fff`;
+    return tail;
+  }
+
+  const r = radius / n;
+  sketch.stroke = RGBA(255, 100 + n * 120 / DEPTH);
+  sketch.render(ellipse(tail, r));
+  const head = tail.add(Polar(r, n * Math.PI * theta));
+  sketch.stroke = RGBA(255, 80);
+  sketch.render(line(head, tail))
+  return series(theta, n + STEP, head);
+};
+
 sketch.loop(frame => {
   sketch.background(BG);
   sketch.point(P(0, 0));
 
   const theta = SPEED * frame / 90;
-  const series = (n = 1, tail = P(0, 0)) => {
-    if (n > DEPTH) {
-      sketch.stroke = HEX`#fff`;
-      return tail;
-    }
-
-    const r = radius / n;
-    sketch.stroke = RGB(255, 100 + n * 120 / DEPTH);
-    sketch.render(ellipse(tail, r));
-    tail = tail.add(Polar(r, n * Math.PI * theta));
-
-    return series(n + STEP, tail);
-  };
-
-  const outer = series();
+  const outer = series(theta);
   const end = P(bar, outer.y);
 
   sketch.stroke_cap = 'round';
-  sketch.render(ellipse(outer, 2, 2, '#fff'));
-  sketch.render(line(outer, end));
-  sketch.render(ellipse(end, 2, 2, '#fff'));
+  sketch.render(ellipse(outer, 2, 2));
+  sketch.shape(line(outer, end)).stroke(RGBA(255, 200));
+  sketch.render(ellipse(end, 2, 2));
 
   if (trail.length > 120 * SPEED * DEPTH) {
     trail.pop();

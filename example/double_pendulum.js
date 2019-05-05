@@ -83,7 +83,7 @@ const trail = [];
 sketch.loop(() => {
   sketch.background(BG);
   sketch.fill = 'transparent';
-  sketch.shape('trail', shape => {
+  sketch.render('trail', shape => {
     sketch.stroke_weight = 1;
     let alpha = 1;
     for (const point of trail) {
@@ -99,11 +99,11 @@ sketch.loop(() => {
   sketch.stroke_weight = 2.5;
   sketch.fill = HEX('#000000aa');
   sketch.stroke = HEX('#000');
-  sketch.shape('origin', ellipse(Point(0, 0), 3));
-  sketch.shape('harnes', line(Point(0, 0), coord_1));
-  sketch.shape('bob_1', ellipse(coord_1,  m_1));
-  sketch.shape('link', line(coord_1, coord_2));
-  sketch.shape('bob_2', ellipse(coord_2, m_2));
+  sketch.render('origin', ellipse(Point(0, 0), 3));
+  sketch.render('harnes', line(Point(0, 0), coord_1));
+  sketch.render('bob_1', ellipse(coord_1,  m_1));
+  sketch.render('link', line(coord_1, coord_2));
+  sketch.render('bob_2', ellipse(coord_2, m_2));
 
   coord_1 = Point(
     L_1 * sin(ϑ_1),

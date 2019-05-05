@@ -13,7 +13,7 @@ let i = 0;
 sketch.loop(() => {
   sketch.background(BC.RGBA(200, 120, 90));
   for (let j = 0; j < 8; j++) {
-    sketch.shape('coin', shape => {
+    sketch.render('coin', shape => {
       for (let theta = 0; theta <= Math.TAU; theta += 0.3) {
         shape.vertex(BC.Point(
           radius * Math.cos(i) * Math.cos(theta) + 200,

@@ -11,7 +11,7 @@ sketch.loop(frame => {
   const i = frame / 10;
   sketch.background(BC.RGBA(255, 150, 90));
   for (let j = 0; j < 8; j++) {
-    sketch.shape('sine', shape => {
+    sketch.render('sine', shape => {
       for (let x = 0; x < 3 * Math.PI; x += 0.4) {
         shape.vertex(BC.Point(
           32 * x + 50,
