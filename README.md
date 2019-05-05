@@ -100,7 +100,7 @@ const BG = RGB(255, 255, 110);
 sketch.loop(frame => {  // `frame` is an integer, starts at 0 and increments for every frame drawn.
   sketch.background(BG); // Redraw background each frame.
 
-  sketch.shape('sine', shape => { // Create new shape, `shape(name, construction of shape callback)`
+  sketch.render('sine', shape => { // Create new shape, `shape(name, construction of shape callback)`
     for (let x = 0; x < 3 * Math.PI; x += 0.2) { // Draw sine curve for this frame, next frame will be different
       shape.vertex(BC.Point(32 * x + 50, 32 * Math.sin(x + frame / 10) + 200));
     }
