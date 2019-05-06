@@ -23,6 +23,6 @@ triangle.render();
 triangle.rotate(Math.PI)
 triangle.scale(0.8)
 triangle.translate(0, 20)
-triangle.render();
+triangle.render(RGBA(255, 100, 200, 100));
 
-sketch.point(origin, RGB(0));
+sketch.point(triangle.center, RGB(0));
