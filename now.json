@@ -6,6 +6,14 @@
     { "src": "*", "use": "@now/static" },
     { "src": "lib/*", "use": "@now/static"},
     { "src": "example/*", "use": "@now/static" },
-    { "src": "docs/*", "use": "@now/static" }
+    { "src": "docs/*", "use": "@now/static" },
+    { "src": "docs/ast/source*", "use": "@now/static" },
+    { "src": "docs/css/*", "use": "@now/static" },
+    { "src": "docs/file/lib/*", "use": "@now/static" },
+    { "src": "docs/function/*", "use": "@now/static" },
+    { "src": "docs/image/*", "use": "@now/static" },
+    { "src": "docs/script/*", "use": "@now/static" },
+    { "src": "docs/script/prettify/*", "use": "@now/static" },
+    { "src": "docs/variable/*", "use": "@now/static" }
   ]
 }
