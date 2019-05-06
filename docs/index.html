@@ -49,6 +49,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-mouse_up">mouse_up</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-plain">plain</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-style">style</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-to_rgb">to_rgb</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-type">type</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-id">id</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-input">input</a></span></span></li>
@@ -65,9 +66,12 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-Colour">Colour</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-HSLA">HSLA</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-HSVA">HSVA</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-NAMED_COLORS">NAMED_COLORS</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-P">P</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-RGB">RGB</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-RGBA">RGBA</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-TRANSPARENT">TRANSPARENT</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-to_rgba">to_rgba</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-use">use</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-id_map">id_map</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-object_count">object_count</a></span></span></li>
@@ -78,13 +82,14 @@
 <div class="content" data-ice="content"><div data-ice="index" class="github-markdown"><h1 id="basiccanvas">BasicCanvas</h1><p>A friendlier way interact with the canvas.</p>
 <h2 id="usage">Usage</h2><p>jsdelivr CDN (use this to import):</p>
 <ul>
-<li>Canvas<pre><code><code class="source-code prettyprint">https://cdn.jsdelivr.net/gh/Demonstrandum/BasicCanvas@v1.0.6/lib/BasicCanvas.js</code>
+<li>Canvas<pre><code><code class="source-code prettyprint">https://cdn.jsdelivr.net/gh/Demonstrandum/BasicCanvas@v1.1.0/lib/BasicCanvas.js</code>
 </code></pre></li>
-<li>Shapes<pre><code><code class="source-code prettyprint">https://cdn.jsdelivr.net/gh/Demonstrandum/BasicCanvas@v1.0.6/lib/BasicShapes.js</code>
+<li>Shapes<pre><code><code class="source-code prettyprint">https://cdn.jsdelivr.net/gh/Demonstrandum/BasicCanvas@v1.1.0/lib/BasicShapes.js</code>
 </code></pre></li>
-<li>DOM<pre><code><code class="source-code prettyprint">https://cdn.jsdelivr.net/gh/Demonstrandum/BasicCanvas@v1.0.6/lib/BasicDOM.js</code>
-</code></pre></li>
+<li>DOM<pre><code><code class="source-code prettyprint">https://cdn.jsdelivr.net/gh/Demonstrandum/BasicCanvas@v1.1.0/lib/BasicDOM.js</code>
+</code></pre><h3 id="docs">Docs</h3></li>
 </ul>
+<p>Auto-generated documentation: <a href="https://canvas.knutsen.co/docs/">canvas.knutsen.co/docs/</a></p>
 <p>TODO: Instructions on usage, for now look at the example files (and/or source files), still a small project.</p>
 <h2 id="run-examples">Run Examples</h2><p>Example hosted with &#x25B2;now: <a href="https://canvas.knutsen.co/example/">canvas.knutsen.co</a></p>
 <p>To run unlisted examples, or run specific examples by a specifc URL, simply go to:</p>
@@ -100,10 +105,44 @@ cd BasicCanvas</code>
 <pre><code class="lang-sh"><code class="source-code prettyprint">./server.sh</code>
 </code></pre>
 <p>And go to <a href="http://localhost:8000/example/">http://localhost:8000/example/</a> (for an example file, see the index.html code to switch example).</p>
-<h2 id="try-yourself">Try Yourself</h2><p>Check out the CodePen: <a href="https://codepen.io/wernstrom/project/editor/DKzVaY">https://codepen.io/wernstrom/project/editor/DKzVaY</a>
-Explore the library by making small modifications to the CodePen and/or rewriting it to do something new.</p>
-<h3 id="quick-example">Quick Example</h3><p>Drawing a simple sinusoidal progressive wave:</p>
-<pre><code class="lang-js"><code class="source-code prettyprint">import * as BC from &apos;https://cdn.jsdelivr.net/gh/Demonstrandum/BasicCanvas@v1.0.3/lib/BasicCanvas.js&apos;;
+<h2 id="quick-examples">Quick Examples</h2><p><img src="https://user-images.githubusercontent.com/26842759/54957430-a7a08580-4f4a-11e9-8928-7477b41ca01e.png" alt="tree.js"></p>
+<p><a href="https://canvas.knutsen.co/example/?tree.js">See Animation.</a></p>
+<pre><code class="lang-js"><code class="source-code prettyprint">import * as BC from &apos;../lib/BasicCanvas.js&apos;;
+import {line} from &apos;../lib/BasicShapes.js&apos;;
+
+use(BC);
+
+const sketch = canvas_id(&apos;sketch&apos;);
+sketch.dimensions(400, 400);
+sketch.translate(sketch.width / 2, sketch.height / 2);
+
+sketch.fill = RGB(50, 30, 80);
+sketch.stroke = HSL(340, 100, 45, 170);
+sketch.stroke_weight = 4;
+sketch.stroke_cap = &apos;round&apos;;
+
+const branch = (previous, angle, depth, inc, first = true) =&gt; {
+  if (depth &lt; 0) return;
+
+  let next = previous;
+  if (!first) {
+    next = Polar(Math.sqrt(depth) * 16, -angle, previous);
+    sketch.render(line(next, previous));
+  }
+
+  branch(next, angle + inc, depth - 1, inc, false);
+  branch(next, angle - inc, depth - 1, inc, false);
+};
+
+const tree = P(0, 10);
+sketch.loop(frame =&gt; {
+  sketch.background();
+  sketch.render(line(P(0, 200), tree));
+  branch(tree, Math.PI / 2, 7, 0.6 + Math.sin(frame / 20) / 3);
+});</code>
+</code></pre>
+<p>Drawing a simple sinusoidal progressive wave:</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">import * as BC from &apos;https://cdn.jsdelivr.net/gh/Demonstrandum/BasicCanvas@v1.1.0/lib/BasicCanvas.js&apos;;
 // If running this locally, you need a server running for `import`s to work, (for now).
 
 use(BC)  // To avoid having to write `BC.` all the time.
@@ -142,6 +181,8 @@ sketch.loop(frame =&gt; {  // `frame` is an integer, starts at 0 and increments 
 &lt;/html&gt;</code>
 </code></pre>
 <p>Or, you could use the <code>your_example.js</code> file found in the example/ folder of the repo.</p>
+<h2 id="try-yourself">Try Yourself</h2><p>Check out the CodePen: <a href="https://codepen.io/wernstrom/project/editor/DKzVaY">https://codepen.io/wernstrom/project/editor/DKzVaY</a>
+Explore the library by making small modifications to the CodePen and/or rewriting it to do something new.</p>
 </div>
 </div>
 

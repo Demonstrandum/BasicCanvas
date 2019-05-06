@@ -49,6 +49,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-mouse_up">mouse_up</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-plain">plain</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-style">style</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-to_rgb">to_rgb</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-type">type</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-id">id</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-input">input</a></span></span></li>
@@ -65,9 +66,12 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-Colour">Colour</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-HSLA">HSLA</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-HSVA">HSVA</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-NAMED_COLORS">NAMED_COLORS</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-P">P</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-RGB">RGB</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-RGBA">RGBA</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-TRANSPARENT">TRANSPARENT</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-to_rgba">to_rgba</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-use">use</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-id_map">id_map</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-object_count">object_count</a></span></span></li>
@@ -94,6 +98,7 @@ export const ellipse = (point, w, h = null, fill = null, stroke = null) =&gt; sh
 };
 
 export const line = (origin, position) =&gt; shape =&gt; {
+  shape.hollow = true;
   shape.vertex(origin);
   shape.vertex(position);
 };
@@ -128,6 +133,7 @@ export const polar_line = (mag, angle, origin = BC.Point(0, 0)) =&gt; shape =&gt
 };
 
 export const arrow = (mag, angle, origin = BC.Point(0, 0), headsize = 1 / 5) =&gt; shape =&gt; {
+  shape.hollow = true;
   polar_line(mag, angle, origin)(shape);
   const arrow_angle = 2.4;
   const point = BC.Polar(mag, angle, origin);
@@ -138,6 +144,7 @@ export const arrow = (mag, angle, origin = BC.Point(0, 0), headsize = 1 / 5) =&g
 };
 
 export const vector = (point, origin = BC.Point(0, 0), headsize = 1 / 5) =&gt; shape =&gt; {
+  shape.hollow = true;
   line(origin, point)(shape);
   const arrow_angle = 2.4;
   const length = point.length(origin);
@@ -161,12 +168,12 @@ export const grid = (opaque = 40, night = false) =&gt; shape =&gt; {  // Maybe a
       x &lt;= Math.max(...x_range);
       x++) {
       canvas.stroke = light;
-      canvas.shape(`x${x}_gridline`, shape =&gt; {
+      canvas.render(`x${x}_gridline`, shape =&gt; {
         shape.vertex(x, canvas.corner.y);
         shape.vertex(x, canvas.corner.y + canvas.height / stretch[1]);
       });
       canvas.stroke = dark;
-      canvas.shape(`x${x}_tick`, shape =&gt; {
+      canvas.render(`x${x}_tick`, shape =&gt; {
         shape.vertex(x, -3 / stretch[1]);
         shape.vertex(x, 3 / stretch[1]);
       });
@@ -187,12 +194,12 @@ export const grid = (opaque = 40, night = false) =&gt; shape =&gt; {  // Maybe a
       y &lt;= Math.max(...y_range);
       y++) {
       canvas.stroke = light;
-      canvas.shape(`y${y}_gridline`, shape =&gt; {
+      canvas.render(`y${y}_gridline`, shape =&gt; {
         shape.vertex(canvas.corner.x, y);
         shape.vertex(canvas.corner.x + canvas.width / stretch[0], y);
       });
       canvas.stroke = dark;
-      canvas.shape(`y${y}_tickline`, shape =&gt; {
+      canvas.render(`y${y}_tickline`, shape =&gt; {
         shape.vertex(-3 / stretch[0], y);
         shape.vertex(3 / stretch[0], y);
       });
@@ -218,11 +225,11 @@ export const grid = (opaque = 40, night = false) =&gt; shape =&gt; {  // Maybe a
     });
 
     canvas.stroke = dark;
-    canvas.shape(&apos;x_axis&apos;, shape =&gt; {
+    canvas.render(&apos;x_axis&apos;, shape =&gt; {
       shape.vertex(canvas.corner.x, 0);
       shape.vertex(canvas.corner.x + canvas.width / stretch[0], 0);
     });
-    canvas.shape(&apos;y_axis&apos;, shape =&gt; {
+    canvas.render(&apos;y_axis&apos;, shape =&gt; {
       shape.vertex(0, canvas.corner.y);
       shape.vertex(0, canvas.corner.y + canvas.height / stretch[1]);
     });

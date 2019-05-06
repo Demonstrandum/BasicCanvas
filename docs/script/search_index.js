@@ -42,6 +42,12 @@ window.esdocSearchIndex = [
     "variable"
   ],
   [
+    "basiccanvas~named_colors",
+    "variable/index.html#static-variable-NAMED_COLORS",
+    "<span>NAMED_COLORS</span> <span class=\"search-result-import-path\">basiccanvas</span>",
+    "variable"
+  ],
+  [
     "basiccanvas~p",
     "variable/index.html#static-variable-P",
     "<span>P</span> <span class=\"search-result-import-path\">basiccanvas</span>",
@@ -69,6 +75,12 @@ window.esdocSearchIndex = [
     "basiccanvas~rgba",
     "variable/index.html#static-variable-RGBA",
     "<span>RGBA</span> <span class=\"search-result-import-path\">basiccanvas</span>",
+    "variable"
+  ],
+  [
+    "basiccanvas~transparent",
+    "variable/index.html#static-variable-TRANSPARENT",
+    "<span>TRANSPARENT</span> <span class=\"search-result-import-path\">basiccanvas</span>",
     "variable"
   ],
   [
@@ -232,6 +244,18 @@ window.esdocSearchIndex = [
     "function/index.html#static-function-text",
     "<span>text</span> <span class=\"search-result-import-path\">basiccanvas/lib/BasicDOM.js</span>",
     "function"
+  ],
+  [
+    "basiccanvas~to_rgb",
+    "function/index.html#static-function-to_rgb",
+    "<span>to_rgb</span> <span class=\"search-result-import-path\">basiccanvas</span>",
+    "function"
+  ],
+  [
+    "basiccanvas~to_rgba",
+    "variable/index.html#static-variable-to_rgba",
+    "<span>to_rgba</span> <span class=\"search-result-import-path\">basiccanvas</span>",
+    "variable"
   ],
   [
     "basiccanvas~type",
