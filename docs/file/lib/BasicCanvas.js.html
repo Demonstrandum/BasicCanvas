@@ -300,6 +300,10 @@ class PointObj {
     return this.angle(...xs);
   }
 
+  arg(...xs) {
+    return this.angle(...xs);
+  }
+
   rotate(theta, origin = new PointObj(0, 0)) {
     return new PointObj(...this.array.rotate(theta, origin.array));
   }
@@ -433,7 +437,8 @@ class HSVObj {
   }
 
   toString() {
-    return `hsla(${this.h}, ${this.s}%, ${this.l}%, ${this.a / 255})`;
+    const [r, g, b, a] = this.to_rgb().rgba;
+    return `rgba(${r}, ${g}, ${b}, ${a / 255})`;
   }
 
   valueOf() {
@@ -845,9 +850,10 @@ class Shape {
       temp_color = TRANSPARENT;
     }
 
+    const c = this.canvas.context;
+    c.beginPath();
     if (this.primitive === null) {
       if (this.vertices.length &gt; 0) {
-        const c = this.canvas.context;
         c.moveTo(...this.vertices[0]);
         for (const vertex of this.vertices.slice(1)) {
           c.lineTo(...vertex);
@@ -1088,9 +1094,7 @@ class Canvas {
       draw: _construction,
       shape: SHAPE
     };
-    this.context.beginPath();
     _construction(SHAPE);
-    this.context.closePath();
 
     return SHAPE;
   }
