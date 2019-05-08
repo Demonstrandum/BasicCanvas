@@ -48,7 +48,7 @@ column = function(point, height) {
   p2 = p1.go(NORTH_WEST);
   p3 = p2.go(SOUTH_WEST);
   // Top face
-  top = sketch.render(function(sub) {
+  top = sketch.shape(function(sub) {
     sub.vertex(p0);
     sub.vertex(p1);
     sub.vertex(p2);
@@ -59,7 +59,7 @@ column = function(point, height) {
   q0 = p0.add(P(0, height));
   q1 = q0.go(NORTH_EAST);
   // Right face
-  right = sketch.render(function(sub) {
+  right = sketch.shape(function(sub) {
     sub.vertex(p0);
     sub.vertex(q0);
     sub.vertex(q1);
@@ -69,7 +69,7 @@ column = function(point, height) {
   right.fill(PALLETE.right);
   q2 = q0.go(NORTH_WEST);
   // Left face
-  left = sketch.render(function(sub) {
+  left = sketch.shape(function(sub) {
     sub.vertex(p0);
     sub.vertex(q0);
     sub.vertex(q2);

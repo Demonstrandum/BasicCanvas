@@ -32,7 +32,7 @@ column = (point, height) ->
   p2 = p1.go NORTH_WEST
   p3 = p2.go SOUTH_WEST
   # Top face
-  top = sketch.render (sub) ->
+  top = sketch.shape (sub) ->
     sub.vertex p0
     sub.vertex p1
     sub.vertex p2
@@ -43,7 +43,7 @@ column = (point, height) ->
   q0 = p0.add P 0, height
   q1 = q0.go NORTH_EAST
   # Right face
-  right = sketch.render (sub) ->
+  right = sketch.shape (sub) ->
     sub.vertex p0
     sub.vertex q0
     sub.vertex q1
@@ -53,7 +53,7 @@ column = (point, height) ->
 
   q2 = q0.go NORTH_WEST
   # Left face
-  left = sketch.render (sub) ->
+  left = sketch.shape (sub) ->
     sub.vertex p0
     sub.vertex q0
     sub.vertex q2

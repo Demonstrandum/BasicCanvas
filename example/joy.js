@@ -39,7 +39,7 @@ canvas.loop(frame => {
         height *= 1 + strength * noise.perlin2(x / granu, row + frame / 120);
         shape.vertex(x, offset + height + spacing * row);
       }
-      shape.vertex(upper,  50 + offset + spacing * row);
+      shape.vertex(upper, 50 + offset + spacing * row);
       shape.vertex(lower, 50 + offset + spacing * row);
       shape.close();
     });
