@@ -4,11 +4,16 @@ import {ellipse, line} from '../lib/BasicShapes.js';
 const [sin, cos] = [Math.sin, Math.cos]; 
 
 const g = 9.81 / 60;
-const L = 100;
 
-let theta = 1/4 * Math.PI;
-let omega = 0;
-const alpha = () => -g/L * sin(theta);
+let m = 1;
+let k = Math.random()*0.01 + 0.01;
+let x = (Math.random()-0.5)*20 + 5;
+let theta = (Math.random()-0.5) * Math.PI;
+let omega = Math.random()*0.02 + 0.02;
+let v_x = Math.random()*2 + 0.1;
+let L = 100;
+const a_x = () => (L+x) * omega * omega + g * cos(theta) - (k * x)/m
+const alpha = () => -g/(L+x) * sin(theta) - 2 * (omega * v_x)/(L+x)
 
 //#######################################
 const sketch = canvas(document.getElementById('sketch'));
@@ -47,12 +52,18 @@ sketch.loop(() => {
 
 
     coord = Point(
-        L * sin(theta),
-        L * cos(theta)
+        (L+x) * sin(theta),
+        (L+x) * cos(theta)
     );
+
+    v_x += a_x();
+    let new_x = x;
+    new_x += v_x;
 
     omega += alpha();
     theta += omega;
+
+    x = new_x;
 
     trail.push(coord);
 });
