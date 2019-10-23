@@ -12,7 +12,12 @@ s.font = '14px monospace';
 
 const original = 't*((t-2296&t)>>11)';
 
-const context = new AudioContext();
+let context;
+if('webkitAudioContext' in window) {
+  context = new webkitAudioContext();
+} else {
+  context = new AudioContext();
+}
 const rate = 11025;// Hz
 const sample_duration = 40;
 
