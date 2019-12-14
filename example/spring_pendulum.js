@@ -76,7 +76,7 @@ sketch.loop(frame => {
 
     spring.render();
 
-    wire_end = Point(...spring.vertices.slice(-1)[0]);  // The bob is at the end of the spring.
+    wire_end = Point(spring.vertices.last);  // The bob is at the end of the spring.
 
     sketch.fill = HEX('#000000aa');
     sketch.render('origin', ellipse(Point(0,0), 3));
