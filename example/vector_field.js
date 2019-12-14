@@ -28,9 +28,10 @@ canvas.loop(frame => {
         col * zoom,
         frame / 40
       ) * Math.TAU;
+      const mag = width / size;
 
       canvas.stroke = BC.HSL(phase * 100 / Math.TAU + 300);
-      canvas.render(null, arrow(width / size - 3, phase, origin));
+      canvas.render(arrow(mag - 3, phase, origin));
     }
   }
 });
