@@ -1,23 +1,33 @@
-import {canvas_id, P, Polar, HEX, HSL, css} from '../lib/BasicCanvas.js';
-import {grid, vector, arrow} from '../lib/BasicShapes.js';
-import {text} from '../lib/BasicDOM.js';
+import { canvas_id, P, Polar, HEX, HSL, css } from '../lib/BasicCanvas.js';
+import { grid, vector, arrow } from '../lib/BasicShapes.js';
+import { text } from '../lib/BasicDOM.js';
 
 const ZOOM = 30;
 
 document.body.html`
   <div id="controls">
-    Modify the vector function:<br/>
-    v(x, y) = <span id="i"></span>&#xee; + <span id="j"></span>&#x135;
+    Modify the vector function, in the form:<br />
+      v(x, y) = f(x, y) &times (g(x, y)&#xee + h(x, y)&#x135)<br />
+      v(x, y) = (<span id="factor"></span>) &times;
+        ((<span id="i"></span>)&#xee; + (<span id="j"></span>)&#x135;)
+    <br />
+    where <i>f, g</i> and <i>h</i> are scalars,<br />
+    and <i>r</i> represents the distance of the given point in space from
+    the origin.
   </div>
 `;
 
+const factor_input = text('#factor', '1');
 const i_input = text('#i', 'y^3 - 9y');
 const j_input = text('#j', 'x^3 - 9x');
 
-const v = (x, y) => P(
-  math.eval(i_input.value, {x, y}),  // Using the math.js library,
-  math.eval(j_input.value, {x, y})   //   to parse the input expressions.
-);
+const v = (x, y) => {
+  const symbols = { x, y, r: Math.sqrt(x*x + y*y) };
+  return P(
+    math.eval(i_input.value, symbols),
+    math.eval(j_input.value, symbols)
+  ).scale(math.eval(factor_input.value, symbols));
+};
 
 const sketch = canvas_id('sketch');
 sketch.dimensions(640, 480);
@@ -62,14 +72,16 @@ const draw = () => {
 };
 
 draw(); // Inital draw
-i_input.change(draw, 500);
-j_input.change(draw, 500);  // Wait 500ms for update.
+i_input.change(draw, 500).fit();
+j_input.change(draw, 500).fit();  // Wait 500ms for update.
+factor_input.change(draw, 500).fit();
 
 css`
   #controls {
     position: absolute;
     top: 50%;
     left: 50%;
+    width: 80vw;
     transform: translate(-50%, -50%);
     padding-bottom: 40px;
     margin-top: 340px;
@@ -77,11 +89,18 @@ css`
   }
   #controls input {
     border: none;
-    max-width: 100px;
+    min-width: 100px;
     text-align: center;
     padding: 3px;
     font-family: monospace;
     background: #eee;
     border-bottom: 1px dashed #aaa;
+  }
+  .hidden {
+    font: inherit;
+    font-family: monospace;
+  }
+  #controls #factor input {
+    min-width: 50px;
   }
 `;
