@@ -7,6 +7,11 @@
     <style>
       @import url("https://fontlibrary.org/face/cmu-serif");
 
+      html, body {
+        font-size: 16px;
+        scroll-behavior: smooth;
+      }
+
       body {
         margin: 0;
         padding: 0;
@@ -25,10 +30,10 @@
         /* border: 1px solid rgba(0, 0, 0, 0.2); */
         box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
 
-        /* Don't use drop shadow. Every frame redraw
+        /* Don't use drop shadow. Every frame redraws
          * the shadow, 60 times a second, if you use
          * `drop-shadow`, causing like 23ms of time to be
-         * wasted on what the dev-tool call 'composite layers'.
+         * wasted on what the dev-tools call 'composite layers'.
          * `box-shadow` above works without re-drawing itself,
          * use that instead.
          */
@@ -44,6 +49,16 @@
         left: 15px;
         top: 15px;
         border: 1px solid rgba(0,0,0,0.4);
+      }
+
+      hr {
+        height: 6px;
+        background: rgba(25,25,25,0.07);
+        border: none;
+      }
+
+      button {
+        cursor: pointer;
       }
     </style>
     <script type="text/x-mathjax-config">
@@ -149,6 +164,10 @@
         file = document.getElementById('picks').value;
         localStorage.setItem('last_script', file);
       });
+
+      window.onload = () => {
+        window.scrollTo(0, document.body.scrollHeight);
+      };
     </script>
   </body>
 </html>
