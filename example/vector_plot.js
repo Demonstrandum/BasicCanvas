@@ -6,11 +6,61 @@ const ZOOM = 30;
 
 document.body.html`
   <div id="controls">
-    Modify the vector function:<br/>
-    v(x, y) = <span id="i"></span>&#xee; + <span id="j"></span>&#x135;
+    Modify the vector function, in the form:<br />
+      v(x, y) = f(x, y) &times (g(x, y)&#xee + h(x, y)&#x135)<br />
+      v(x, y) = (<span id="factor"></span>) &times;
+        ((<span id="i"></span>)&#xee; + (<span id="j"></span>)&#x135;)
+    <br /><br />
+    where <i>f, g</i> and <i>h</i> are scalars,<br />
+    and <i>r</i> represents the distance of the given point in space from
+    the origin.<br />
+    <br /><hr /><br />
+    <button onclick="select_plot(this)">Default</button>
+    <button onclick="select_plot(this)">Divergent Monopole</button>
+    <button onclick="select_plot(this)">Convergent Monopole</button>
+    <button onclick="select_plot(this)">Dipole</button>
+    <button onclick="select_plot(this)">Magnetic Curl around Current</button>
   </div>
 `;
 
+const vec_funcs = {
+  default: {
+    factor: '1',
+    i: 'y^3 - 9y',
+    j: 'x^3 - 9x'
+  },
+  magnetic_curl_around_current: {
+    factor: '1/r^2',
+    i: '-y',
+    j: 'x'
+  },
+  divergent_monopole: {
+    factor: '1/r^3',
+    i: 'x',
+    j: 'y'
+  },
+  convergent_monopole: {
+    factor: '-1/r^3',
+    i: 'x',
+    j: 'y'
+  },
+  dipole: {
+    factor: '1',
+    i: '(x+3)/sqrt((x+3)^2+y^2)^3 - (x-3)/sqrt((x-3)^2+y^2)^3',
+    j: '(1/sqrt((x+3)^2+y^2)^3 - 1/sqrt((x-3)^2+y^2)^3)y'
+  },
+};
+
+window.select_plot = self => {
+  [factor_input.value, i_input.value, j_input.value] = Object.values(
+    vec_funcs[self.innerHTML.toLowerCase().split(' ').join('_')]
+  );
+  i_input.update();
+  for (const input of [factor_input, i_input, j_input])
+    input.fit();
+};
+
+const factor_input = text('#factor', '1');
 const i_input = text('#i', 'y^3 - 9y');
 const j_input = text('#j', 'x^3 - 9x');
 
@@ -68,11 +118,11 @@ j_input.change(draw, 500);  // Wait 500ms for update.
 css`
   #controls {
     position: absolute;
-    top: 50%;
+    top: calc(50% + ${sketch.height}px/2 + 40px);
     left: 50%;
-    transform: translate(-50%, -50%);
+    width: 80vw;
+    transform: translate(-50%, 0);
     padding-bottom: 40px;
-    margin-top: 340px;
     font-family: 'CMUSerifRoman', serif;
   }
   #controls input {
@@ -83,5 +133,14 @@ css`
     font-family: monospace;
     background: #eee;
     border-bottom: 1px dashed #aaa;
+    font-size: 14px;
+  }
+  .hidden {
+    font: inherit;
+    font-family: monospace;
+    font-size: 14px;
+  }
+  #controls #factor input {
+    min-width: 50px;
   }
 `;
