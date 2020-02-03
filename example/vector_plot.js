@@ -55,9 +55,9 @@ window.select_plot = self => {
   [factor_input.value, i_input.value, j_input.value] = Object.values(
     vec_funcs[self.innerHTML.toLowerCase().split(' ').join('_')]
   );
-  i_input.update();
   for (const input of [factor_input, i_input, j_input])
-    input.fit();
+    input.resize();
+  draw();
 };
 
 const factor_input = text('#factor', '1');
@@ -140,16 +140,8 @@ css`
     font-size: 14px;
   }
   .hidden {
-    font: inherit;
     font-family: monospace;
     font-size: 14px;
-  }
-  #controls #factor input {
-    min-width: 50px;
-  }
-  .hidden {
-    font: inherit;
-    font-family: monospace;
   }
   #controls #factor input {
     min-width: 50px;
