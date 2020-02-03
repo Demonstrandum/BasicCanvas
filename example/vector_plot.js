@@ -1,6 +1,6 @@
-import {canvas_id, P, Polar, HEX, HSL, css} from '../lib/BasicCanvas.js';
-import {grid, vector, arrow} from '../lib/BasicShapes.js';
-import {text} from '../lib/BasicDOM.js';
+import { canvas_id, P, Polar, HEX, HSL, css } from '../lib/BasicCanvas.js';
+import { grid, vector, arrow } from '../lib/BasicShapes.js';
+import { text } from '../lib/BasicDOM.js';
 
 const ZOOM = 30;
 
@@ -64,10 +64,13 @@ const factor_input = text('#factor', '1');
 const i_input = text('#i', 'y^3 - 9y');
 const j_input = text('#j', 'x^3 - 9x');
 
-const v = (x, y) => P(
-  math.eval(i_input.value, {x, y}),  // Using the math.js library,
-  math.eval(j_input.value, {x, y})   //   to parse the input expressions.
-);
+const v = (x, y) => {
+  const symbols = { x, y, r: Math.sqrt(x*x + y*y) };
+  return P(
+    math.eval(i_input.value, symbols),
+    math.eval(j_input.value, symbols)
+  ).scale(math.eval(factor_input.value, symbols));
+};
 
 const sketch = canvas_id('sketch');
 sketch.dimensions(640, 480);
@@ -112,8 +115,9 @@ const draw = () => {
 };
 
 draw(); // Inital draw
-i_input.change(draw, 500);
-j_input.change(draw, 500);  // Wait 500ms for update.
+i_input.change(draw, 500).fit();
+j_input.change(draw, 500).fit();  // Wait 500ms for update.
+factor_input.change(draw, 500).fit();
 
 css`
   #controls {
@@ -127,7 +131,7 @@ css`
   }
   #controls input {
     border: none;
-    max-width: 100px;
+    min-width: 100px;
     text-align: center;
     padding: 3px;
     font-family: monospace;
@@ -139,6 +143,13 @@ css`
     font: inherit;
     font-family: monospace;
     font-size: 14px;
+  }
+  #controls #factor input {
+    min-width: 50px;
+  }
+  .hidden {
+    font: inherit;
+    font-family: monospace;
   }
   #controls #factor input {
     min-width: 50px;
