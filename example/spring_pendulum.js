@@ -72,7 +72,7 @@ sketch.loop(frame => {
     spring.vertex(L+ext, spring.vertices.last.y);  // Adds the little line on the end.
     spring.translate(20, 0);  // Make room for line at the top.
     spring.prepend_vertex(0, 0);  // Add on a (0, 0) vertex for the line on the top.
-    spring.rotate(-theta + Math.PI/2);  // Rotate the spring to match bob motion.
+    spring.rotate(-theta + Math.PI / 2);  // Rotate the spring to match bob motion.
 
     spring.render();
 
