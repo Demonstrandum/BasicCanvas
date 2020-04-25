@@ -79,6 +79,7 @@
       <option value="chords.js">chords.js</option>
       <option value="ellipse_construction.js">ellipse_construction.js</option>
       <option value="orthographic.js">orthographic.js</option>
+      <option value="weak_perspective.js">weak_perspective.js</option>
       <option value="vector_plot.js">vector_plot.js</option>
       <option value="wiggler.js">wiggler.js (Snake with physics)</option>
       <option value="sinusoidal.js">sinusoidal.js</option>
@@ -114,6 +115,11 @@
       let load_number = 1;
 
       const replace_script = (elem, location) => {
+        const name = [...document.getElementById('picks').options]
+              .filter(opt => opt.value == location);
+        const title = name[0] ? name[0].innerText : location;
+        document.title = `${title} | BasicCanvas`;
+        console.log(document.title);
         let load_frame = document.getElementById('load');
         load_frame.removeChild(elem);
 
@@ -158,7 +164,6 @@
         include = document.getElementById('include');
         picks = document.getElementById('picks');
         picks.value = include.getAttribute('src').split('?')[0];
-
         load_number++;
       }
 
