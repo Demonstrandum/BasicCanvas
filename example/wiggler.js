@@ -1,5 +1,5 @@
 import * as BC from '../lib/BasicCanvas.js';
-import {ellipse, polygon} from '../lib/BasicShapes.js';
+import { ellipse, polygon } from '../lib/BasicShapes.js';
 
 const canvas = BC.canvas_id('sketch');
 BC.load_font('6809', 'url(/example/6809.ttf)');
@@ -20,7 +20,7 @@ class Snake {
     this.body = this.initial.map(clone).slice();
 
     this.direction = [1, 0];
-    this.speed = 3;
+    this.speed = 4;
 
     this.grow();
   }
@@ -30,7 +30,7 @@ class Snake {
     death.play();
     this.body = this.initial.map(clone).slice();
     this.direction = [1, 0];
-    this.speed = 3;
+    this.speed = 4;
 
     this.grow();
   }
@@ -86,9 +86,9 @@ class Snake {
     canvas.fill = BC.RGBA(255, 100);
     let wheel = 0;
     for (const snakelet of this.body) {
-      canvas.stroke = BC.HSL(10 * frame - wheel, 100, 70);
+      canvas.stroke = BC.HSL(10 * frame * this.speed / 4 - wheel, 100, 70);
       canvas.render(ellipse(snakelet, this.width));
-      wheel += 20;
+      wheel += 180 / this.body.length;
     }
 
     canvas.stroke_weight = 1;
