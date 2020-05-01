@@ -4,7 +4,7 @@ import {ellipse, line} from '../lib/BasicShapes.js';
 const [sin, cos] = [Math.sin, Math.cos];  // Since we're using them so often.
 
 const G = 9.81 / 60;  // 60 Hz refreshrate compensation.
-const [m_1, m_2] = [12, 10];
+const [m_1, m_2] = [10, 5];
 const [L_1, L_2] = [100, 80];
 
 /*
@@ -26,7 +26,7 @@ const [L_1, L_2] = [100, 80];
 */
 
 let [ϑ_1, ϑ_2] = [Math.PI, Math.PI + 0.2].map(e => e + Math.random() - 0.5);
-let [ω_1, ω_2] = [0.04, 0];
+let [ω_1, ω_2] = [0.001, 0.0];
 
 const α_1 = () => (
   -G * (2 * m_1 + m_2) *
