@@ -1,5 +1,5 @@
 import * as BC from '../lib/BasicCanvas.js';
-import { ellipse, line, grid } from '../lib/BasicShapes.js';
+import { ellipse, arc, line, grid } from '../lib/BasicShapes.js';
 
 use(BC);
 
@@ -16,6 +16,7 @@ const α = () => -g/L * sin(ϑ);
 
 const X_COLOUR = HEX('#d9346ed0');
 const Y_COLOUR = HEX('#9a91edd0');
+const ANGLE_COLOUR = HEX('#ebbf3d');
 
 // Build div with two canvases.
 document.getElementById('sketch').remove();
@@ -74,10 +75,12 @@ sketch.stroke_cap = 'round';
 
 let coord = Point(0, L);
 const trail = [];
+let cw = false;
+
+sketch.font = '12px monospace';
 
 sketch.loop(() => {
   sketch.background(BG_s, true);
-
 
   sketch.stroke_weight = 2.5;
   sketch.stroke = HEX('#0002');
@@ -89,12 +92,27 @@ sketch.loop(() => {
     Point(0, sketch.corner.y + sketch.height)));
 
   sketch.context.setLineDash([4, 5]);
+  sketch.fill = 'transparent';
+  sketch.stroke = ANGLE_COLOUR;
+  const cw = ϑ < 0;
+  if (ϑ != Math.PI/2)
+    sketch.render('angle', arc(P(0, 0), 30, Math.PI/2, Math.PI/2 - ϑ, cw));
+
   sketch.stroke = X_COLOUR;
   sketch.render('x-value', line(Point(0, coord.y), coord));
   sketch.stroke = Y_COLOUR;
   sketch.render('y-value', line(Point(coord.x, L/2), coord));
 
   sketch.context.setLineDash([]);
+  sketch.stroke = 'transparent';
+
+  sketch.fill = X_COLOUR;
+  sketch.text('x = ' + Math.round(coord.x),
+    Point(coord.x / 2, coord.y + 20));
+  sketch.fill = Y_COLOUR;
+  sketch.text('y = ' + Math.round(coord.y),
+    Point(coord.x + 20, (coord.y + L/2) / 2));
+
   sketch.fill = HEX('#000000aa');
   sketch.stroke = HEX('#000');
   sketch.render('origin', ellipse(Point(0, 0), 3));
@@ -108,6 +126,7 @@ sketch.loop(() => {
    * ϑ(t + dt) = ϑ(t) + ω(t)dt
    *
    * Here dt = 1.
+   * In 60 FPS, that's dt = 1/60 seconds.
    */
 
   ω += α();
@@ -122,7 +141,7 @@ graph.scale(30, -40);
 
 const BG_g = HEX('#bddbce')
 
-graph.font = 'monospace';
+graph.font = '11px monospace';
 graph.stroke = RGBA(0, 100);
 graph.stroke_weight = 2;
 
@@ -136,9 +155,20 @@ graph.loop(() => {
     graph.unscale();
     graph.fill = HEX(0x000000);
     graph.stroke_weight = 0;
-    graph.text('time / s', Point(435, 30));
+    graph.text('time / s', Point(420, 30));
     graph.text('normalised displacement', Point(15, -55));
   });
+
+  // Plot angle-values:
+  graph.stroke = ANGLE_COLOUR;
+  graph.render('angle-values', shape => {
+    let t = 0;
+    for (const c of trail) {
+      shape.vertex(t, 2 * Math.atan2(c.x, c.y) / Math.PI);
+      t += 1/60;
+    }
+  });
+
   // Plot x-values:
   graph.stroke = X_COLOUR;
   graph.render('x-values', shape => {
