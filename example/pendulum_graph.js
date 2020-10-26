@@ -91,7 +91,7 @@ sketch.loop(() => {
     Point(0, sketch.corner.y),
     Point(0, sketch.corner.y + sketch.height)));
 
-  sketch.context.setLineDash([4, 5]);
+  sketch.stroke_dash = [4, 5];
   sketch.fill = 'transparent';
   sketch.stroke = ANGLE_COLOUR;
   const cw = ϑ < 0;
@@ -103,7 +103,7 @@ sketch.loop(() => {
   sketch.stroke = Y_COLOUR;
   sketch.render('y-value', line(Point(coord.x, L/2), coord));
 
-  sketch.context.setLineDash([]);
+  sketch.stroke_dash = [];
   sketch.stroke = 'transparent';
 
   sketch.fill = X_COLOUR;
