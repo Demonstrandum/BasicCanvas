@@ -44,7 +44,7 @@ s.loop(frame => {
 
 	// Resulting ellipse.
 	s.shape(ellipse(P(0, 0), r + epic_r, r - epic_r))
-		.rotate(phase / 2)
+		.rotate(phase / 4)
 		.render();
 
 	// Lines joining ellipse vertices.
