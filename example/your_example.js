@@ -5,6 +5,8 @@
 import * as BC from '../lib/BasicCanvas.js';
 // Make sure you get the path correct.
 
+import { ellipse } from '../lib/BasicShapes.js';
+
 const sketch = BC.canvas_id('sketch'); // Gets canvas with id="sketch".
 sketch.dimensions(400, 400); // Width x Height, canvas size.
 
@@ -20,4 +22,5 @@ sketch.loop(frame => {
       shape.vertex(BC.Point(32 * x + 50, 32 * Math.sin(x + frame / 10) + 200));
     }
   });
+  sketch.render(ellipse(BC.P(100, 100), 50));
 });
