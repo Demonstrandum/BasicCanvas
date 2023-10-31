@@ -7,38 +7,38 @@ canvas.dimensions(450, 600);
 canvas.translate(canvas.width / 2, canvas.height / 2);
 
 canvas.fill = '#000';
-canvas.stroke = '#fff';
-canvas.stroke_weight = 1.25;
+canvas.stroke_weight = 1;
 
-const granu = 10;
 const base = 3.7;
-const strength = 0.4;
 const w = 0.0000006;
 const offset = 20;
 const spacing = 10;
 const depth = 3;
 
-const rows =  Math.floor(canvas.height / spacing) - 32;
+const rows =  Math.floor(canvas.height / spacing) - 12;
 
 canvas.loop(frame => {
   canvas.background();
 
   for (let row = -rows / 2; row < rows / 2; row++) {
     canvas.render(shape => {
-      const inc = rows / 2 - row;
-      const lower = -canvas.width / 2 - depth * -inc + 10;
-      const upper = canvas.width  / 2 + depth * -inc - 10;
+      const lower = -canvas.width / 2 + depth + 10;
+      const upper = canvas.width  / 2 - depth - 10;
 
+      canvas.stroke = '#fff';
       for (let x = lower; x <= upper; x++) {
         let height = -70 * Math.pow(
           base,
-          -(w + inc * 0.0000001) * Math.pow(
+          -(w + 0.0000001) * Math.pow(
             Math.abs(x),
             3)) + 10; // Don't allow it to be zero, otherwise it's just flat...
 
-        height *= 1 + strength * noise.perlin2(x / granu, row + frame / 120);
+        height *= 0.1
+          + 0.54 * noise.perlin2(x / 25, row + frame / 120)
+          + 0.15 * noise.perlin2(x / 5, -row + frame / 40 + 1);
         shape.vertex(x, offset + height + spacing * row);
       }
+      canvas.stroke = '#000';
       shape.vertex(upper, 50 + offset + spacing * row);
       shape.vertex(lower, 50 + offset + spacing * row);
       shape.close();
